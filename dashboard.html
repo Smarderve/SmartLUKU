@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SmartLUKU</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Top Navigation -->
+    <nav class="sticky top-0 z-40 bg-white shadow-md border-b-4 border-primary">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-2 hover:opacity-80 transition">
+                    <i class="fas fa-lightning-bolt text-accent text-2xl"></i>
+                    <span class="text-2xl font-bold text-primary">SmartLUKU</span>
+                </a>
+                
+                <!-- Right Menu -->
+                <div class="flex items-center gap-6">
+                    <!-- Notifications -->
+                    <div class="relative">
+                        <button id="notificationsBtn" class="text-gray-600 hover:text-primary relative">
+                            <i class="fas fa-bell text-xl"></i>
+                            <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                2
+                            </span>
+                        </button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="flex items-center gap-3 border-l pl-6">
+                        <div class="text-right">
+                            <p id="userFullName" class="text-sm font-semibold text-gray-800"></p>
+                            <p class="text-xs text-gray-500">Account Holder</p>
+                        </div>
+                        <div class="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center text-white font-bold">
+                            <span id="userInitial">D</span>
+                        </div>
+                        <button id="profileMenuBtn" class="text-gray-600 hover:text-primary ml-2">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-primary mb-2">Welcome back, <span id="welcomeName">User</span>! 👋</h1>
+            <p class="text-gray-600">Here's your electricity account overview</p>
+        </div>
+
+        <!-- Key Metrics Row -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <!-- Balance Card -->
+            <div class="card bg-gradient-to-br from-primary to-blue-600 text-white">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-blue-100 text-sm mb-1">Account Balance</p>
+                        <h3 id="balanceAmount" class="text-3xl font-bold">TZS 0</h3>
+                    </div>
+                    <i class="fas fa-wallet text-2xl opacity-50"></i>
+                </div>
+                <p class="text-blue-100 text-xs">Last updated: <span id="lastUpdated">Today</span></p>
+            </div>
+
+            <!-- Units Card -->
+            <div class="card bg-gradient-to-br from-accent to-green-600 text-white">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-green-100 text-sm mb-1">Remaining Units</p>
+                        <h3 id="unitsAmount" class="text-3xl font-bold">0 kWh</h3>
+                    </div>
+                    <i class="fas fa-bolt text-2xl opacity-50"></i>
+                </div>
+                <p class="text-green-100 text-xs">Current consumption rate</p>
+            </div>
+
+            <!-- Status Card -->
+            <div class="card bg-gradient-to-br from-orange-400 to-orange-600 text-white">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-orange-100 text-sm mb-1">Connection Status</p>
+                        <h3 class="text-xl font-bold">Active</h3>
+                    </div>
+                    <i class="fas fa-check-circle text-2xl opacity-50"></i>
+                </div>
+                <p class="text-orange-100 text-xs">No alerts</p>
+            </div>
+
+            <!-- Meter Card -->
+            <div class="card bg-gradient-to-br from-purple-500 to-purple-700 text-white">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-purple-100 text-sm mb-1">Meter Number</p>
+                        <h3 id="meterNumber" class="text-lg font-bold">N/A</h3>
+                    </div>
+                    <i class="fas fa-barcode text-2xl opacity-50"></i>
+                </div>
+                <p class="text-purple-100 text-xs">TANESCO Account</p>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Left Column (2/3) -->
+            <div class="md:col-span-2 space-y-8">
+                <!-- Quick Actions -->
+                <div class="card">
+                    <h2 class="text-2xl font-bold text-primary mb-6">Quick Actions</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <a href="payment.html" class="card bg-blue-50 hover:bg-blue-100 transition text-center py-6 rounded-lg group">
+                            <div class="text-4xl mb-3 text-primary group-hover:scale-110 transition">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <p class="font-semibold text-sm text-gray-800">Buy Units</p>
+                        </a>
+
+                        <a href="monitoring.html" class="card bg-green-50 hover:bg-green-100 transition text-center py-6 rounded-lg group">
+                            <div class="text-4xl mb-3 text-accent group-hover:scale-110 transition">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <p class="font-semibold text-sm text-gray-800">Monitor Usage</p>
+                        </a>
+
+                        <a href="history.html" class="card bg-purple-50 hover:bg-purple-100 transition text-center py-6 rounded-lg group">
+                            <div class="text-4xl mb-3 text-purple-500 group-hover:scale-110 transition">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <p class="font-semibold text-sm text-gray-800">History</p>
+                        </a>
+
+                        <a href="analytics.html" class="card bg-orange-50 hover:bg-orange-100 transition text-center py-6 rounded-lg group">
+                            <div class="text-4xl mb-3 text-orange-500 group-hover:scale-110 transition">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <p class="font-semibold text-sm text-gray-800">Analytics</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Alerts Section -->
+                <div class="card">
+                    <h2 class="text-2xl font-bold text-primary mb-4">Active Alerts</h2>
+                    <div id="alertsContainer" class="space-y-3">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Tip:</strong> Consider reducing consumption during peak hours (6PM-10PM) to save money.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="card">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-primary">Recent Transactions</h2>
+                        <a href="history.html" class="text-accent hover:text-primary font-semibold text-sm">View All →</a>
+                    </div>
+                    <div id="transactionsContainer" class="space-y-3">
+                        <p class="text-gray-500 text-center py-8">No transactions yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column (1/3) -->
+            <div class="space-y-8">
+                <!-- Usage This Month -->
+                <div class="card">
+                    <h3 class="text-xl font-bold text-primary mb-4">Usage This Month</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm text-gray-600">Weekly Average</span>
+                                <span class="text-sm font-semibold text-gray-800">15 kWh</span>
+                            </div>
+                            <div class="bg-gray-200 rounded-full h-2">
+                                <div class="bg-accent h-2 rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm text-gray-600">Daily Average</span>
+                                <span class="text-sm font-semibold text-gray-800">2.1 kWh</span>
+                            </div>
+                            <div class="bg-gray-200 rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Helpful Resources -->
+                <div class="card bg-blue-50 border-l-4 border-primary">
+                    <h3 class="text-lg font-bold text-primary mb-4">
+                        <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>Helpful Tips
+                    </h3>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li class="flex gap-2">
+                            <i class="fas fa-check text-accent flex-shrink-0 mt-1"></i>
+                            <span>Set up low balance alerts</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <i class="fas fa-check text-accent flex-shrink-0 mt-1"></i>
+                            <span>Review your usage patterns</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <i class="fas fa-check text-accent flex-shrink-0 mt-1"></i>
+                            <span>Schedule automatic payments</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <i class="fas fa-check text-accent flex-shrink-0 mt-1"></i>
+                            <span>Check our money-saving guide</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Support Card -->
+                <div class="card bg-gradient-to-br from-accent to-green-600 text-white">
+                    <h3 class="text-lg font-bold mb-3">
+                        <i class="fas fa-headset mr-2"></i>Need Help?
+                    </h3>
+                    <p class="text-sm text-green-100 mb-4">
+                        Our support team is available 24/7 to help you with any questions or issues.
+                    </p>
+                    <button class="w-full bg-white text-accent py-2 rounded font-semibold hover:bg-gray-100 transition">
+                        Contact Support
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <p>&copy; 2026 SmartLUKU. All rights reserved.</p>
+                <div class="space-x-4">
+                    <a href="#" class="hover:text-accent">Privacy</a>
+                    <a href="#" class="hover:text-accent">Terms</a>
+                    <a href="#" class="hover:text-accent">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Ensure user is authenticated
+        AuthGuard.requireLogin();
+
+        // Get current user
+        const user = AuthGuard.getCurrentUser();
+        
+        if (!user) {
+            window.location.href = 'login.html';
+        } else {
+            // Update dashboard with user info
+            document.getElementById('userFullName').textContent = user.fullName;
+            document.getElementById('welcomeName').textContent = user.fullName.split(' ')[0];
+            document.getElementById('userInitial').textContent = user.fullName.charAt(0).toUpperCase();
+            document.getElementById('balanceAmount').textContent = `TZS ${(user.balance || 0).toLocaleString()}`;
+            document.getElementById('unitsAmount').textContent = `${(user.units || 0).toFixed(1)} kWh`;
+            document.getElementById('meterNumber').textContent = user.meterNumber || 'Not linked';
+            
+            // Start session management
+            SessionManager.startSession();
+        }
+
+        // Logout functionality
+        document.getElementById('profileMenuBtn').addEventListener('click', () => {
+            const confirmed = confirm('Are you sure you want to logout?');
+            if (confirmed) {
+                const auth = new AuthManager();
+                auth.logout();
+                SessionManager.endSession();
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>

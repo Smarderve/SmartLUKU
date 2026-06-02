@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLUKU - Electricity Payment & Monitoring</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-white shadow-md border-b-4 border-primary">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-lightning-bolt text-accent text-2xl"></i>
+                    <span class="text-2xl font-bold text-primary">SmartLUKU</span>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:flex gap-8 items-center">
+                    <a href="#features" class="text-gray-700 hover:text-primary transition">Features</a>
+                    <a href="#benefits" class="text-gray-700 hover:text-primary transition">Benefits</a>
+                    <a href="#testimonials" class="text-gray-700 hover:text-primary transition">Testimonials</a>
+                    <a href="login.html" class="btn-primary px-6">Login</a>
+                    <a href="register.html" class="btn-secondary px-6">Sign Up</a>
+                </div>
+                
+                <!-- Mobile Menu Toggle -->
+                <button id="mobileMenuBtn" class="md:hidden text-gray-700 text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t pt-4">
+                <a href="#features" class="block py-2 text-gray-700 hover:text-primary">Features</a>
+                <a href="#benefits" class="block py-2 text-gray-700 hover:text-primary">Benefits</a>
+                <a href="#testimonials" class="block py-2 text-gray-700 hover:text-primary">Testimonials</a>
+                <div class="flex gap-4 mt-4">
+                    <a href="login.html" class="btn-primary px-6 flex-1 text-center">Login</a>
+                    <a href="register.html" class="btn-secondary px-6 flex-1 text-center">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen bg-gradient-to-r from-primary to-blue-600 text-white flex items-center">
+        <div class="container mx-auto px-4 py-20">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Left Content -->
+                <div class="animate-fade-in">
+                    <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                        Smart Electricity Management for Every Home
+                    </h1>
+                    <p class="text-xl mb-8 text-blue-100">
+                        Pay with ease, monitor usage in real-time, and take control of your electricity expenses with SmartLUKU.
+                    </p>
+                    <div class="flex gap-4 flex-wrap">
+                        <a href="register.html" class="btn-accent px-8 py-3 text-lg font-semibold flex items-center gap-2 hover:shadow-lg transition">
+                            Get Started <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#features" class="btn-white px-8 py-3 text-lg font-semibold flex items-center gap-2 hover:shadow-lg transition">
+                            Learn More <i class="fas fa-chevron-down"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Right Illustration -->
+                <div class="text-center">
+                    <div class="inline-block bg-blue-500 bg-opacity-20 rounded-full p-12">
+                        <i class="fas fa-bolt text-8xl text-accent"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 text-primary">
+                Why Choose SmartLUKU?
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1: Fast Payments -->
+                <div class="card hover:shadow-xl transition duration-300">
+                    <div class="text-accent text-4xl mb-4">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-primary">Quick Payments</h3>
+                    <p class="text-gray-600">
+                        Pay via mobile money, bank transfer, or card in seconds. No more queues or delays.
+                    </p>
+                </div>
+                
+                <!-- Feature 2: Real-time Monitoring -->
+                <div class="card hover:shadow-xl transition duration-300">
+                    <div class="text-accent text-4xl mb-4">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-primary">Real-time Monitoring</h3>
+                    <p class="text-gray-600">
+                        Track your electricity units live. Know exactly how much you're consuming at any moment.
+                    </p>
+                </div>
+                
+                <!-- Feature 3: Smart Alerts -->
+                <div class="card hover:shadow-xl transition duration-300">
+                    <div class="text-accent text-4xl mb-4">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-primary">Smart Alerts</h3>
+                    <p class="text-gray-600">
+                        Get notified before power runs out. Plan ahead and never get caught off guard.
+                    </p>
+                </div>
+                
+                <!-- Feature 4: Usage Analytics -->
+                <div class="card hover:shadow-xl transition duration-300">
+                    <div class="text-accent text-4xl mb-4">
+                        <i class="fas fa-analytics"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-primary">Usage Analytics</h3>
+                    <p class="text-gray-600">
+                        Understand your consumption patterns and identify ways to save money.
+                    </p>
+                </div>
+                
+                <!-- Feature 5: Payment History -->
+                <div class="card hover:shadow-xl transition duration-300">
+                    <div class="text-accent text-4xl mb-4">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-primary">Payment History</h3>
+                    <p class="text-gray-600">
+                        View all your transactions in one place. Download receipts for your records.
+                    </p>
+                </div>
+                
+                <!-- Feature 6: 24/7 Support -->
+                <div class="card hover:shadow-xl transition duration-300">
+                    <div class="text-accent text-4xl mb-4">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-primary">24/7 Support</h3>
+                    <p class="text-gray-600">
+                        Our dedicated team is always ready to help you with any questions or issues.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 text-primary">
+                Key Benefits
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+                <div class="flex gap-4">
+                    <div class="text-accent text-2xl flex-shrink-0">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2 text-primary">Save Time</h3>
+                        <p class="text-gray-600">No more manual token entry or shopping for electricity credit.</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4">
+                    <div class="text-accent text-2xl flex-shrink-0">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2 text-primary">Reduce Costs</h3>
+                        <p class="text-gray-600">Identify wastage and optimize usage based on your consumption data.</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4">
+                    <div class="text-accent text-2xl flex-shrink-0">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2 text-primary">Stay Connected</h3>
+                        <p class="text-gray-600">Never lose power unexpectedly with proactive low-balance alerts.</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4">
+                    <div class="text-accent text-2xl flex-shrink-0">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-2 text-primary">Peace of Mind</h3>
+                        <p class="text-gray-600">Secure transactions, transparent billing, and complete transaction history.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 text-primary">
+                What Our Users Say
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-accent">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4 italic">
+                        "SmartLUKU has made my life so much easier. I no longer have to worry about sudden power cuts. The alerts are fantastic!"
+                    </p>
+                    <p class="font-bold text-primary">Amina Mohamed</p>
+                    <p class="text-sm text-gray-500">Dar es Salaam</p>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-accent">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4 italic">
+                        "The payment process is incredibly smooth. I can pay from anywhere, anytime. Highly recommended!"
+                    </p>
+                    <p class="font-bold text-primary">John Kipchoge</p>
+                    <p class="text-sm text-gray-500">Mwanza</p>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-accent">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4 italic">
+                        "The analytics dashboard helped me understand my consumption better. I've already saved money!"
+                    </p>
+                    <p class="font-bold text-primary">Grace Ng'ang'a</p>
+                    <p class="text-sm text-gray-500">Arusha</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-primary text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-6">Ready to Take Control?</h2>
+            <p class="text-xl mb-8 text-blue-100 max-w-2xl mx-auto">
+                Join thousands of Tanzanian households already saving time and money with SmartLUKU.
+            </p>
+            <a href="register.html" class="btn-accent px-8 py-3 text-lg font-semibold hover:shadow-lg transition">
+                Create Your Account Now
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <!-- About -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-lightning-bolt text-accent text-xl"></i>
+                        <span class="text-xl font-bold">SmartLUKU</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Empowering Tanzanian households with smart electricity management.
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li><a href="index.html" class="hover:text-accent transition">Home</a></li>
+                        <li><a href="login.html" class="hover:text-accent transition">Login</a></li>
+                        <li><a href="register.html" class="hover:text-accent transition">Sign Up</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Support -->
+                <div>
+                    <h4 class="font-bold mb-4">Support</h4>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li><a href="#" class="hover:text-accent transition">Help Center</a></li>
+                        <li><a href="#" class="hover:text-accent transition">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-accent transition">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Legal -->
+                <div>
+                    <h4 class="font-bold mb-4">Legal</h4>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li><a href="#" class="hover:text-accent transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-accent transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-accent transition">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2026 SmartLUKU. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close menu when a link is clicked
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

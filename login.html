@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SmartLUKU</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-white shadow-md border-b-4 border-primary">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="flex items-center gap-2 hover:opacity-80 transition">
+                    <i class="fas fa-lightning-bolt text-accent text-2xl"></i>
+                    <span class="text-2xl font-bold text-primary">SmartLUKU</span>
+                </a>
+                <a href="index.html" class="text-gray-700 hover:text-primary transition">
+                    <i class="fas fa-arrow-left"></i> Back Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="min-h-screen flex items-center justify-center py-12 px-4">
+        <div class="w-full max-w-md">
+            <!-- Login Card -->
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="text-center mb-8">
+                    <div class="inline-block bg-primary bg-opacity-10 rounded-full p-4 mb-4">
+                        <i class="fas fa-user text-primary text-4xl"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold text-primary">Welcome Back</h1>
+                    <p class="text-gray-600 mt-2">Sign in to your SmartLUKU account</p>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="space-y-4">
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                            Email Address
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                required
+                                placeholder="your@email.com"
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                            >
+                        </div>
+                        <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                            Password
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                required
+                                placeholder="Enter your password"
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                            >
+                            <button 
+                                type="button" 
+                                id="togglePassword" 
+                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                    </div>
+
+                    <!-- Remember & Forgot Password -->
+                    <div class="flex justify-between items-center text-sm">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="remember" name="remember" class="w-4 h-4">
+                            <span class="text-gray-700">Remember me</span>
+                        </label>
+                        <a href="#" class="text-accent hover:text-primary transition">Forgot password?</a>
+                    </div>
+
+                    <!-- General Error Message -->
+                    <div id="generalError" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span id="errorText"></span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit" 
+                        class="w-full btn-primary py-3 mt-6 font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition"
+                    >
+                        <span id="buttonText">Sign In</span>
+                        <i class="fas fa-spinner fa-spin hidden" id="spinner"></i>
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">or</span>
+                    </div>
+                </div>
+
+                <!-- Demo Login (for testing) -->
+                <div class="space-y-2 mb-6">
+                    <button 
+                        type="button" 
+                        id="demoLoginBtn" 
+                        class="w-full border-2 border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition"
+                    >
+                        <i class="fas fa-play mr-2"></i>Try Demo Account
+                    </button>
+                </div>
+
+                <!-- Sign Up Link -->
+                <p class="text-center text-gray-600 text-sm">
+                    Don't have an account? 
+                    <a href="register.html" class="text-accent font-semibold hover:text-primary transition">
+                        Sign up here
+                    </a>
+                </p>
+            </div>
+
+            <!-- Info Box -->
+            <div class="mt-6 bg-blue-50 border-l-4 border-primary p-4 rounded">
+                <p class="text-sm text-gray-700">
+                    <i class="fas fa-info-circle text-primary mr-2"></i>
+                    <strong>Demo Credentials:</strong> demo@smartluku.tz / Demo@123
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        const form = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const demoLoginBtn = document.getElementById('demoLoginBtn');
+        const generalError = document.getElementById('generalError');
+        const errorText = document.getElementById('errorText');
+
+        // Toggle Password Visibility
+        togglePasswordBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            togglePasswordBtn.innerHTML = type === 'password' 
+                ? '<i class="fas fa-eye"></i>' 
+                : '<i class="fas fa-eye-slash"></i>';
+        });
+
+        // Form Submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            const remember = document.getElementById('remember').checked;
+
+            generalError.classList.add('hidden');
+            clearFieldErrors();
+
+            const auth = new AuthManager();
+            auth.login(email, password, remember)
+                .then(user => {
+                    console.log('Login successful:', user);
+                    window.location.href = 'dashboard.html';
+                })
+                .catch(error => {
+                    console.error('Login failed:', error);
+                    showGeneralError(error.message);
+                    highlightErrors(error.fields || []);
+                });
+        });
+
+        // Demo Account Login
+        demoLoginBtn.addEventListener('click', () => {
+            emailInput.value = 'demo@smartluku.tz';
+            passwordInput.value = 'Demo@123';
+            form.dispatchEvent(new Event('submit'));
+        });
+
+        function showGeneralError(message) {
+            errorText.textContent = message;
+            generalError.classList.remove('hidden');
+            generalError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function clearFieldErrors() {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.classList.add('hidden');
+            });
+        }
+
+        function highlightErrors(fields) {
+            fields.forEach(field => {
+                const input = document.getElementById(field);
+                if (input) {
+                    const errorMsg = input.nextElementSibling;
+                    if (errorMsg && errorMsg.classList.contains('error-message')) {
+                        errorMsg.classList.remove('hidden');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
