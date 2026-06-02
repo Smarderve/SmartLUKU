@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Units - SmartLUKU</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Top Navigation -->
+    <nav class="sticky top-0 z-40 bg-white shadow-md border-b-4 border-primary">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <a href="dashboard.html" class="flex items-center gap-2 hover:opacity-80 transition">
+                    <i class="fas fa-arrow-left text-gray-600"></i>
+                    <span class="font-bold text-primary">Back to Dashboard</span>
+                </a>
+                <h1 class="text-2xl font-bold text-primary">Buy Units</h1>
+                <div class="w-20"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Left Column: Payment Form -->
+            <div class="md:col-span-2 space-y-8">
+                <!-- Current Balance Card -->
+                <div class="card bg-gradient-to-br from-primary to-blue-600 text-white">
+                    <p class="text-blue-100 text-sm mb-1">Current Balance</p>
+                    <h2 id="currentBalance" class="text-4xl font-bold">—</h2>
+                    <div class="flex justify-between mt-4 pt-4 border-t border-blue-400">
+                        <div>
+                            <p class="text-blue-100 text-xs">Remaining Units</p>
+                            <p id="remainingUnits" class="text-2xl font-bold">— kWh</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-blue-100 text-xs">Status</p>
+                            <p id="accountStatus" class="text-lg font-bold">—</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Amount Selection -->
+                <div class="card">
+                    <h3 class="text-xl font-bold text-primary mb-4">Quick Pay Amounts</h3>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button class="quick-pay-btn py-3 px-4 bg-gray-100 hover:bg-primary hover:text-white rounded-lg font-semibold transition" data-amount="5000">
+                            5,000 TZS
+                        </button>
+                        <button class="quick-pay-btn py-3 px-4 bg-gray-100 hover:bg-primary hover:text-white rounded-lg font-semibold transition" data-amount="10000">
+                            10,000 TZS
+                        </button>
+                        <button class="quick-pay-btn py-3 px-4 bg-gray-100 hover:bg-primary hover:text-white rounded-lg font-semibold transition" data-amount="20000">
+                            20,000 TZS
+                        </button>
+                        <button class="quick-pay-btn py-3 px-4 bg-gray-100 hover:bg-primary hover:text-white rounded-lg font-semibold transition" data-amount="50000">
+                            50,000 TZS
+                        </button>
+                        <button class="quick-pay-btn py-3 px-4 bg-gray-100 hover:bg-primary hover:text-white rounded-lg font-semibold transition" data-amount="100000">
+                            100,000 TZS
+                        </button>
+                        <button class="quick-pay-btn py-3 px-4 bg-gray-100 hover:bg-primary hover:text-white rounded-lg font-semibold transition" data-amount="custom">
+                            Custom
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Payment Form -->
+                <div class="card">
+                    <h3 class="text-xl font-bold text-primary mb-6">Payment Details</h3>
+                    <form id="paymentForm" class="space-y-4">
+                        <!-- Amount -->
+                        <div>
+                            <label for="amount" class="block text-sm font-bold text-primary mb-2">
+                                Amount to Pay (TZS) *
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 font-semibold">TZS</span>
+                                <input 
+                                    type="number" 
+                                    id="amount" 
+                                    name="amount" 
+                                    placeholder="Enter amount"
+                                    class="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                                    min="1000"
+                                    max="1000000"
+                                    required
+                                >
+                            </div>
+                            <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div>
+                            <label for="paymentMethod" class="block text-sm font-bold text-primary mb-2">
+                                Payment Method *
+                            </label>
+                            <select 
+                                id="paymentMethod" 
+                                name="paymentMethod"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                                required
+                            >
+                                <option value="">Select a payment method</option>
+                                <option value="mpesa">M-Pesa</option>
+                                <option value="bank">Bank Transfer</option>
+                                <option value="card">Debit/Credit Card</option>
+                                <option value="airtel">Airtel Money</option>
+                            </select>
+                            <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                        </div>
+
+                        <!-- Phone Number (for M-Pesa) -->
+                        <div id="phoneField" class="hidden">
+                            <label for="phone" class="block text-sm font-bold text-primary mb-2">
+                                Phone Number (M-Pesa)
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input 
+                                    type="tel" 
+                                    id="phone" 
+                                    name="phone"
+                                    placeholder="+255 67X XXX XXX"
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                                >
+                            </div>
+                            <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                        </div>
+
+                        <!-- Fee Display -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-600">Amount</span>
+                                <span id="feeAmount" class="font-semibold">TZS 0</span>
+                            </div>
+                            <div class="flex justify-between mb-3">
+                                <span class="text-gray-600">Transaction Fee (1%)</span>
+                                <span id="transactionFee" class="font-semibold text-orange-600">TZS 0</span>
+                            </div>
+                            <div class="flex justify-between text-lg font-bold text-primary border-t pt-3">
+                                <span>Total</span>
+                                <span id="totalAmount">TZS 0</span>
+                            </div>
+                        </div>
+
+                        <!-- Terms -->
+                        <div class="flex items-start gap-2 bg-blue-50 p-3 rounded">
+                            <input type="checkbox" id="terms" name="terms" required class="w-4 h-4 mt-1">
+                            <label for="terms" class="text-xs text-gray-700">
+                                I confirm that I have reviewed the amount and payment method. Once payment is processed, it cannot be reversed.
+                            </label>
+                        </div>
+
+                        <!-- Error Message -->
+                        <div id="generalError" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <span id="errorText"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button 
+                            type="submit" 
+                            class="w-full btn-accent py-3 mt-6 font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition"
+                        >
+                            <i class="fas fa-check"></i>
+                            <span id="submitText">Confirm Payment</span>
+                            <i class="fas fa-spinner fa-spin hidden" id="spinner"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column: Info & FAQ -->
+            <div class="space-y-6">
+                <!-- Important Info -->
+                <div class="card bg-blue-50 border-l-4 border-primary">
+                    <h4 class="font-bold text-primary mb-3">
+                        <i class="fas fa-info-circle mr-2"></i>Important
+                    </h4>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li class="flex gap-2">
+                            <i class="fas fa-check text-accent flex-shrink-0 mt-0.5"></i>
+                            <span>Payments are instant</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <i class="fas fa-check text-accent flex-shrink-0 mt-0.5"></i>
+                            <span>1% transaction fee applies</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <i class="fas fa-check text-accent flex-shrink-0 mt-0.5"></i>
+                            <span>Minimum amount: 1,000 TZS</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <i class="fas fa-check text-accent flex-shrink-0 mt-0.5"></i>
+                            <span>Keep your receipt for records</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Payment Methods Info -->
+                <div class="card">
+                    <h4 class="font-bold text-primary mb-3">Payment Methods</h4>
+                    <div class="space-y-3">
+                        <div class="flex gap-2">
+                            <i class="fas fa-mobile-alt text-accent text-xl"></i>
+                            <div class="text-sm">
+                                <p class="font-semibold">M-Pesa</p>
+                                <p class="text-gray-600">Instant, safest way</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <i class="fas fa-university text-primary text-xl"></i>
+                            <div class="text-sm">
+                                <p class="font-semibold">Bank Transfer</p>
+                                <p class="text-gray-600">Takes 1-2 hours</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <i class="fas fa-credit-card text-orange-500 text-xl"></i>
+                            <div class="text-sm">
+                                <p class="font-semibold">Debit/Credit Card</p>
+                                <p class="text-gray-600">Instant, online only</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="card">
+                    <h4 class="font-bold text-primary mb-3">Need Help?</h4>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-gray-700">
+                            <strong>Q: How long until units arrive?</strong><br>
+                            <span class="text-gray-600">Units are added instantly after payment.</span>
+                        </p>
+                        <p class="text-gray-700 mt-3">
+                            <strong>Q: Can I get a refund?</strong><br>
+                            <span class="text-gray-600">No, payments are final. Contact support if needed.</span>
+                        </p>
+                        <a href="#" class="text-accent hover:text-primary font-semibold mt-4 inline-block">
+                            <i class="fas fa-arrow-right mr-1"></i>View all FAQs
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-2xl p-8 text-center max-w-md">
+            <div class="inline-block bg-green-100 rounded-full p-6 mb-4">
+                <i class="fas fa-check-circle text-green-600 text-4xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-primary mb-2">Payment Successful!</h2>
+            <p id="successMessage" class="text-gray-600 mb-6">
+                Your payment of <strong>TZS 0</strong> has been processed successfully.
+            </p>
+            <div class="bg-gray-50 p-4 rounded-lg mb-6 text-left">
+                <p class="text-sm text-gray-700 mb-2">
+                    <strong>Reference:</strong> <span id="refNumber">—</span>
+                </p>
+                <p class="text-sm text-gray-700">
+                    <strong>Units Added:</strong> <span id="unitsAdded">—</span> kWh
+                </p>
+            </div>
+            <button id="closeModal" class="btn-primary px-8 py-2">
+                Back to Dashboard
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/payment.js"></script>
+</body>
+</html>

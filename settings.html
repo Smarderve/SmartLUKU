@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - SmartLUKU</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Top Navigation -->
+    <nav class="sticky top-0 z-40 bg-white shadow-md border-b-4 border-primary">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <a href="dashboard.html" class="flex items-center gap-2 hover:opacity-80 transition">
+                    <i class="fas fa-arrow-left text-gray-600"></i>
+                    <span class="font-bold text-primary">Back to Dashboard</span>
+                </a>
+                <h1 class="text-2xl font-bold text-primary">Account Settings</h1>
+                <div class="w-20"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid md:grid-cols-4 gap-6">
+            <!-- Settings Menu -->
+            <div>
+                <div class="card p-0">
+                    <nav class="space-y-0">
+                        <button class="settings-menu-item active w-full text-left px-4 py-3 hover:bg-primary hover:text-white transition" data-section="profile">
+                            <i class="fas fa-user mr-2"></i>Profile
+                        </button>
+                        <button class="settings-menu-item w-full text-left px-4 py-3 hover:bg-primary hover:text-white transition border-t" data-section="notifications">
+                            <i class="fas fa-bell mr-2"></i>Notifications
+                        </button>
+                        <button class="settings-menu-item w-full text-left px-4 py-3 hover:bg-primary hover:text-white transition border-t" data-section="security">
+                            <i class="fas fa-lock mr-2"></i>Security
+                        </button>
+                        <button class="settings-menu-item w-full text-left px-4 py-3 hover:bg-primary hover:text-white transition border-t" data-section="billing">
+                            <i class="fas fa-credit-card mr-2"></i>Billing
+                        </button>
+                        <button class="settings-menu-item w-full text-left px-4 py-3 hover:bg-primary hover:text-white transition border-t" data-section="preferences">
+                            <i class="fas fa-sliders-h mr-2"></i>Preferences
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="md:col-span-3 space-y-6">
+                <!-- Profile Settings -->
+                <div id="profileSection" class="settings-section">
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-primary mb-6">Profile Information</h3>
+                        
+                        <form id="profileForm" class="space-y-4">
+                            <!-- Meter Number (Read-only) -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Meter Number</label>
+                                <input type="text" id="meterNumber" class="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 cursor-not-allowed" readonly>
+                                <p class="text-xs text-gray-500 mt-1">Cannot be changed. This is your account identifier.</p>
+                            </div>
+
+                            <!-- Full Name -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                                <input type="text" id="fullName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+                                <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="+255...">
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                                <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="email@example.com">
+                            </div>
+
+                            <!-- Account Status -->
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
+                                <p class="text-sm text-gray-600 mb-1">Account Status</p>
+                                <p id="accountStatus" class="font-bold text-primary">Active</p>
+                                <p class="text-xs text-gray-500 mt-2">Your account is in good standing.</p>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save mr-2"></i>Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div id="notificationsSection" class="settings-section hidden">
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-primary mb-6">Notification Preferences</h3>
+                        
+                        <div class="space-y-4">
+                            <!-- Low Balance Alerts -->
+                            <div class="flex items-center justify-between p-4 border rounded-lg">
+                                <div>
+                                    <p class="font-semibold text-gray-800">Low Balance Alerts</p>
+                                    <p class="text-sm text-gray-600">Notify when balance drops below threshold</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="lowBalanceAlert" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                </label>
+                            </div>
+
+                            <!-- Payment Confirmations -->
+                            <div class="flex items-center justify-between p-4 border rounded-lg">
+                                <div>
+                                    <p class="font-semibold text-gray-800">Payment Confirmations</p>
+                                    <p class="text-sm text-gray-600">Confirm all payment transactions</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="paymentConfirm" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                </label>
+                            </div>
+
+                            <!-- Delivery Methods -->
+                            <div class="pt-4 border-t">
+                                <p class="font-semibold text-gray-800 mb-4">How to receive notifications</p>
+                                
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" id="emailNotif" class="w-4 h-4 text-primary cursor-pointer">
+                                        <span class="text-gray-700">Email Notifications</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" id="smsNotif" class="w-4 h-4 text-primary cursor-pointer">
+                                        <span class="text-gray-700">SMS Notifications</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" id="pushNotif" class="w-4 h-4 text-primary cursor-pointer" checked>
+                                        <span class="text-gray-700">In-App Notifications</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Low Balance Threshold -->
+                            <div class="pt-4 border-t">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Alert Threshold (kWh)</label>
+                                <input type="number" id="alertThreshold" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" value="20" min="1" max="100">
+                                <p class="text-xs text-gray-500 mt-1">You'll be alerted when remaining units drop below this value</p>
+                            </div>
+
+                            <button class="btn btn-primary mt-4" id="saveNotifications">
+                                <i class="fas fa-save mr-2"></i>Save Preferences
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div id="securitySection" class="settings-section hidden">
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-primary mb-6">Security & Password</h3>
+                        
+                        <form id="passwordForm" class="space-y-4">
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary mb-4">
+                                <p class="text-sm text-gray-600">Last password change: <span id="lastPasswordChange" class="font-semibold">—</span></p>
+                            </div>
+
+                            <!-- Current Password -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Current Password</label>
+                                <input type="password" id="currentPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+
+                            <!-- New Password -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">New Password</label>
+                                <input type="password" id="newPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Min 8 chars, 1 uppercase, 1 number">
+                                <div id="passwordStrength" class="mt-2 text-xs text-gray-500"></div>
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-key mr-2"></i>Change Password
+                            </button>
+                        </form>
+
+                        <!-- Linked Meters -->
+                        <div class="mt-8 pt-8 border-t">
+                            <h4 class="text-lg font-bold text-primary mb-4">Linked Meters</h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p id="linkedMeter" class="font-semibold text-primary text-lg">—</p>
+                                <p class="text-xs text-gray-500 mt-1">Primary meter for this account</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Settings -->
+                <div id="billingSection" class="settings-section hidden">
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-primary mb-6">Billing Information</h3>
+                        
+                        <div class="space-y-4">
+                            <!-- Default Payment Method -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Default Payment Method</label>
+                                <select id="defaultPaymentMethod" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <option value="">Select a method</option>
+                                    <option value="card">Debit/Credit Card</option>
+                                    <option value="mpesa">M-Pesa</option>
+                                    <option value="airtel">Airtel Money</option>
+                                    <option value="bank">Bank Transfer</option>
+                                </select>
+                            </div>
+
+                            <!-- Billing History -->
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-3">Recent Payments</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                        <div>
+                                            <p class="font-semibold text-gray-800">Payment on Dec 15, 2024</p>
+                                            <p class="text-sm text-gray-600">Reference: REF001</p>
+                                        </div>
+                                        <span class="font-bold text-primary">TZS 50,000</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                        <div>
+                                            <p class="font-semibold text-gray-800">Payment on Dec 8, 2024</p>
+                                            <p class="text-sm text-gray-600">Reference: REF002</p>
+                                        </div>
+                                        <span class="font-bold text-primary">TZS 35,000</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary">
+                                <i class="fas fa-history mr-2"></i>View Full Billing History
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences -->
+                <div id="preferencesSection" class="settings-section hidden">
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-primary mb-6">Other Preferences</h3>
+                        
+                        <div class="space-y-4">
+                            <!-- Language -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Language</label>
+                                <select id="language" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <option value="en">English</option>
+                                    <option value="sw">Swahili</option>
+                                </select>
+                            </div>
+
+                            <!-- Currency -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Currency</label>
+                                <select id="currency" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <option value="TZS">Tanzanian Shilling (TZS)</option>
+                                    <option value="USD">US Dollar (USD)</option>
+                                </select>
+                            </div>
+
+                            <!-- Theme -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Theme</label>
+                                <select id="theme" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark (Coming Soon)</option>
+                                </select>
+                            </div>
+
+                            <!-- Session Timeout -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Session Timeout (minutes)</label>
+                                <select id="sessionTimeout" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <option value="15">15 minutes</option>
+                                    <option value="30" selected>30 minutes</option>
+                                    <option value="60">1 hour</option>
+                                    <option value="120">2 hours</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-primary" id="savePreferences">
+                                <i class="fas fa-save mr-2"></i>Save Preferences
+                            </button>
+
+                            <!-- Danger Zone -->
+                            <div class="mt-8 pt-8 border-t">
+                                <h4 class="text-lg font-bold text-red-600 mb-4">Danger Zone</h4>
+                                <button class="btn btn-secondary" id="logoutBtn">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout from All Devices
+                                </button>
+                                <button class="btn bg-red-600 text-white hover:bg-red-700 mt-2" id="deleteBtn">
+                                    <i class="fas fa-trash mr-2"></i>Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>
