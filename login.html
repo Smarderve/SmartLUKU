@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SmartLUKU</title>
+    <title>Sign In - SmartLUKU</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -24,7 +24,7 @@
                     <span class="text-2xl font-bold text-primary">SmartLUKU</span>
                 </a>
                 <a href="index.html" class="text-gray-700 hover:text-primary transition">
-                    <i class="fas fa-arrow-left"></i> Back Home
+                    <i class="fas fa-arrow-left"></i> Back
                 </a>
             </div>
         </div>
@@ -37,57 +37,114 @@
             <div class="bg-white rounded-lg shadow-lg p-8">
                 <div class="text-center mb-8">
                     <div class="inline-block bg-primary bg-opacity-10 rounded-full p-4 mb-4">
-                        <i class="fas fa-user text-primary text-4xl"></i>
+                        <i class="fas fa-sign-in-alt text-primary text-4xl"></i>
                     </div>
-                    <h1 class="text-3xl font-bold text-primary">Welcome Back</h1>
-                    <p class="text-gray-600 mt-2">Sign in to your SmartLUKU account</p>
+                    <h1 class="text-3xl font-bold text-primary">Sign In</h1>
+                    <p class="text-gray-600 mt-2">Access your SmartLUKU account</p>
                 </div>
 
                 <!-- Login Form -->
                 <form id="loginForm" class="space-y-4">
-                    <!-- Email Field -->
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                            Email Address
-                        </label>
-                        <div class="relative">
-                            <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                required
-                                placeholder="your@email.com"
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                            >
-                        </div>
-                        <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                    <!-- Login Method Selector -->
+                    <div class="flex gap-2 mb-6 bg-gray-100 p-1 rounded-lg">
+                        <button type="button" class="login-method-btn flex-1 py-2 bg-white text-primary font-semibold rounded transition active" data-method="meter">
+                            <i class="fas fa-barcode mr-2"></i>Meter Number
+                        </button>
+                        <button type="button" class="login-method-btn flex-1 py-2 text-gray-600 font-semibold rounded transition" data-method="email">
+                            <i class="fas fa-envelope mr-2"></i>Email
+                        </button>
                     </div>
 
-                    <!-- Password Field -->
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                            Password
-                        </label>
-                        <div class="relative">
-                            <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password" 
-                                required
-                                placeholder="Enter your password"
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                            >
-                            <button 
-                                type="button" 
-                                id="togglePassword" 
-                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                            >
-                                <i class="fas fa-eye"></i>
-                            </button>
+                    <!-- Meter Number Login (Default) -->
+                    <div id="meterLoginMethod" class="space-y-4">
+                        <!-- Meter Number Field -->
+                        <div>
+                            <label for="meterNumber" class="block text-sm font-bold text-primary mb-2">
+                                <i class="fas fa-barcode mr-2"></i>Meter Number
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-barcode absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input 
+                                    type="text" 
+                                    id="meterNumber" 
+                                    name="meterNumber" 
+                                    placeholder="10-digit meter number"
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                                    maxlength="10"
+                                    pattern="[0-9]{10}"
+                                >
+                            </div>
+                            <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
                         </div>
-                        <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+
+                        <!-- Password Field (Meter Method) -->
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                                Password
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    placeholder="Enter your password"
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                                >
+                                <button 
+                                    type="button" 
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 toggle-password"
+                                >
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                        </div>
+                    </div>
+
+                    <!-- Email Login Method (Hidden by default) -->
+                    <div id="emailLoginMethod" class="space-y-4 hidden">
+                        <!-- Email Field -->
+                        <div>
+                            <label for="email" class="block text-sm font-bold text-primary mb-2">
+                                <i class="fas fa-envelope mr-2"></i>Email Address
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    placeholder="your@email.com"
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                                >
+                            </div>
+                            <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                        </div>
+
+                        <!-- Password Field (Email Method) -->
+                        <div>
+                            <label for="passwordEmail" class="block text-sm font-medium text-gray-700 mb-2">
+                                Password
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input 
+                                    type="password" 
+                                    id="passwordEmail" 
+                                    name="passwordEmail" 
+                                    placeholder="Enter your password"
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                                >
+                                <button 
+                                    type="button" 
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 toggle-password"
+                                >
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                        </div>
                     </div>
 
                     <!-- Remember & Forgot Password -->
@@ -136,20 +193,24 @@
                     </button>
                 </div>
 
-                <!-- Sign Up Link -->
+                <!-- Create Account Link -->
                 <p class="text-center text-gray-600 text-sm">
                     Don't have an account? 
                     <a href="register.html" class="text-accent font-semibold hover:text-primary transition">
-                        Sign up here
+                        Create one here
                     </a>
                 </p>
             </div>
 
             <!-- Info Box -->
             <div class="mt-6 bg-blue-50 border-l-4 border-primary p-4 rounded">
+                <p class="text-sm text-gray-700 mb-2">
+                    <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                    <strong>Demo Meter:</strong> 1234567890
+                </p>
                 <p class="text-sm text-gray-700">
-                    <i class="fas fa-info-circle text-primary mr-2"></i>
-                    <strong>Demo Credentials:</strong> demo@smartluku.tz / Demo@123
+                    <i class="fas fa-lock text-green-500 mr-2"></i>
+                    <strong>Demo Password:</strong> Demo@123
                 </p>
             </div>
         </div>
@@ -160,38 +221,99 @@
     <script src="js/auth.js"></script>
     <script>
         const form = document.getElementById('loginForm');
+        const meterInput = document.getElementById('meterNumber');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
-        const togglePasswordBtn = document.getElementById('togglePassword');
+        const passwordEmailInput = document.getElementById('passwordEmail');
         const demoLoginBtn = document.getElementById('demoLoginBtn');
         const generalError = document.getElementById('generalError');
         const errorText = document.getElementById('errorText');
 
+        let currentLoginMethod = 'meter';
+
+        // Login Method Toggle
+        document.querySelectorAll('.login-method-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.login-method-btn').forEach(b => b.classList.remove('bg-white', 'text-primary'));
+                btn.classList.add('bg-white', 'text-primary');
+                
+                currentLoginMethod = btn.dataset.method;
+                
+                if (currentLoginMethod === 'meter') {
+                    document.getElementById('meterLoginMethod').classList.remove('hidden');
+                    document.getElementById('emailLoginMethod').classList.add('hidden');
+                } else {
+                    document.getElementById('meterLoginMethod').classList.add('hidden');
+                    document.getElementById('emailLoginMethod').classList.remove('hidden');
+                }
+            });
+        });
+
         // Toggle Password Visibility
-        togglePasswordBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const type = passwordInput.type === 'password' ? 'text' : 'password';
-            passwordInput.type = type;
-            togglePasswordBtn.innerHTML = type === 'password' 
-                ? '<i class="fas fa-eye"></i>' 
-                : '<i class="fas fa-eye-slash"></i>';
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const input = btn.previousElementSibling;
+                const type = input.type === 'password' ? 'text' : 'password';
+                input.type = type;
+                btn.innerHTML = type === 'password' 
+                    ? '<i class="fas fa-eye"></i>' 
+                    : '<i class="fas fa-eye-slash"></i>';
+            });
+        });
+
+        // Meter number auto-formatting (only digits)
+        meterInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
         });
 
         // Form Submission
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-            const remember = document.getElementById('remember').checked;
-
+            
             generalError.classList.add('hidden');
             clearFieldErrors();
 
+            let credential;
+            let password;
+            let loginType;
+
+            if (currentLoginMethod === 'meter') {
+                credential = meterInput.value.trim();
+                password = passwordInput.value;
+                loginType = 'meter';
+
+                if (!credential || credential.length !== 10) {
+                    showGeneralError('Please enter a valid 10-digit meter number');
+                    return;
+                }
+            } else {
+                credential = emailInput.value.trim();
+                password = passwordEmailInput.value;
+                loginType = 'email';
+
+                if (!credential) {
+                    showGeneralError('Please enter your email address');
+                    return;
+                }
+            }
+
+            if (!password) {
+                showGeneralError('Please enter your password');
+                return;
+            }
+
+            const remember = document.getElementById('remember').checked;
             const auth = new AuthManager();
-            auth.login(email, password, remember)
+
+            auth.login(credential, password, remember, loginType)
                 .then(user => {
                     console.log('Login successful:', user);
-                    window.location.href = 'dashboard.html';
+                    SmartLUKU.Notification.success('Welcome back!');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 500);
                 })
                 .catch(error => {
                     console.error('Login failed:', error);
@@ -202,7 +324,13 @@
 
         // Demo Account Login
         demoLoginBtn.addEventListener('click', () => {
-            emailInput.value = 'demo@smartluku.tz';
+            currentLoginMethod = 'meter';
+            document.querySelectorAll('.login-method-btn').forEach(b => b.classList.remove('bg-white', 'text-primary'));
+            document.querySelector('[data-method="meter"]').classList.add('bg-white', 'text-primary');
+            document.getElementById('meterLoginMethod').classList.remove('hidden');
+            document.getElementById('emailLoginMethod').classList.add('hidden');
+            
+            meterInput.value = '1234567890';
             passwordInput.value = 'Demo@123';
             form.dispatchEvent(new Event('submit'));
         });
@@ -223,12 +351,18 @@
             fields.forEach(field => {
                 const input = document.getElementById(field);
                 if (input) {
-                    const errorMsg = input.nextElementSibling;
+                    const errorMsg = input.closest('div').nextElementSibling;
                     if (errorMsg && errorMsg.classList.contains('error-message')) {
                         errorMsg.classList.remove('hidden');
                     }
                 }
             });
+        }
+
+        // Redirect authenticated users
+        const authCheck = new AuthManager();
+        if (authCheck.isAuthenticated()) {
+            window.location.href = 'dashboard.html';
         }
     </script>
 </body>

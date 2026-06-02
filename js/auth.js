@@ -9,22 +9,24 @@ class AuthManager {
 
     /**
      * Register a new user
+     * IMPORTANT: Meter number is the primary identifier
      */
     async register(userData) {
-        const { fullName, email, password, phone = null, meterNumber = null } = userData;
+        const { meterNumber, fullName, email = null, password, phone = null } = userData;
 
         // Validation
         const errors = [];
         const fields = [];
 
+        // METER NUMBER IS REQUIRED AND PRIMARY
+        if (!meterNumber || meterNumber.length !== 10 || !/^\d{10}$/.test(meterNumber)) {
+            errors.push('Meter number must be exactly 10 digits');
+            fields.push('meterNumber');
+        }
+
         if (!this.constructor.validateFullName(fullName)) {
             errors.push('Full name must be at least 2 characters');
             fields.push('fullName');
-        }
-
-        if (!SmartLUKU.Validator.isValidEmail(email)) {
-            errors.push('Please enter a valid email address');
-            fields.push('email');
         }
 
         if (!SmartLUKU.Validator.isValidPassword(password)) {
@@ -32,20 +34,20 @@ class AuthManager {
             fields.push('password');
         }
 
+        if (email && !SmartLUKU.Validator.isValidEmail(email)) {
+            errors.push('Please enter a valid email address');
+            fields.push('email');
+        }
+
         if (phone && !SmartLUKU.Validator.isValidPhone(phone)) {
             errors.push('Please enter a valid Tanzanian phone number');
             fields.push('phone');
         }
 
-        if (meterNumber && !SmartLUKU.Validator.isValidMeterNumber(meterNumber)) {
-            errors.push('Meter number must be at least 9 digits');
+        // Check if meter already exists
+        if (this.constructor.meterExists(meterNumber)) {
+            errors.push('This meter number is already registered. Please use a different meter.');
             fields.push('meterNumber');
-        }
-
-        // Check if email already exists
-        if (this.constructor.emailExists(email)) {
-            errors.push('Email address is already registered');
-            fields.push('email');
         }
 
         if (errors.length > 0) {
@@ -57,10 +59,10 @@ class AuthManager {
         // Create user (simulated backend call)
         const user = {
             id: this.constructor.generateId(),
+            meterNumber,  // PRIMARY IDENTIFIER
             fullName,
-            email,
+            email: email || '',
             phone: phone || '',
-            meterNumber: meterNumber || '',
             createdAt: new Date().toISOString(),
             balance: 0,
             units: 0
@@ -87,12 +89,13 @@ class AuthManager {
 
     /**
      * Login user
+     * Can login by meter number (primary) or email (if provided)
      */
-    async login(email, password, remember = false) {
+    async login(credential, password, remember = false, loginType = 'meter') {
         // Validation
-        if (!SmartLUKU.Validator.isValidEmail(email)) {
-            const error = new Error('Please enter a valid email address');
-            error.fields = ['email'];
+        if (!credential) {
+            const error = new Error('Please enter your meter number or email');
+            error.fields = [loginType === 'meter' ? 'meterNumber' : 'email'];
             throw error;
         }
 
@@ -105,19 +108,29 @@ class AuthManager {
         // Get users from storage
         const users = SmartLUKU.StorageManager.get('smartluku_users') || [];
 
-        // Find user by email
-        const userData = users.find(u => u.email === email);
-
-        if (!userData) {
-            const error = new Error('Email or password is incorrect');
-            error.fields = ['email', 'password'];
-            throw error;
+        // Find user by meter number (primary) or email
+        let userData;
+        if (loginType === 'meter') {
+            userData = users.find(u => u.meterNumber === credential);
+            if (!userData) {
+                const error = new Error('Meter number or password is incorrect');
+                error.fields = ['meterNumber', 'password'];
+                throw error;
+            }
+        } else {
+            // Email login (secondary)
+            userData = users.find(u => u.email === credential);
+            if (!userData) {
+                const error = new Error('Email or password is incorrect');
+                error.fields = ['email', 'password'];
+                throw error;
+            }
         }
 
         // Verify password (simplified - in real app use bcrypt on backend)
         if (userData.password !== this.constructor.hashPassword(password)) {
-            const error = new Error('Email or password is incorrect');
-            error.fields = ['email', 'password'];
+            const error = new Error('Meter number or password is incorrect');
+            error.fields = [loginType === 'meter' ? 'meterNumber' : 'email', 'password'];
             throw error;
         }
 
@@ -131,7 +144,7 @@ class AuthManager {
         SmartLUKU.StorageManager.set('authUser', { user, token });
 
         if (remember) {
-            SmartLUKU.StorageManager.set('rememberMe', email);
+            SmartLUKU.StorageManager.set('rememberMe', credential);
         }
 
         SmartLUKU.Logger.log('User logged in successfully', user);
@@ -258,6 +271,11 @@ class AuthManager {
         return name && name.trim().length >= 2;
     }
 
+    static meterExists(meterNumber) {
+        const users = SmartLUKU.StorageManager.get('smartluku_users') || [];
+        return users.some(u => u.meterNumber === meterNumber);
+    }
+
     static emailExists(email) {
         const users = SmartLUKU.StorageManager.get('smartluku_users') || [];
         return users.some(u => u.email === email);
@@ -347,11 +365,11 @@ class SessionManager {
 if (!SmartLUKU.StorageManager.get('smartluku_users')) {
     const demoUser = {
         id: 'demo_user_001',
+        meterNumber: '1234567890',  // PRIMARY IDENTIFIER
         fullName: 'Demo User',
         email: 'demo@smartluku.tz',
         password: AuthManager.hashPassword('Demo@123'),
-        phone: '+255 67X XXX XXX',
-        meterNumber: '1234567890',
+        phone: '+255 671234567',
         createdAt: new Date().toISOString(),
         balance: 50000,
         units: 125.5,
@@ -359,5 +377,5 @@ if (!SmartLUKU.StorageManager.get('smartluku_users')) {
     };
 
     SmartLUKU.StorageManager.set('smartluku_users', [demoUser]);
-    SmartLUKU.Logger.log('Demo data initialized');
+    SmartLUKU.Logger.log('Demo data initialized - Meter: 1234567890, Password: Demo@123');
 }

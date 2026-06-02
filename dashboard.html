@@ -41,7 +41,7 @@
                     <div class="flex items-center gap-3 border-l pl-6">
                         <div class="text-right">
                             <p id="userFullName" class="text-sm font-semibold text-gray-800"></p>
-                            <p class="text-xs text-gray-500">Account Holder</p>
+                            <p id="userMeterNumber" class="text-xs text-gray-500 font-mono">Meter: —</p>
                         </div>
                         <div class="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center text-white font-bold">
                             <span id="userInitial">D</span>
@@ -272,6 +272,7 @@
         } else {
             // Update dashboard with user info
             document.getElementById('userFullName').textContent = user.fullName;
+            document.getElementById('userMeterNumber').textContent = `Meter: ${user.meterNumber}`;
             document.getElementById('welcomeName').textContent = user.fullName.split(' ')[0];
             document.getElementById('userInitial').textContent = user.fullName.charAt(0).toUpperCase();
             document.getElementById('balanceAmount').textContent = `TZS ${(user.balance || 0).toLocaleString()}`;
