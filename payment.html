@@ -14,23 +14,26 @@
     <!-- Custom Styles -->
     <link rel="stylesheet" href="assets/css/custom.css">
 </head>
-<body class="bg-gray-50">
-    <!-- Top Navigation -->
-    <nav class="sticky top-0 z-40 bg-white shadow-md border-b-4 border-primary">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <a href="dashboard.html" class="flex items-center gap-2 hover:opacity-80 transition">
-                    <i class="fas fa-arrow-left text-gray-600"></i>
-                    <span class="font-bold text-primary">Back to Dashboard</span>
-                </a>
-                <h1 class="text-2xl font-bold text-primary">Buy Units</h1>
-                <div class="w-20"></div>
+<body class="bg-gray-100">
+    <!-- Sidebar (injected by JavaScript) -->
+    
+    <!-- Main Content Area -->
+    <div class="ml-64 flex flex-col min-h-screen">
+        <!-- Top Bar -->
+        <header class="bg-white border-b border-gray-200 sticky top-0 z-20">
+            <div class="px-8 py-4 flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-800">Buy Units</h1>
+                <div class="flex items-center gap-6">
+                    <button class="relative text-gray-600 hover:text-primary transition">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                    </button>
+                </div>
             </div>
-        </div>
-    </nav>
+        </header>
 
-    <!-- Main Content -->
-    <div class="container mx-auto px-4 py-8">
+        <!-- Main Content -->
+        <main class="flex-1 px-8 py-6">
         <div class="grid md:grid-cols-3 gap-8">
             <!-- Left Column: Payment Form -->
             <div class="md:col-span-2 space-y-8">
@@ -285,6 +288,25 @@
     <script src="js/utils.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/data.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script>
+        AuthGuard.requireLogin();
+        const user = AuthGuard.getCurrentUser();
+        if (!user) window.location.href = 'login.html';
+        
+        // Inject sidebar
+        const sidebar = createSidebar(user.fullName, user.meterNumber, user.fullName.charAt(0).toUpperCase());
+        document.body.insertAdjacentHTML('afterbegin', sidebar);
+        
+        // Setup logout
+        document.getElementById('sidebarLogoutBtn').addEventListener('click', () => {
+            if (confirm('Logout?')) {
+                new AuthManager().logout();
+                SessionManager.endSession();
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
     <script src="js/payment.js"></script>
 </body>
 </html>
