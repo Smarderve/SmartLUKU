@@ -8,106 +8,236 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="src/css/custom.css">
+    
+    <style>
+        body { scroll-behavior: smooth; }
+        .wave-divider { position: relative; overflow: hidden; }
+        .wave-divider::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: url('data:image/svg+xml,<svg viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,40 Q300,80 600,40 T1200,40 L1200,120 L0,120 Z" fill="%23f3f4f6"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+        .teal-section { background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); }
+        .teal-dark { background: linear-gradient(135deg, #115e59 0%, #134e4a 100%); }
+        .yellow-btn { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+        .yellow-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3); }
+        .accent-gradient { background: linear-gradient(135deg, #0d9488 0%, #fbbf24 100%); }
+        .feature-card { 
+            background: rgba(255,255,255,0.1); 
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .floating { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        .pulse-slow { animation: pulse-slow 4s ease-in-out infinite; }
+        @keyframes pulse-slow { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+    </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-900 text-white">
     <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white border-b border-gray-200">
+    <nav class="sticky top-0 z-50 bg-gradient-to-r from-teal-700 to-teal-600 border-b-2 border-yellow-400">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <i class="fas fa-bolt text-accent text-2xl"></i>
-                <span class="text-lg font-bold text-primary">SmartLUKU</span>
+                <i class="fas fa-bolt text-yellow-400 text-3xl"></i>
+                <span class="text-xl font-bold">SmartLUKU</span>
             </div>
             
-            <div class="hidden md:flex gap-3">
-                <a href="pages/auth/login.html" class="px-4 py-2 text-gray-700 hover:text-primary">Sign In</a>
-                <a href="pages/auth/register.html" class="btn-primary px-4 py-2 text-sm">Create Account</a>
+            <div class="hidden md:flex gap-4">
+                <a href="pages/auth/login.html" class="px-4 py-2 text-gray-100 hover:text-yellow-300 transition font-semibold">Sign In</a>
+                <a href="pages/auth/register.html" class="yellow-btn px-5 py-2 rounded-lg text-gray-900 font-bold text-sm transition">Create Account</a>
             </div>
 
-            <button id="mobileMenuBtn" class="md:hidden text-gray-700">
+            <button id="mobileMenuBtn" class="md:hidden text-yellow-300 text-2xl">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
 
-        <div id="mobileMenu" class="hidden md:hidden border-t px-4 py-3 flex flex-col gap-2">
-            <a href="pages/auth/login.html" class="px-4 py-2 text-gray-700 hover:text-primary">Sign In</a>
-            <a href="pages/auth/register.html" class="btn-primary px-4 py-2 text-center text-sm">Create Account</a>
+        <div id="mobileMenu" class="hidden md:hidden border-t border-teal-500 px-4 py-3 flex flex-col gap-2">
+            <a href="pages/auth/login.html" class="px-4 py-2 text-gray-100 hover:text-yellow-300">Sign In</a>
+            <a href="pages/auth/register.html" class="yellow-btn px-5 py-2 rounded-lg text-gray-900 font-bold text-center text-sm">Create Account</a>
         </div>
     </nav>
 
-    <!-- Hero -->
-    <section class="bg-gradient-to-r from-primary to-blue-700 text-white py-12 md:py-16">
-        <div class="container mx-auto px-4 max-w-3xl">
-            <h1 class="text-3xl md:text-4xl font-bold mb-4">Manage Your Electricity Easily</h1>
-            <p class="text-blue-100 mb-6 text-sm md:text-base">Pay bills, check usage, and manage your TANESCO account online.</p>
-            <div class="flex gap-3 flex-wrap">
-                <a href="pages/auth/register.html" class="btn-accent px-5 py-2 text-sm font-semibold">Get Started</a>
-                <a href="pages/auth/login.html" class="px-5 py-2 bg-white text-primary text-sm font-semibold rounded-lg hover:bg-gray-100">Sign In</a>
+    <!-- Hero Section -->
+    <section class="teal-section relative py-20 md:py-28 overflow-hidden wave-divider">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white opacity-5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-yellow-300 opacity-10 rounded-full blur-3xl"></div>
+        
+        <div class="container mx-auto px-4 relative z-10 max-w-4xl">
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <div class="inline-block bg-yellow-400 text-gray-900 px-4 py-2 rounded-full font-bold mb-6 text-sm">
+                        Official TANESCO Platform
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                        Manage Your Electricity Account Online
+                    </h1>
+                    <p class="text-lg text-teal-100 mb-8">
+                        Pay bills instantly, monitor consumption in real-time, and manage your TANESCO account anytime, anywhere. Available 24/7.
+                    </p>
+                    <div class="flex gap-4 flex-wrap">
+                        <a href="pages/auth/register.html" class="yellow-btn px-6 py-3 rounded-lg text-gray-900 font-bold flex items-center gap-2 transition">
+                            <i class="fas fa-user-plus"></i> Get Started Now
+                        </a>
+                        <a href="pages/auth/login.html" class="px-6 py-3 border-2 border-yellow-400 text-yellow-300 font-bold rounded-lg hover:bg-yellow-400 hover:text-gray-900 transition flex items-center gap-2">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </a>
+                    </div>
+                </div>
+
+                <div class="hidden md:block relative">
+                    <div class="floating">
+                        <div class="bg-white rounded-3xl p-4 shadow-2xl max-w-xs mx-auto border-4 border-yellow-400">
+                            <div class="bg-gradient-to-b from-teal-600 to-teal-700 rounded-2xl h-64 flex items-center justify-center">
+                                <div class="text-center">
+                                    <i class="fas fa-mobile-alt text-white text-6xl mb-4"></i>
+                                    <p class="text-white font-bold">SmartLUKU App</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Features -->
-    <section class="py-10 md:py-12">
-        <div class="container mx-auto px-4 max-w-3xl">
-            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">Features</h2>
+    <!-- Features Section -->
+    <section class="bg-gray-50 py-16 md:py-20">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <h2 class="text-4xl font-bold text-center text-gray-900 mb-4">What You Can Do</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Everything you need to manage your electricity account efficiently</p>
+            
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-white p-5 rounded-lg border border-gray-200">
-                    <i class="fas fa-credit-card text-primary text-2xl mb-3"></i>
-                    <h3 class="font-bold text-gray-900 mb-2">Easy Payment</h3>
-                    <p class="text-gray-600 text-sm">Pay bills instantly with mobile money or card.</p>
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl border-t-4 border-teal-500 transition transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-credit-card text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Easy Payment</h3>
+                    <p class="text-gray-600">Pay your electricity bills instantly using mobile money, bank transfer, or card. Fast and secure transactions.</p>
                 </div>
-                <div class="bg-white p-5 rounded-lg border border-gray-200">
-                    <i class="fas fa-chart-line text-accent text-2xl mb-3"></i>
-                    <h3 class="font-bold text-gray-900 mb-2">Track Usage</h3>
-                    <p class="text-gray-600 text-sm">Monitor consumption in real-time.</p>
+
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl border-t-4 border-yellow-400 transition transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-line text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Real-Time Tracking</h3>
+                    <p class="text-gray-600">Monitor your consumption 24/7. Get instant alerts when your balance is low to prevent disconnections.</p>
                 </div>
-                <div class="bg-white p-5 rounded-lg border border-gray-200">
-                    <i class="fas fa-history text-purple-600 text-2xl mb-3"></i>
-                    <h3 class="font-bold text-gray-900 mb-2">View History</h3>
-                    <p class="text-gray-600 text-sm">Access transactions and reports anytime.</p>
+
+                <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl border-t-4 border-teal-500 transition transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-history text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">View History</h3>
+                    <p class="text-gray-600">Access detailed transaction history, consumption reports, and analytics to understand your usage patterns.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Getting Started -->
-    <section class="bg-white py-10 md:py-12 border-t">
-        <div class="container mx-auto px-4 max-w-3xl">
-            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">How to Start</h2>
-            <div class="grid md:grid-cols-3 gap-4 text-center">
-                <div>
-                    <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold mx-auto mb-3">1</div>
-                    <p class="text-sm text-gray-700"><strong>Create Account</strong><br>Use your meter number</p>
+    <!-- How It Works -->
+    <section class="teal-section py-16 md:py-20 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-white opacity-5 rounded-full blur-3xl"></div>
+        
+        <div class="container mx-auto px-4 relative z-10 max-w-5xl">
+            <h2 class="text-4xl font-bold text-center mb-4">Getting Started is Easy</h2>
+            <p class="text-center text-teal-100 mb-12">Just 3 simple steps to manage your account</p>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-yellow-400 text-gray-900 rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4 shadow-lg">1</div>
+                    <h3 class="text-xl font-bold mb-2">Create Account</h3>
+                    <p class="text-teal-100">Sign up with your meter number and set up your account</p>
                 </div>
-                <div>
-                    <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold mx-auto mb-3">2</div>
-                    <p class="text-sm text-gray-700"><strong>Add Payment</strong><br>Choose payment method</p>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-yellow-400 text-gray-900 rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4 shadow-lg">2</div>
+                    <h3 class="text-xl font-bold mb-2">Add Payment Method</h3>
+                    <p class="text-teal-100">Choose your preferred payment method - mobile money, bank, or card</p>
                 </div>
-                <div>
-                    <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold mx-auto mb-3">3</div>
-                    <p class="text-sm text-gray-700"><strong>Manage Account</strong><br>Pay and monitor usage</p>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-yellow-400 text-gray-900 rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4 shadow-lg">3</div>
+                    <h3 class="text-xl font-bold mb-2">Start Using</h3>
+                    <p class="text-teal-100">Pay bills and monitor your account whenever you want, 24/7</p>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- System Status -->
+    <section class="bg-gray-800 py-12">
+        <div class="container mx-auto px-4 max-w-3xl">
+            <div class="bg-gradient-to-r from-teal-600 to-cyan-500 p-8 rounded-xl border-l-4 border-yellow-400">
+                <div class="flex items-center gap-4">
+                    <div class="w-4 h-4 bg-green-400 rounded-full pulse-slow"></div>
+                    <div>
+                        <h3 class="font-bold text-xl mb-1">System Status</h3>
+                        <p class="text-teal-100">All services are operational. Available 24/7 for your convenience.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="teal-dark py-16 md:py-20 text-center">
+        <div class="container mx-auto px-4 max-w-3xl">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Take Control of Your Electricity Account?</h2>
+            <p class="text-teal-100 mb-8 text-lg">Join thousands of Tanzanian households using SmartLUKU</p>
+            <a href="pages/auth/register.html" class="yellow-btn px-8 py-4 rounded-lg text-gray-900 font-bold text-lg inline-flex items-center gap-2 transition shadow-xl">
+                <i class="fas fa-rocket"></i> Get Started Now
+            </a>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300 py-6 text-sm">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center flex-wrap gap-4">
+    <footer class="bg-gray-900 border-t-2 border-teal-600 py-12">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
                 <div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <i class="fas fa-bolt text-accent"></i>
-                        <span class="font-bold text-white">SmartLUKU</span>
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-bolt text-yellow-400 text-2xl"></i>
+                        <span class="font-bold text-xl">SmartLUKU</span>
                     </div>
-                    <p class="text-gray-400">Official TANESCO platform</p>
+                    <p class="text-gray-400 text-sm">Official TANESCO electricity management platform for Tanzanian households.</p>
                 </div>
-                <div class="text-gray-400">
-                    <p>Status: <span class="text-green-400">Operational</span></p>
+
+                <div>
+                    <h4 class="font-bold text-yellow-400 mb-4">Service</h4>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li><a href="pages/auth/login.html" class="hover:text-teal-400 transition">Sign In</a></li>
+                        <li><a href="pages/auth/register.html" class="hover:text-teal-400 transition">Create Account</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-yellow-400 mb-4">Support</h4>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li>support@smartluku.tz</li>
+                        <li>+255 123 456 789</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-yellow-400 mb-4">Status</h4>
+                    <div class="flex items-center gap-2 text-sm text-green-400">
+                        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                        <span>Operational</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mt-2">v1.0</p>
                 </div>
             </div>
-            <div class="border-t border-gray-800 mt-6 pt-6 text-center text-gray-500">
-                <p>&copy; 2024 SmartLUKU. All rights reserved.</p>
+
+            <div class="border-t border-gray-700 pt-8">
+                <div class="text-center text-gray-500 text-sm">
+                    <p>&copy; 2024 SmartLUKU. TANESCO Official Platform. All rights reserved.</p>
+                </div>
             </div>
         </div>
     </footer>
