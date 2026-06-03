@@ -5,459 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartLUKU - TANESCO Electricity Management</title>
     
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Custom Styles -->
     <link rel="stylesheet" href="src/css/custom.css">
 </head>
 <body class="bg-gray-50">
-    <!-- Navigation Bar -->
-    <nav class="sticky top-0 z-50 bg-white shadow-md border-b-4 border-primary">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <!-- Logo -->
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                        <i class="fas fa-bolt text-white text-lg"></i>
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-500 font-semibold">TANESCO</p>
-                        <p class="text-xl font-bold text-primary">SmartLUKU</p>
-                    </div>
-                </div>
-                
-                <!-- Right Menu -->
-                <div class="hidden md:flex items-center gap-4">
-                    <a href="pages/auth/login.html" class="px-6 py-2 text-primary font-semibold hover:bg-gray-100 rounded transition">
-                        Sign In
-                    </a>
-                    <a href="pages/auth/register.html" class="btn-primary px-6">
-                        Create Account
-                    </a>
-                </div>
-
-                <!-- Mobile Menu Toggle -->
-                <button id="mobileMenuBtn" class="md:hidden text-gray-700 text-2xl">
-                    <i class="fas fa-bars"></i>
-                </button>
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white border-b border-gray-200">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-bolt text-accent text-2xl"></i>
+                <span class="text-lg font-bold text-primary">SmartLUKU</span>
+            </div>
+            
+            <div class="hidden md:flex gap-3">
+                <a href="pages/auth/login.html" class="px-4 py-2 text-gray-700 hover:text-primary">Sign In</a>
+                <a href="pages/auth/register.html" class="btn-primary px-4 py-2 text-sm">Create Account</a>
             </div>
 
-            <!-- Mobile Menu -->
-            <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t pt-4 flex flex-col gap-3">
-                <a href="pages/auth/login.html" class="px-4 py-2 text-primary font-semibold hover:bg-gray-100 rounded transition">
-                    Sign In
-                </a>
-                <a href="pages/auth/register.html" class="btn-primary px-4 text-center">
-                    Create Account
-                </a>
-            </div>
+            <button id="mobileMenuBtn" class="md:hidden text-gray-700">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div id="mobileMenu" class="hidden md:hidden border-t px-4 py-3 flex flex-col gap-2">
+            <a href="pages/auth/login.html" class="px-4 py-2 text-gray-700 hover:text-primary">Sign In</a>
+            <a href="pages/auth/register.html" class="btn-primary px-4 py-2 text-center text-sm">Create Account</a>
         </div>
     </nav>
 
-    <!-- Hero Section - Official & Direct -->
-    <section class="bg-gradient-to-r from-primary to-blue-700 text-white py-16 md:py-24">
-        <div class="container mx-auto px-4">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <!-- Left: Message -->
+    <!-- Hero -->
+    <section class="bg-gradient-to-r from-primary to-blue-700 text-white py-12 md:py-16">
+        <div class="container mx-auto px-4 max-w-3xl">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">Manage Your Electricity Easily</h1>
+            <p class="text-blue-100 mb-6 text-sm md:text-base">Pay bills, check usage, and manage your TANESCO account online.</p>
+            <div class="flex gap-3 flex-wrap">
+                <a href="pages/auth/register.html" class="btn-accent px-5 py-2 text-sm font-semibold">Get Started</a>
+                <a href="pages/auth/login.html" class="px-5 py-2 bg-white text-primary text-sm font-semibold rounded-lg hover:bg-gray-100">Sign In</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-10 md:py-12">
+        <div class="container mx-auto px-4 max-w-3xl">
+            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">Features</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white p-5 rounded-lg border border-gray-200">
+                    <i class="fas fa-credit-card text-primary text-2xl mb-3"></i>
+                    <h3 class="font-bold text-gray-900 mb-2">Easy Payment</h3>
+                    <p class="text-gray-600 text-sm">Pay bills instantly with mobile money or card.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg border border-gray-200">
+                    <i class="fas fa-chart-line text-accent text-2xl mb-3"></i>
+                    <h3 class="font-bold text-gray-900 mb-2">Track Usage</h3>
+                    <p class="text-gray-600 text-sm">Monitor consumption in real-time.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg border border-gray-200">
+                    <i class="fas fa-history text-purple-600 text-2xl mb-3"></i>
+                    <h3 class="font-bold text-gray-900 mb-2">View History</h3>
+                    <p class="text-gray-600 text-sm">Access transactions and reports anytime.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Getting Started -->
+    <section class="bg-white py-10 md:py-12 border-t">
+        <div class="container mx-auto px-4 max-w-3xl">
+            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">How to Start</h2>
+            <div class="grid md:grid-cols-3 gap-4 text-center">
                 <div>
-                    <div class="inline-block bg-white bg-opacity-10 px-4 py-2 rounded-full mb-4">
-                        <p class="text-sm font-semibold">Official TANESCO Platform</p>
-                    </div>
-                    <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-                        Manage Your Electricity Account Online
-                    </h1>
-                    <p class="text-xl mb-8 text-blue-100">
-                        Pay bills, monitor consumption, and manage your TANESCO account from anywhere, anytime. Available 24/7.
-                    </p>
-                    <div class="flex gap-4 flex-wrap">
-                        <a href="pages/auth/register.html" class="btn-accent px-8 py-3 text-lg font-semibold flex items-center gap-2">
-                            <i class="fas fa-user-plus"></i> Open Account
-                        </a>
-                        <a href="pages/auth/login.html" class="btn-white px-8 py-3 text-lg font-semibold flex items-center gap-2">
-                            <i class="fas fa-sign-in-alt"></i> Sign In
-                        </a>
-                    </div>
+                    <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold mx-auto mb-3">1</div>
+                    <p class="text-sm text-gray-700"><strong>Create Account</strong><br>Use your meter number</p>
                 </div>
-
-                <!-- Right: Dashboard Preview -->
-                <div class="hidden md:block">
-                    <div class="bg-white rounded-xl shadow-2xl p-6 transform hover:shadow-3xl transition">
-                        <!-- Mock Dashboard -->
-                        <div class="space-y-4">
-                            <div class="h-3 bg-gradient-to-r from-primary to-accent rounded-full w-32"></div>
-                            
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="bg-gradient-to-br from-primary to-blue-600 rounded-lg p-4 text-white">
-                                    <p class="text-xs opacity-75">Balance</p>
-                                    <p class="text-2xl font-bold">TZS 45,000</p>
-                                </div>
-                                <div class="bg-gradient-to-br from-accent to-green-600 rounded-lg p-4 text-white">
-                                    <p class="text-xs opacity-75">Units</p>
-                                    <p class="text-2xl font-bold">150 kWh</p>
-                                </div>
-                            </div>
-
-                            <div class="border-t pt-3">
-                                <p class="text-xs text-gray-500 font-semibold mb-2">QUICK ACTIONS</p>
-                                <div class="grid grid-cols-3 gap-2">
-                                    <button class="bg-blue-50 hover:bg-blue-100 text-primary py-2 rounded text-xs font-semibold transition">
-                                        <i class="fas fa-credit-card"></i><br>Pay Bill
-                                    </button>
-                                    <button class="bg-green-50 hover:bg-green-100 text-accent py-2 rounded text-xs font-semibold transition">
-                                        <i class="fas fa-chart-line"></i><br>Usage
-                                    </button>
-                                    <button class="bg-purple-50 hover:bg-purple-100 text-purple-600 py-2 rounded text-xs font-semibold transition">
-                                        <i class="fas fa-history"></i><br>History
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold mx-auto mb-3">2</div>
+                    <p class="text-sm text-gray-700"><strong>Add Payment</strong><br>Choose payment method</p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Key Capabilities Section -->
-    <section class="py-16 bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-primary">
-                What You Can Do
-            </h2>
-            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-                SmartLUKU gives you complete control over your electricity account with real-time access and instant payments.
-            </p>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Capability 1 -->
-                <div class="card hover:shadow-xl transition">
-                    <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-credit-card text-primary text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-primary mb-2">Fast Payments</h3>
-                            <p class="text-gray-600 text-sm">
-                                Pay your bills instantly via M-Pesa, bank transfer, or card. No queues, no delays.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Capability 2 -->
-                <div class="card hover:shadow-xl transition">
-                    <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-chart-line text-accent text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-primary mb-2">Track Usage</h3>
-                            <p class="text-gray-600 text-sm">
-                                Monitor your daily, weekly, and monthly consumption in real-time. Understand your patterns.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Capability 3 -->
-                <div class="card hover:shadow-xl transition">
-                    <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-bell text-orange-500 text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-primary mb-2">Smart Alerts</h3>
-                            <p class="text-gray-600 text-sm">
-                                Get notified when balance is low. Never get caught off guard with unexpected disconnection.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Capability 4 -->
-                <div class="card hover:shadow-xl transition">
-                    <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-history text-purple-600 text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-primary mb-2">View History</h3>
-                            <p class="text-gray-600 text-sm">
-                                Access all your transactions and bills in one place. Download receipts whenever you need.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Capability 5 -->
-                <div class="card hover:shadow-xl transition">
-                    <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-chart-bar text-red-600 text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-primary mb-2">Analytics</h3>
-                            <p class="text-gray-600 text-sm">
-                                Analyze your consumption trends and identify opportunities to reduce costs and save energy.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Capability 6 -->
-                <div class="card hover:shadow-xl transition">
-                    <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-lock text-indigo-600 text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-primary mb-2">Secure & Safe</h3>
-                            <p class="text-gray-600 text-sm">
-                                Your data is encrypted and protected. We never share your information with third parties.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- How It Works -->
-    <section class="py-16 bg-gray-50">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-primary">
-                How to Get Started
-            </h2>
-
-            <div class="grid md:grid-cols-4 gap-6 mb-8">
-                <!-- Step 1 -->
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-                        1
-                    </div>
-                    <h3 class="text-lg font-bold text-primary mb-2">Create Account</h3>
-                    <p class="text-gray-600 text-sm">
-                        Register with your email and meter number
-                    </p>
-                </div>
-
-                <!-- Arrow -->
-                <div class="hidden md:flex items-center justify-center">
-                    <i class="fas fa-arrow-right text-gray-400 text-2xl"></i>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-                        2
-                    </div>
-                    <h3 class="text-lg font-bold text-primary mb-2">Verify Account</h3>
-                    <p class="text-gray-600 text-sm">
-                        Confirm your TANESCO meter details
-                    </p>
-                </div>
-
-                <!-- Arrow -->
-                <div class="hidden md:flex items-center justify-center">
-                    <i class="fas fa-arrow-right text-gray-400 text-2xl"></i>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-                        3
-                    </div>
-                    <h3 class="text-lg font-bold text-primary mb-2">Start Using</h3>
-                    <p class="text-gray-600 text-sm">
-                        Access dashboard and manage your account
-                    </p>
-                </div>
-            </div>
-
-            <div class="text-center">
-                <a href="pages/auth/register.html" class="btn-accent px-8 py-3 text-lg font-semibold inline-flex items-center gap-2">
-                    <i class="fas fa-user-plus"></i> Create Your Account Now
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- System Status -->
-    <section class="py-12 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="bg-green-50 border-l-4 border-accent rounded-lg p-6">
-                <div class="flex items-start gap-4">
-                    <div class="text-accent text-2xl">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-primary mb-1">System Status: Operational</h3>
-                        <p class="text-gray-600">SmartLUKU is available 24/7. Latest update: June 2, 2026</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section class="py-16 bg-gray-50">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-primary">
-                Frequently Asked Questions
-            </h2>
-
-            <div class="max-w-3xl mx-auto space-y-4">
-                <!-- FAQ 1 -->
-                <div class="card">
-                    <button class="w-full flex justify-between items-center py-4 hover:text-primary transition faq-toggle">
-                        <span class="font-bold text-left text-primary">Is SmartLUKU secure?</span>
-                        <i class="fas fa-chevron-down text-gray-400"></i>
-                    </button>
-                    <div class="faq-content hidden px-4 pb-4 border-t pt-4 text-gray-600">
-                        <p>Yes, SmartLUKU uses bank-grade encryption and security protocols. Your data is protected with SSL/TLS encryption and never shared with third parties.</p>
-                    </div>
-                </div>
-
-                <!-- FAQ 2 -->
-                <div class="card">
-                    <button class="w-full flex justify-between items-center py-4 hover:text-primary transition faq-toggle">
-                        <span class="font-bold text-left text-primary">What payment methods are available?</span>
-                        <i class="fas fa-chevron-down text-gray-400"></i>
-                    </button>
-                    <div class="faq-content hidden px-4 pb-4 border-t pt-4 text-gray-600">
-                        <p>You can pay via M-Pesa, bank transfer, debit card, or credit card. All transactions are instant and secure.</p>
-                    </div>
-                </div>
-
-                <!-- FAQ 3 -->
-                <div class="card">
-                    <button class="w-full flex justify-between items-center py-4 hover:text-primary transition faq-toggle">
-                        <span class="font-bold text-left text-primary">How do I link my TANESCO meter?</span>
-                        <i class="fas fa-chevron-down text-gray-400"></i>
-                    </button>
-                    <div class="faq-content hidden px-4 pb-4 border-t pt-4 text-gray-600">
-                        <p>During registration, enter your 10-digit TANESCO meter number. Your account will be verified within 24 hours.</p>
-                    </div>
-                </div>
-
-                <!-- FAQ 4 -->
-                <div class="card">
-                    <button class="w-full flex justify-between items-center py-4 hover:text-primary transition faq-toggle">
-                        <span class="font-bold text-left text-primary">Is there a registration fee?</span>
-                        <i class="fas fa-chevron-down text-gray-400"></i>
-                    </button>
-                    <div class="faq-content hidden px-4 pb-4 border-t pt-4 text-gray-600">
-                        <p>No, creating an account is completely free. You only pay when you make transactions through SmartLUKU.</p>
-                    </div>
-                </div>
-
-                <!-- FAQ 5 -->
-                <div class="card">
-                    <button class="w-full flex justify-between items-center py-4 hover:text-primary transition faq-toggle">
-                        <span class="font-bold text-left text-primary">How do I get support?</span>
-                        <i class="fas fa-chevron-down text-gray-400"></i>
-                    </button>
-                    <div class="faq-content hidden px-4 pb-4 border-t pt-4 text-gray-600">
-                        <p>Contact our support team at support@smartluku.tz or call 0800-123456. We're available 24/7 to assist you.</p>
-                    </div>
+                <div>
+                    <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-bold mx-auto mb-3">3</div>
+                    <p class="text-sm text-gray-700"><strong>Manage Account</strong><br>Pay and monitor usage</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
+    <footer class="bg-gray-900 text-gray-300 py-6 text-sm">
         <div class="container mx-auto px-4">
-            <div class="grid md:grid-cols-4 gap-8 mb-8">
-                <!-- About -->
+            <div class="flex justify-between items-center flex-wrap gap-4">
                 <div>
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-8 h-8 bg-accent rounded flex items-center justify-center">
-                            <i class="fas fa-bolt text-white"></i>
-                        </div>
-                        <span class="font-bold">SmartLUKU</span>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-bolt text-accent"></i>
+                        <span class="font-bold text-white">SmartLUKU</span>
                     </div>
-                    <p class="text-gray-400 text-sm">
-                        Official TANESCO electricity management platform. Making utility services more accessible to all Tanzanians.
-                    </p>
+                    <p class="text-gray-400">Official TANESCO platform</p>
                 </div>
-                
-                <!-- Links -->
-                <div>
-                    <h4 class="font-bold mb-4">Platform</h4>
-                    <ul class="text-sm text-gray-400 space-y-2">
-                        <li><a href="index.html" class="hover:text-accent transition">Home</a></li>
-                        <li><a href="pages/auth/login.html" class="hover:text-accent transition">Sign In</a></li>
-                        <li><a href="pages/auth/register.html" class="hover:text-accent transition">Create Account</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Support -->
-                <div>
-                    <h4 class="font-bold mb-4">Support</h4>
-                    <ul class="text-sm text-gray-400 space-y-2">
-                        <li><a href="#" class="hover:text-accent transition">Help Center</a></li>
-                        <li><a href="#" class="hover:text-accent transition">Contact Us</a></li>
-                        <li><a href="#" class="hover:text-accent transition">System Status</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Legal -->
-                <div>
-                    <h4 class="font-bold mb-4">Legal</h4>
-                    <ul class="text-sm text-gray-400 space-y-2">
-                        <li><a href="#" class="hover:text-accent transition">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-accent transition">Terms of Service</a></li>
-                        <li><a href="#" class="hover:text-accent transition">Security</a></li>
-                    </ul>
+                <div class="text-gray-400">
+                    <p>Status: <span class="text-green-400">Operational</span></p>
                 </div>
             </div>
-            
-            <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-                <p>&copy; 2026 SmartLUKU. A TANESCO Initiative. All rights reserved.</p>
+            <div class="border-t border-gray-800 mt-6 pt-6 text-center text-gray-500">
+                <p>&copy; 2024 SmartLUKU. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="src/js/core/utils.js"></script>
     <script>
-        // Mobile Menu Toggle
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        // Close menu when a link is clicked
-        document.querySelectorAll('#mobileMenu a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-            });
-        });
-
-        // FAQ Toggle
-        document.querySelectorAll('.faq-toggle').forEach(button => {
-            button.addEventListener('click', function() {
-                const content = this.nextElementSibling;
-                const icon = this.querySelector('i');
-                
-                content.classList.toggle('hidden');
-                icon.classList.toggle('fa-chevron-down');
-                icon.classList.toggle('fa-chevron-up');
-            });
-        });
-
-        // Redirect authenticated users to dashboard
-        const auth = new AuthManager();
-        if (auth.isAuthenticated()) {
-            window.location.href = 'pages/app/dashboard.html';
-        }
+        mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.add('hidden')));
     </script>
 </body>
 </html>
