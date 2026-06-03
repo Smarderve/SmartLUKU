@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="src/css/custom.css">
 </head>
 <body class="bg-gray-50">
     <!-- Navigation Bar -->
@@ -424,7 +424,7 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="js/utils.js"></script>
+    <script src="src/js/core/utils.js"></script>
     <script>
         // Mobile Menu Toggle
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -456,7 +456,7 @@
         // Redirect authenticated users to dashboard
         const auth = new AuthManager();
         if (auth.isAuthenticated()) {
-            window.location.href = 'dashboard.html';
+            window.location.href = 'pages/app/dashboard.html';
         }
     </script>
 </body>

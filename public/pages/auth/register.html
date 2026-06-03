@@ -12,18 +12,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="../../src/css/custom.css">
 </head>
 <body class="bg-gray-50">
     <!-- Navigation Bar -->
     <nav class="sticky top-0 z-50 bg-white shadow-md border-b-4 border-primary">
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
-                <a href="index.html" class="flex items-center gap-2 hover:opacity-80 transition">
+                <a href="../../index.html" class="flex items-center gap-2 hover:opacity-80 transition">
                     <i class="fas fa-lightning-bolt text-accent text-2xl"></i>
                     <span class="text-2xl font-bold text-primary">SmartLUKU</span>
                 </a>
-                <a href="index.html" class="text-gray-700 hover:text-primary transition">
+                <a href="../../index.html" class="text-gray-700 hover:text-primary transition">
                     <i class="fas fa-arrow-left"></i> Back
                 </a>
             </div>
@@ -238,8 +238,8 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/utils.js"></script>
-    <script src="js/auth.js"></script>
+    <script src="../../src/js/core/utils.js"></script>
+    <script src="../../src/js/core/auth.js"></script>
     <script>
         const form = document.getElementById('registerForm');
         const passwordInput = document.getElementById('password');
@@ -331,7 +331,7 @@
                     console.log('Registration successful:', user);
                     SmartLUKU.Notification.success('Account created successfully!');
                     setTimeout(() => {
-                        window.location.href = 'dashboard.html';
+                        window.location.href = '../app/dashboard.html';
                     }, 1000);
                 })
                 .catch(error => {
@@ -368,7 +368,7 @@
         // Redirect authenticated users
         const authCheck = new AuthManager();
         if (authCheck.isAuthenticated()) {
-            window.location.href = 'dashboard.html';
+            window.location.href = '../app/dashboard.html';
         }
     </script>
 </body>
