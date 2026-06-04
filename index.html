@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLUKU - TANESCO Electricity Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            color: #111827;
+            line-height: 1.6;
+        }
+        
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo { font-size: 1.5rem; font-weight: 700; color: #1f5a3d; }
+        .logo i { color: #fbbf24; margin-right: 0.5rem; }
+        
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: #111827; transition: 0.2s; }
+        .nav-links a:hover { color: #1f5a3d; }
+        
+        .btn-group { display: flex; gap: 1rem; }
+        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; cursor: pointer; text-decoration: none; font-weight: 600; transition: all 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, #1f5a3d 0%, #2d7d54 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
+        .btn-secondary { background: transparent; color: #1f5a3d; border: 2px solid #1f5a3d; }
+        .btn-secondary:hover { background: #f0fdf4; }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1f5a3d 0%, #2d7d54 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .hero h1 { font-size: 3rem; margin-bottom: 1rem; line-height: 1.2; }
+        .hero p { font-size: 1.25rem; margin-bottom: 2rem; opacity: 0.95; }
+        .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        
+        /* Features Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
+        .feature-icon { font-size: 3rem; color: #fbbf24; margin-bottom: 1rem; }
+        .feature-card h3 { font-size: 1.25rem; margin-bottom: 0.75rem; color: #1f5a3d; }
+        .feature-card p { color: #6b7280; }
+        
+        /* Demo Section */
+        .demo-section {
+            background: #f9fafb;
+            padding: 4rem 2rem;
+        }
+        
+        .demo-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-content h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            color: #1f5a3d;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-item {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .demo-item-phone {
+            aspect-ratio: 9/16;
+            background: linear-gradient(135deg, #000 0%, #333 100%);
+            border-radius: 2.5rem;
+            padding: 1rem;
+            position: relative;
+        }
+        
+        .demo-item-phone::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background: #000;
+            border-radius: 0 0 2rem 2rem;
+        }
+        
+        .demo-item-phone-content {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border-radius: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .demo-item-phone i { font-size: 3rem; color: #1f5a3d; margin-bottom: 0.75rem; }
+        .demo-item-phone-label { font-size: 0.875rem; color: #1f5a3d; font-weight: 600; }
+        
+        .demo-item-description {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .demo-item-description h4 { color: #1f5a3d; margin-bottom: 0.75rem; font-size: 1.125rem; }
+        .demo-item-description p { color: #6b7280; font-size: 0.95rem; }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #1f5a3d 0%, #2d7d54 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .cta-section h2 { font-size: 2rem; margin-bottom: 1.5rem; }
+        .cta-section p { font-size: 1.125rem; margin-bottom: 2rem; opacity: 0.95; }
+        
+        /* Footer */
+        footer {
+            background: #1f2937;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+        
+        footer a { color: #fbbf24; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            nav { flex-direction: column; gap: 1rem; }
+            .nav-links { flex-direction: column; gap: 1rem; text-align: center; }
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            .hero-buttons { flex-direction: column; }
+            .demo-grid { grid-template-columns: 1fr; }
+            .cta-section h2 { font-size: 1.5rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .logo { font-size: 1.25rem; }
+            .hero { padding: 2rem 1rem; }
+            .hero h1 { font-size: 1.5rem; }
+            .features { padding: 2rem 1rem; gap: 1.5rem; }
+            .btn { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo"><i class="fas fa-lightning-bolt"></i> SmartLUKU</div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#demo">Demo</a>
+            <a href="#about">About</a>
+        </div>
+        <div class="btn-group">
+            <a href="login.html" class="btn btn-secondary">Login</a>
+            <a href="register.html" class="btn btn-primary">Sign Up</a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Manage Your Electricity Smarter</h1>
+        <p>Real-time monitoring, instant payments, and complete control of your TANESCO account</p>
+        <div class="hero-buttons">
+            <a href="register.html" class="btn btn-primary">Get Started</a>
+            <a href="#demo" class="btn" style="background: rgba(255,255,255,0.2); color: white;">See Demo</a>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+            <h3>Real-time Monitoring</h3>
+            <p>Track your electricity consumption and balance instantly with live updates</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+            <h3>Easy Payments</h3>
+            <p>Pay via mobile money, bank card, or bank transfer in seconds</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-bell"></i></div>
+            <h3>Smart Alerts</h3>
+            <p>Get notifications for low balance and power disconnection risks</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+            <h3>Usage Analytics</h3>
+            <p>Understand your consumption patterns and optimize your electricity usage</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-history"></i></div>
+            <h3>Transaction History</h3>
+            <p>View all payments and consumption records in one place</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-cog"></i></div>
+            <h3>Easy Settings</h3>
+            <p>Manage your account preferences and notification settings effortlessly</p>
+        </div>
+    </section>
+    
+    <!-- Demo Section -->
+    <section class="demo-section" id="demo">
+        <div class="demo-content">
+            <h2>How SmartLUKU Works</h2>
+            
+            <div class="demo-grid">
+                <div>
+                    <div class="demo-item-phone">
+                        <div class="demo-item-phone-content">
+                            <i class="fas fa-mobile-alt"></i>
+                            <div class="demo-item-phone-label">Check Balance</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-item-description">
+                    <h4>1. Check Your Balance</h4>
+                    <p>View your current electricity units and account status instantly. Know exactly how much credit you have left before running out.</p>
+                </div>
+            </div>
+            
+            <div class="demo-grid" style="direction: rtl;">
+                <div>
+                    <div class="demo-item-phone">
+                        <div class="demo-item-phone-content">
+                            <i class="fas fa-credit-card"></i>
+                            <div class="demo-item-phone-label">Make Payment</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-item-description" style="direction: ltr;">
+                    <h4>2. Fast & Secure Payments</h4>
+                    <p>Pay for electricity using your preferred method - mobile money, bank card, or direct transfer. Payments are processed instantly.</p>
+                </div>
+            </div>
+            
+            <div class="demo-grid">
+                <div>
+                    <div class="demo-item-phone">
+                        <div class="demo-item-phone-content">
+                            <i class="fas fa-chart-line"></i>
+                            <div class="demo-item-phone-label">Monitor Usage</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-item-description">
+                    <h4>3. Monitor Real-time Usage</h4>
+                    <p>Track your consumption patterns with detailed analytics. Identify peak usage times and take control of your electricity bill.</p>
+                </div>
+            </div>
+            
+            <div class="demo-grid" style="direction: rtl;">
+                <div>
+                    <div class="demo-item-phone">
+                        <div class="demo-item-phone-content">
+                            <i class="fas fa-bell"></i>
+                            <div class="demo-item-phone-label">Get Alerts</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-item-description" style="direction: ltr;">
+                    <h4>4. Smart Notifications</h4>
+                    <p>Receive alerts when your balance is running low so you never face unexpected power disconnections.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section" id="about">
+        <h2>Ready to Take Control?</h2>
+        <p>Join thousands of Tanzanian households managing their electricity smarter with SmartLUKU</p>
+        <a href="register.html" class="btn btn-primary">Create Your Account Now</a>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 SmartLUKU. Empowering Tanzanian households. | <a href="#">Privacy</a> | <a href="#">Terms</a></p>
+    </footer>
+</body>
+</html>
