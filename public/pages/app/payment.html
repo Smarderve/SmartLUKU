@@ -10,168 +10,211 @@
     <link rel="stylesheet" href="../../../src/css/custom.css">
     
     <style>
-        body { background: linear-gradient(135deg, #0f172a 0%, #1f3a3f 100%); }
-        .sidebar { background: linear-gradient(180deg, #1f5a3d 0%, #0d2a1a 100%); border-right: 2px solid #fbbf24; }
-        .menu-item { transition: all 0.2s ease; border-left: 3px solid transparent; }
-        .menu-item:hover { background-color: rgba(251, 191, 36, 0.1); border-left-color: #fbbf24; }
-        .menu-item.active { background-color: rgba(251, 191, 36, 0.2); border-left-color: #fbbf24; }
-        .card { background: linear-gradient(135deg, rgba(31, 90, 61, 0.3), rgba(10, 41, 26, 0.2)); border: 1px solid rgba(251, 191, 36, 0.3); }
-        .btn-primary { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #1f5a3d; }
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --green-dark: #1f5a3d;
+            --green-main: #2a7f56;
+            --yellow-main: #fbbf24;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+        }
+
+        body {
+            background-color: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--green-dark) 0%, var(--green-main) 100%);
+            color: white;
+            overflow-y: auto;
+            z-index: 40;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden { transform: translateX(-100%); }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .topbar {
+            display: none;
+            background-color: var(--bg-primary);
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            gap: 1rem;
+        }
+
+        .menu-icon { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        .logo-mobile { display: none; align-items: center; gap: 0.5rem; font-weight: bold; }
+        .theme-toggle { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: var(--text-primary); transition: all 0.3s; }
+        .theme-toggle:hover { color: var(--green-main); transform: scale(1.1); }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: fixed; bottom: 0; transform: translateY(100%); border-radius: 1rem 1rem 0 0; z-index: 50; }
+            .sidebar.visible { transform: translateY(0); }
+            .main-content { margin-left: 0; padding: 1rem; padding-bottom: 6rem; }
+            .topbar { display: flex; }
+            .menu-icon { display: block; }
+            .logo-mobile { display: flex; }
+            .sidebar-nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem; padding: 1rem; }
+            .sidebar-nav a { padding: 0.75rem; text-align: center; font-size: 0.875rem; border-radius: 0.5rem; }
+            .sidebar-header, .sidebar-user, .sidebar-logout { display: none; }
+        }
+
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid rgba(251, 191, 36, 0.2); }
+        .sidebar-user { padding: 1rem 1.5rem; background-color: rgba(251, 191, 36, 0.1); border-bottom: 1px solid rgba(251, 191, 36, 0.2); }
+        .sidebar-nav { padding: 1rem 0; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.5rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.3s; border-left: 3px solid transparent; }
+        .sidebar-nav a:hover { background-color: rgba(251, 191, 36, 0.1); border-left-color: var(--yellow-main); }
+        .sidebar-nav a.active { background-color: rgba(251, 191, 36, 0.15); border-left-color: var(--yellow-main); }
+        .sidebar-logout { position: absolute; bottom: 0; width: 100%; padding: 1rem; border-top: 1px solid rgba(251, 191, 36, 0.2); }
+        .btn-logout { width: 100%; background-color: rgba(239, 68, 68, 0.2); color: white; border: none; padding: 0.75rem; border-radius: 0.5rem; cursor: pointer; transition: all 0.3s; }
+
+        .page-header { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .page-title h1 { margin: 0; font-size: 2rem; }
+        .page-title p { margin: 0.5rem 0 0 0; color: var(--text-secondary); }
+
+        .card { background-color: var(--bg-primary); border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.5rem; transition: all 0.3s; }
+        [data-theme="dark"] .card { border-color: #475569; }
+        .card:hover { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15); }
+
+        .form-input { width: 100%; padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; background-color: var(--bg-secondary); color: var(--text-primary); font-size: 1rem; }
+        [data-theme="dark"] .form-input { border-color: #475569; }
+        .form-input:focus { outline: none; border-color: var(--green-dark); box-shadow: 0 0 0 3px rgba(31, 90, 61, 0.1); }
+
+        .payment-method { border: 2px solid #e5e7eb; transition: all 0.3s; cursor: pointer; padding: 1rem; border-radius: 0.5rem; display: flex; align-items: center; gap: 1rem; }
+        [data-theme="dark"] .payment-method { border-color: #475569; }
+        .payment-method:hover { border-color: var(--yellow-main); background-color: rgba(251, 191, 36, 0.05); }
+        .payment-method.selected { border-color: var(--yellow-main); background-color: rgba(251, 191, 36, 0.1); }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, var(--yellow-main) 0%, #f59e0b 100%); color: var(--green-dark); }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3); }
-        .payment-method { border: 2px solid transparent; transition: all 0.2s ease; }
-        .payment-method:hover { border-color: #fbbf24; background-color: rgba(251, 191, 36, 0.1); }
-        .payment-method.selected { border-color: #fbbf24; background-color: rgba(251, 191, 36, 0.2); }
+
+        @media (max-width: 640px) {
+            .page-title h1 { font-size: 1.5rem; }
+            .card { padding: 1rem; }
+            .main-content { padding: 0.75rem; }
+        }
     </style>
 </head>
 <body>
-    <!-- Sidebar Navigation -->
-    <div class="sidebar fixed left-0 top-0 w-64 h-screen text-white overflow-y-auto z-30">
-        <div class="p-6 border-b border-yellow-400 border-opacity-20">
-            <a href="../../index.html" class="flex items-center gap-3 hover:opacity-80 transition">
-                <i class="fas fa-bolt text-yellow-400 text-2xl"></i>
-                <div>
-                    <div class="text-lg font-bold">SmartLUKU</div>
-                    <div class="text-xs text-gray-300">TANESCO Portal</div>
-                </div>
-            </a>
-        </div>
+    <!-- Mobile Topbar -->
+    <div class="topbar">
+        <button class="menu-icon" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+        <div class="logo-mobile"><i class="fas fa-bolt" style="color: var(--yellow-main);"></i><span>SmartLUKU</span></div>
+        <button class="theme-toggle" id="themeToggleBtn" data-theme-icon><i class="fas fa-moon"></i></button>
+    </div>
 
-        <div class="bg-green-900 bg-opacity-20 p-4 border-b border-yellow-400 border-opacity-20">
-            <div class="flex items-center gap-3 mb-2">
-                <div class="w-10 h-10 bg-yellow-400 text-green-900 rounded-full flex items-center justify-center font-bold text-sm">
-                    <span id="userInitial">D</span>
-                </div>
-                <div class="text-xs">
-                    <p id="userFullName" class="font-semibold text-sm"></p>
-                    <p id="userMeterNumber" class="text-gray-300 font-mono">—</p>
-                </div>
-            </div>
-        </div>
-
-        <nav class="p-4 space-y-2">
-            <a href="./dashboard.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
-                <i class="fas fa-home w-5"></i> <span>Dashboard</span>
-            </a>
-            <a href="./payment.html" class="menu-item active w-full text-left px-4 py-3 rounded-lg flex items-center gap-3">
-                <i class="fas fa-credit-card w-5"></i> <span>Pay Bill</span>
-            </a>
-            <a href="./monitoring.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
-                <i class="fas fa-chart-line w-5"></i> <span>Monitoring</span>
-            </a>
-            <a href="./history.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
-                <i class="fas fa-history w-5"></i> <span>History</span>
-            </a>
-            <a href="./analytics.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
-                <i class="fas fa-chart-bar w-5"></i> <span>Analytics</span>
-            </a>
-            <a href="./settings.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
-                <i class="fas fa-cog w-5"></i> <span>Settings</span>
-            </a>
+    <!-- Sidebar -->
+    <div class="sidebar hidden" id="sidebar">
+        <div class="sidebar-header"><a href="../../index.html" style="display: flex; align-items: center; gap: 0.75rem; color: white; text-decoration: none;"><i class="fas fa-bolt" style="font-size: 1.75rem; color: var(--yellow-main);"></i><div><div>SmartLUKU</div><div style="font-size: 0.75rem;">TANESCO</div></div></a></div>
+        <div class="sidebar-user flex items-center gap-3"><div style="width: 40px; height: 40px; background-color: var(--yellow-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--green-dark); font-weight: 700;" id="userInitial">D</div><div><p style="margin: 0; color: white; font-weight: 600; font-size: 0.875rem;" id="userFullName">User</p><p style="margin: 0; color: white; opacity: 0.8; font-size: 0.75rem;" id="userMeterNumber">—</p></div></div>
+        <nav class="sidebar-nav">
+            <a href="./dashboard.html"><i class="fas fa-home"></i><span>Dashboard</span></a>
+            <a href="./payment.html" class="active"><i class="fas fa-credit-card"></i><span>Pay Bill</span></a>
+            <a href="./monitoring.html"><i class="fas fa-chart-line"></i><span>Monitoring</span></a>
+            <a href="./history.html"><i class="fas fa-history"></i><span>History</span></a>
+            <a href="./analytics.html"><i class="fas fa-chart-bar"></i><span>Analytics</span></a>
+            <a href="./settings.html"><i class="fas fa-cog"></i><span>Settings</span></a>
         </nav>
-
-        <div class="p-4 border-t border-yellow-400 border-opacity-20">
-            <button onclick="logout()" class="w-full px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-red-600 hover:bg-opacity-20 transition">
-                <i class="fas fa-sign-out-alt w-5"></i> <span>Sign Out</span>
-            </button>
-        </div>
+        <div class="sidebar-logout"><button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sign Out</button></div>
     </div>
 
     <!-- Main Content -->
-    <div class="ml-64 p-8">
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-3xl font-bold text-white">Pay Your Bill</h1>
-                <p class="text-gray-400">Quick and secure payment options</p>
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-title"><h1>Pay Your Bill</h1><p>Fast and secure payment</p></div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <button class="theme-toggle" id="themeToggle" data-theme-icon><i class="fas fa-moon"></i></button>
+                <button class="btn btn-primary btn-sm" onclick="logout()">Sign Out</button>
             </div>
-            <button onclick="logout()" class="px-4 py-2 rounded-lg btn-primary font-semibold">Sign Out</button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
             <!-- Payment Form -->
-            <div class="md:col-span-2">
-                <!-- Amount Selection -->
-                <div class="card p-6 rounded-lg mb-6">
-                    <h2 class="text-xl font-bold text-white mb-4">Amount to Pay</h2>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-gray-300 text-sm font-semibold mb-2">Enter Amount (kWh)</label>
-                            <input type="number" id="amountInput" placeholder="50" min="1" max="500"
-                                   class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
-                        </div>
-                        <div class="bg-green-900 bg-opacity-20 border border-green-600 border-opacity-30 rounded-lg p-4">
-                            <p class="text-gray-400 text-sm mb-1">Estimated Cost</p>
-                            <p class="text-2xl font-bold text-yellow-400" id="costDisplay">TZS 0</p>
-                        </div>
+            <div>
+                <!-- Amount -->
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <h3 style="margin-top: 0;">Amount to Pay</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">Enter Amount (kWh) *</label>
+                        <input type="number" id="amountInput" placeholder="50" min="1" class="form-input" required>
+                    </div>
+                    <div style="background-color: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 0.5rem; padding: 1rem;">
+                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">Estimated Cost</p>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 1.5rem; font-weight: 700; color: var(--green-main);" id="costDisplay">TZS 0</p>
                     </div>
                 </div>
 
                 <!-- Payment Method -->
-                <div class="card p-6 rounded-lg">
-                    <h2 class="text-xl font-bold text-white mb-4">Payment Method</h2>
-                    <div class="space-y-3">
-                        <div class="payment-method p-4 rounded-lg cursor-pointer selected" onclick="selectPaymentMethod('momo')">
-                            <div class="flex items-center">
-                                <i class="fas fa-mobile-alt text-2xl text-yellow-400 mr-4"></i>
-                                <div>
-                                    <p class="font-semibold text-white">Mobile Money</p>
-                                    <p class="text-sm text-gray-400">M-Pesa, Airtel Money, Tigo Pesa</p>
-                                </div>
-                            </div>
+                <div class="card">
+                    <h3 style="margin-top: 0;">Payment Method</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="payment-method selected" onclick="selectPaymentMethod(this, 'momo')">
+                            <div style="font-size: 1.5rem;">📱</div>
+                            <div><p style="margin: 0; font-weight: 600; color: var(--text-primary);">Mobile Money</p><p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: var(--text-secondary);">M-Pesa, Airtel, Tigo</p></div>
                         </div>
-                        <div class="payment-method p-4 rounded-lg cursor-pointer" onclick="selectPaymentMethod('card')">
-                            <div class="flex items-center">
-                                <i class="fas fa-credit-card text-2xl text-yellow-400 mr-4"></i>
-                                <div>
-                                    <p class="font-semibold text-white">Bank Card</p>
-                                    <p class="text-sm text-gray-400">Visa, MasterCard, Credit Card</p>
-                                </div>
-                            </div>
+                        <div class="payment-method" onclick="selectPaymentMethod(this, 'card')">
+                            <div style="font-size: 1.5rem;">💳</div>
+                            <div><p style="margin: 0; font-weight: 600; color: var(--text-primary);">Bank Card</p><p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: var(--text-secondary);">Visa, MasterCard</p></div>
                         </div>
-                        <div class="payment-method p-4 rounded-lg cursor-pointer" onclick="selectPaymentMethod('bank')">
-                            <div class="flex items-center">
-                                <i class="fas fa-university text-2xl text-yellow-400 mr-4"></i>
-                                <div>
-                                    <p class="font-semibold text-white">Bank Transfer</p>
-                                    <p class="text-sm text-gray-400">Direct bank account transfer</p>
-                                </div>
-                            </div>
+                        <div class="payment-method" onclick="selectPaymentMethod(this, 'bank')">
+                            <div style="font-size: 1.5rem;">🏦</div>
+                            <div><p style="margin: 0; font-weight: 600; color: var(--text-primary);">Bank Transfer</p><p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: var(--text-secondary);">Direct transfer</p></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Summary Card -->
-            <div>
-                <div class="card p-6 rounded-lg sticky top-8">
-                    <h2 class="text-xl font-bold text-white mb-6">Payment Summary</h2>
-                    <div class="space-y-4 mb-6">
-                        <div class="flex justify-between text-gray-400">
-                            <span>Meter:</span>
-                            <span id="summaryMeter" class="font-mono">—</span>
-                        </div>
-                        <div class="flex justify-between text-gray-400">
-                            <span>Current Balance:</span>
-                            <span id="summaryBalance" class="text-green-400 font-semibold">0 kWh</span>
-                        </div>
-                        <div class="border-t border-gray-600 border-opacity-30 pt-4 flex justify-between">
-                            <span class="text-gray-300">Amount to Pay:</span>
-                            <span class="font-bold text-yellow-400" id="summaryAmount">0 kWh</span>
-                        </div>
-                        <div class="flex justify-between text-gray-300">
-                            <span>Estimated Cost:</span>
-                            <span class="font-bold text-yellow-400" id="summaryCost">TZS 0</span>
-                        </div>
+            <!-- Summary -->
+            <div class="card" style="position: sticky; top: 2rem;">
+                <h3 style="margin-top: 0;">Payment Summary</h3>
+                <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                        <span>Meter Number</span><span style="font-family: monospace; font-weight: 600;" id="summaryMeter">—</span>
                     </div>
-                    <button onclick="processPayment()" class="w-full btn-primary py-3 rounded-lg font-bold transition">
-                        Proceed to Payment
-                    </button>
-                    <p class="text-xs text-gray-400 mt-4 text-center">Secure transaction • No fees charged</p>
+                    <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                        <span>Current Balance</span><span style="color: var(--green-main); font-weight: 600;" id="summaryBalance">0 kWh</span>
+                    </div>
+                    <div style="border-top: 1px solid #e5e7eb; padding-top: 1rem; display: flex; justify-content: space-between; color: var(--text-primary); font-weight: 600;">
+                        <span>Amount to Pay</span><span style="color: var(--yellow-main);" id="summaryAmount">0 kWh</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                        <span>Estimated Cost</span><span style="color: var(--yellow-main); font-weight: 600;" id="summaryCost">TZS 0</span>
+                    </div>
                 </div>
+                <button class="btn btn-primary" style="width: 100%; padding: 1rem;" onclick="processPayment()">Proceed to Payment</button>
+                <p style="text-align: center; font-size: 0.875rem; color: var(--text-secondary); margin: 1rem 0 0 0;">Secure transaction • No extra fees</p>
             </div>
         </div>
-    </div>
+    </main>
 
     <script src="../../../src/js/core/utils.js"></script>
+    <script src="../../../src/js/core/theme.js"></script>
     <script src="../../../src/js/core/auth.js"></script>
     <script src="../../../src/js/core/data.js"></script>
 
@@ -196,16 +239,16 @@
 
         document.getElementById('amountInput').addEventListener('input', (e) => {
             const amount = parseFloat(e.target.value) || 0;
-            const costTZS = Math.round(amount * 220); // 220 TZS per kWh
+            const costTZS = Math.round(amount * 220);
             document.getElementById('costDisplay').textContent = 'TZS ' + costTZS.toLocaleString();
             document.getElementById('summaryAmount').textContent = amount + ' kWh';
             document.getElementById('summaryCost').textContent = 'TZS ' + costTZS.toLocaleString();
         });
 
-        function selectPaymentMethod(method) {
+        function selectPaymentMethod(element, method) {
             selectedPaymentMethod = method;
             document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
+            element.classList.add('selected');
         }
 
         function processPayment() {
@@ -214,10 +257,26 @@
                 new Notification('Error', 'Please enter a valid amount', 'error');
                 return;
             }
-            new Notification('Success', 'Payment processed! Your balance has been updated.', 'success');
+            new Notification('Success', 'Payment processed! Balance updated.', 'success');
             dataManager.addPayment(user.meter, amount);
             setTimeout(() => window.location.href = './dashboard.html', 1500);
         }
+
+        document.getElementById('themeToggle')?.addEventListener('click', () => themeManager.toggle());
+        document.getElementById('themeToggleBtn')?.addEventListener('click', () => themeManager.toggle());
+
+        const sidebar = document.getElementById('sidebar');
+        document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('visible');
+        });
+
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('visible');
+            });
+        });
 
         function logout() {
             authManager.logout();
