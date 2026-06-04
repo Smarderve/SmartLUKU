@@ -21,8 +21,10 @@
             background: white;
             border-radius: 1rem;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            max-width: 480px;
+            max-width: 580px;
             width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
             padding: 2.5rem;
         }
         
@@ -69,6 +71,12 @@
             gap: 1rem;
         }
         
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+        }
+        
         .form-group input,
         .form-group select {
             width: 100%;
@@ -77,6 +85,13 @@
             border-radius: 0.5rem;
             font-size: 1rem;
             transition: all 0.2s;
+        }
+        
+        .form-group input:disabled,
+        .form-group select:disabled {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+            opacity: 0.6;
         }
         
         .form-group input:focus,
@@ -100,7 +115,7 @@
             margin-bottom: 1rem;
         }
         
-        .btn-register:hover {
+        .btn-register:hover:not(:disabled) {
             opacity: 0.9;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(31, 90, 61, 0.3);
@@ -150,10 +165,20 @@
             border: 1px solid #fca5a5;
         }
         
+        .form-section-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1f5a3d;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0fdf4;
+        }
+        
         @media (max-width: 480px) {
             .register-box { padding: 1.5rem; }
             .register-header h1 { font-size: 1.75rem; }
-            .form-row { grid-template-columns: 1fr; }
+            .form-row, .form-row-3 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -167,6 +192,11 @@
         <div class="error" id="errorMsg"></div>
         
         <form onsubmit="handleRegister(event)">
+            <!-- Personal Information -->
+            <div class="form-section-title">
+                <i class="fas fa-user"></i> Personal Information
+            </div>
+            
             <div class="form-group required">
                 <label for="meter">Meter Number (Required)</label>
                 <input type="text" id="meter" placeholder="TZ-2024-001234" required>
@@ -193,6 +223,37 @@
                 <input type="tel" id="phone" placeholder="+255712345678" required>
             </div>
             
+            <!-- Location Information -->
+            <div class="form-section-title">
+                <i class="fas fa-map-marker-alt"></i> Location Information
+            </div>
+            
+            <div class="form-group required">
+                <label for="region">Region/City</label>
+                <select id="region" onchange="populateDistricts()" required>
+                    <option value="">Select Region</option>
+                </select>
+            </div>
+            
+            <div class="form-group required">
+                <label for="district">District</label>
+                <select id="district" onchange="populateStreets()" required disabled>
+                    <option value="">Select District</option>
+                </select>
+            </div>
+            
+            <div class="form-group required">
+                <label for="street">Street</label>
+                <select id="street" required disabled>
+                    <option value="">Select Street</option>
+                </select>
+            </div>
+            
+            <!-- Password Information -->
+            <div class="form-section-title">
+                <i class="fas fa-lock"></i> Security
+            </div>
+            
             <div class="form-group required">
                 <label for="password">Password</label>
                 <input type="password" id="password" placeholder="At least 8 characters" required>
@@ -201,19 +262,6 @@
             <div class="form-group required">
                 <label for="confirmPassword">Confirm Password</label>
                 <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
-            </div>
-            
-            <div class="form-group required">
-                <label for="region">Region</label>
-                <select id="region" required>
-                    <option value="">Select Region</option>
-                    <option value="dar">Dar es Salaam</option>
-                    <option value="arusha">Arusha</option>
-                    <option value="dodoma">Dodoma</option>
-                    <option value="mbeya">Mbeya</option>
-                    <option value="morogoro">Morogoro</option>
-                    <option value="moshi">Moshi</option>
-                </select>
             </div>
             
             <div class="terms">
@@ -228,7 +276,62 @@
         </div>
     </div>
     
+    <script src="src/js/tanzania-data.js"></script>
     <script>
+        // Initialize region dropdown
+        function initializeForm() {
+            const regions = tanzaniaData.getRegions();
+            const regionSelect = document.getElementById('region');
+            
+            regions.forEach(region => {
+                const option = document.createElement('option');
+                option.value = region.code;
+                option.textContent = region.name;
+                regionSelect.appendChild(option);
+            });
+        }
+        
+        function populateDistricts() {
+            const regionCode = document.getElementById('region').value;
+            const districtSelect = document.getElementById('district');
+            const streetSelect = document.getElementById('street');
+            
+            // Reset dependent fields
+            districtSelect.innerHTML = '<option value="">Select District</option>';
+            streetSelect.innerHTML = '<option value="">Select Street</option>';
+            districtSelect.disabled = !regionCode;
+            streetSelect.disabled = true;
+            
+            if (regionCode) {
+                const districts = tanzaniaData.getDistricts(regionCode);
+                districts.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district.code;
+                    option.textContent = district.name;
+                    districtSelect.appendChild(option);
+                });
+            }
+        }
+        
+        function populateStreets() {
+            const regionCode = document.getElementById('region').value;
+            const districtCode = document.getElementById('district').value;
+            const streetSelect = document.getElementById('street');
+            
+            streetSelect.innerHTML = '<option value="">Select Street</option>';
+            streetSelect.disabled = !districtCode;
+            
+            if (regionCode && districtCode) {
+                const streets = tanzaniaData.getStreets(regionCode, districtCode);
+                streets.forEach(street => {
+                    const option = document.createElement('option');
+                    option.value = street;
+                    option.textContent = street;
+                    streetSelect.appendChild(option);
+                });
+            }
+        }
+        
         function handleRegister(event) {
             event.preventDefault();
             const meter = document.getElementById('meter').value.trim();
@@ -236,12 +339,14 @@
             const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
+            const region = document.getElementById('region').value;
+            const district = document.getElementById('district').value;
+            const street = document.getElementById('street').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            const region = document.getElementById('region').value;
             
             // Validation
-            if (!meter || !firstName || !lastName || !email || !phone || !password || !region) {
+            if (!meter || !firstName || !lastName || !email || !phone || !region || !district || !street || !password) {
                 showError('Please fill in all required fields');
                 return;
             }
@@ -256,17 +361,21 @@
                 return;
             }
             
-            // Meter format check (basic)
             if (!meter.match(/^[A-Z0-9\-]+$/)) {
                 showError('Invalid meter number format');
                 return;
             }
             
+            // Get full location names
+            const regionName = document.querySelector(`#region option[value="${region}"]`).textContent;
+            const districtName = document.querySelector(`#district option[value="${district}"]`).textContent;
+            
             // Store and redirect
             localStorage.setItem('smartluku-user', meter);
             localStorage.setItem('smartluku-theme', 'light');
             localStorage.setItem('smartluku-profile', JSON.stringify({
-                meter, firstName, lastName, email, phone, region
+                meter, firstName, lastName, email, phone,
+                region, regionName, district, districtName, street
             }));
             
             window.location.href = 'app.html';
@@ -280,6 +389,9 @@
                 errorMsg.style.display = 'none';
             }, 4000);
         }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initializeForm);
     </script>
 </body>
 </html>
