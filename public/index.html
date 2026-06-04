@@ -169,17 +169,17 @@
         </div>
     </section>
 
-    <!-- Phone Showcase -->
+    <!-- Phone Showcase with Explanations -->
     <section class="bg-gray-800 py-16 md:py-24">
         <div class="container mx-auto px-4 max-w-6xl">
             <h2 class="text-4xl font-bold text-center mb-4">What You Can Do with SmartLUKU</h2>
-            <p class="text-center text-gray-300 mb-16 max-w-2xl mx-auto">Manage everything from your phone - payments, monitoring, history, and more</p>
+            <p class="text-center text-gray-300 mb-16 max-w-2xl mx-auto">Manage everything from your phone in just a few taps</p>
             
-            <!-- Phone Carousel -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 justify-center">
+            <!-- Row 1: Payment & Monitoring -->
+            <div class="grid md:grid-cols-2 gap-12 mb-16 items-center">
                 <!-- Phone 1: Payment -->
-                <div class="flex justify-center floating floating-delay-1">
-                    <div class="phone-frame">
+                <div class="flex justify-center">
+                    <div class="phone-frame floating floating-delay-1">
                         <div class="phone-screen">
                             <div class="bg-gradient-to-b from-green-700 to-green-600 text-white p-4 text-center">
                                 <p class="text-sm font-bold">Buy Units</p>
@@ -199,9 +199,64 @@
                     </div>
                 </div>
 
+                <!-- Explanation 1 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
+                        <i class="fas fa-credit-card text-green-600 text-2xl"></i> Easy Payment
+                    </h3>
+                    <p class="text-gray-600 mb-4">Pay your electricity bills instantly with just a few taps:</p>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-500 font-bold">✓</span>
+                            <span>Choose amount or use quick buttons</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-500 font-bold">✓</span>
+                            <span>Multiple payment methods available</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-500 font-bold">✓</span>
+                            <span>Instant confirmation and receipt</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-500 font-bold">✓</span>
+                            <span>Available 24/7 - no waiting</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Row 2: Monitoring & History -->
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Explanation 2 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg order-2 md:order-1">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
+                        <i class="fas fa-chart-line text-yellow-500 text-2xl"></i> Real-Time Monitoring
+                    </h3>
+                    <p class="text-gray-600 mb-4">Track your electricity consumption and balance in real-time:</p>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-600 font-bold">✓</span>
+                            <span>See today's usage instantly</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-600 font-bold">✓</span>
+                            <span>View consumption trends and charts</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-600 font-bold">✓</span>
+                            <span>Get low balance alerts</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-600 font-bold">✓</span>
+                            <span>Prevent unexpected disconnections</span>
+                        </li>
+                    </ul>
+                </div>
+
                 <!-- Phone 2: Monitoring -->
-                <div class="flex justify-center floating floating-delay-2">
-                    <div class="phone-frame">
+                <div class="flex justify-center order-1 md:order-2">
+                    <div class="phone-frame floating floating-delay-2">
                         <div class="phone-screen">
                             <div class="bg-gradient-to-b from-green-700 to-green-600 text-white p-4 text-center">
                                 <p class="text-sm font-bold">Monitor Usage</p>
@@ -228,10 +283,13 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <!-- Row 3: History & Analytics -->
+            <div class="grid md:grid-cols-2 gap-12 mb-16 items-center">
                 <!-- Phone 3: History -->
-                <div class="flex justify-center floating floating-delay-3">
-                    <div class="phone-frame">
+                <div class="flex justify-center">
+                    <div class="phone-frame floating floating-delay-3">
                         <div class="phone-screen">
                             <div class="bg-gradient-to-b from-green-700 to-green-600 text-white p-4 text-center">
                                 <p class="text-sm font-bold">Transaction History</p>
@@ -255,9 +313,64 @@
                     </div>
                 </div>
 
+                <!-- Explanation 3 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
+                        <i class="fas fa-history text-green-600 text-2xl"></i> Complete History
+                    </h3>
+                    <p class="text-gray-600 mb-4">Keep track of all your transactions and payments:</p>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-500 font-bold">✓</span>
+                            <span>View all payment transactions</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-500 font-bold">✓</span>
+                            <span>Dates, amounts, and status</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-500 font-bold">✓</span>
+                            <span>Download receipts anytime</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-yellow-500 font-bold">✓</span>
+                            <span>Filter and search easily</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Row 4: Analytics -->
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Explanation 4 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg order-2 md:order-1">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
+                        <i class="fas fa-lightbulb text-yellow-500 text-2xl"></i> Smart Analytics
+                    </h3>
+                    <p class="text-gray-600 mb-4">Understand your usage patterns and save money:</p>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-600 font-bold">✓</span>
+                            <span>View monthly consumption trends</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-600 font-bold">✓</span>
+                            <span>Compare usage over time</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-600 font-bold">✓</span>
+                            <span>Get energy-saving tips</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-green-600 font-bold">✓</span>
+                            <span>Budget better for the month</span>
+                        </li>
+                    </ul>
+                </div>
+
                 <!-- Phone 4: Analytics -->
-                <div class="flex justify-center floating floating-delay-1">
-                    <div class="phone-frame">
+                <div class="flex justify-center order-1 md:order-2">
+                    <div class="phone-frame floating floating-delay-1">
                         <div class="phone-screen">
                             <div class="bg-gradient-to-b from-green-700 to-green-600 text-white p-4 text-center">
                                 <p class="text-sm font-bold">Analytics</p>
