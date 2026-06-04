@@ -5,371 +5,145 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account - SmartLUKU</title>
     
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Custom Styles -->
     <link rel="stylesheet" href="../../src/css/custom.css">
+    
+    <style>
+        .yellow-btn { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+        .yellow-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3); }
+    </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Navigation Bar -->
-    <nav class="sticky top-0 z-50 bg-white shadow-md border-b-4 border-primary">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <a href="../../index.html" class="flex items-center gap-2 hover:opacity-80 transition">
-                    <i class="fas fa-lightning-bolt text-accent text-2xl"></i>
-                    <span class="text-2xl font-bold text-primary">SmartLUKU</span>
-                </a>
-                <a href="../../index.html" class="text-gray-700 hover:text-primary transition">
-                    <i class="fas fa-arrow-left"></i> Back
-                </a>
-            </div>
+<body class="bg-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-green-800 to-green-700 border-b-2 border-yellow-400 py-3">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="../../index.html" class="flex items-center gap-2 hover:opacity-80 transition">
+                <i class="fas fa-bolt text-yellow-400 text-2xl"></i>
+                <span class="text-xl font-bold text-white">SmartLUKU</span>
+            </a>
+            <a href="../../index.html" class="text-gray-300 hover:text-yellow-300 transition">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="min-h-screen flex items-center justify-center py-12 px-4">
-        <div class="w-full max-w-lg">
-            <!-- Registration Card -->
-            <div class="bg-white rounded-lg shadow-lg p-8">
-                <div class="text-center mb-8">
-                    <div class="inline-block bg-accent bg-opacity-10 rounded-full p-4 mb-4">
-                        <i class="fas fa-user-plus text-accent text-4xl"></i>
-                    </div>
-                    <h1 class="text-3xl font-bold text-primary">Create Account</h1>
-                    <p class="text-gray-600 mt-2">Link your TANESCO meter to SmartLUKU</p>
-                </div>
+    <div class="min-h-screen flex items-center justify-center py-12">
+        <div class="w-full max-w-md">
+            <!-- Card -->
+            <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl p-8">
+                <h1 class="text-3xl font-bold text-white mb-2 text-center">Create Account</h1>
+                <p class="text-gray-400 text-center mb-8">Start managing your electricity today</p>
 
                 <!-- Registration Form -->
-                <form id="registerForm" class="space-y-4">
-                    <!-- METER NUMBER (FIRST & REQUIRED) -->
+                <form id="registerForm" class="space-y-5">
+                    <!-- Meter Number (FIRST) -->
                     <div>
-                        <label for="meterNumber" class="block text-sm font-bold text-primary mb-2">
-                            <i class="fas fa-barcode mr-2"></i>TANESCO Meter Number *
-                        </label>
-                        <div class="relative">
-                            <i class="fas fa-barcode absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input 
-                                type="text" 
-                                id="meterNumber" 
-                                name="meterNumber" 
-                                required
-                                placeholder="10-digit meter number (e.g. 1234567890)"
-                                class="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition"
-                                maxlength="10"
-                                pattern="[0-9]{10}"
-                            >
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">
-                            <i class="fas fa-info-circle"></i> Your meter number is on your electricity bill
-                        </p>
-                        <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Meter Number *</label>
+                        <input type="text" id="meter" placeholder="Enter your 10-digit meter number"
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
+                        <p class="text-xs text-gray-400 mt-1">Required to verify your account</p>
                     </div>
 
                     <!-- Full Name -->
                     <div>
-                        <label for="fullName" class="block text-sm font-bold text-primary mb-2">
-                            Full Name *
-                        </label>
-                        <div class="relative">
-                            <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input 
-                                type="text" 
-                                id="fullName" 
-                                name="fullName" 
-                                required
-                                placeholder="John Kipchoge"
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                            >
-                        </div>
-                        <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Full Name</label>
+                        <input type="text" id="fullName" placeholder="Enter your full name"
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
                     </div>
 
                     <!-- Email (Optional) -->
                     <div>
-                        <label for="email" class="block text-sm font-bold text-primary mb-2">
-                            Email Address (Optional)
-                        </label>
-                        <div class="relative">
-                            <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email"
-                                placeholder="your@email.com"
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                            >
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">For account recovery and notifications</p>
-                        <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Email (Optional)</label>
+                        <input type="email" id="email" placeholder="Enter your email"
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
+                        <p class="text-xs text-gray-400 mt-1">For account recovery</p>
                     </div>
 
-                    <!-- Phone Number (Optional) -->
+                    <!-- Password -->
                     <div>
-                        <label for="phone" class="block text-sm font-bold text-primary mb-2">
-                            Phone Number (Optional)
-                        </label>
-                        <div class="relative">
-                            <i class="fas fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input 
-                                type="tel" 
-                                id="phone" 
-                                name="phone" 
-                                placeholder="+255 67X XXX XXX"
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                            >
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">For SMS notifications and alerts</p>
-                        <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
-                    </div>
-
-                    <!-- Password Field -->
-                    <div>
-                        <label for="password" class="block text-sm font-bold text-primary mb-2">
-                            Password *
-                        </label>
-                        <div class="relative">
-                            <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password" 
-                                required
-                                placeholder="Min. 8 characters"
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                            >
-                            <button 
-                                type="button" 
-                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 toggle-password"
-                            >
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        <div id="passwordRequirements" class="mt-2 space-y-1">
-                            <div class="flex items-center gap-2 text-xs">
-                                <i class="fas fa-times text-red-500 req-length"></i>
-                                <span class="text-gray-600">At least 8 characters</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <i class="fas fa-times text-red-500 req-upper"></i>
-                                <span class="text-gray-600">One uppercase letter</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <i class="fas fa-times text-red-500 req-number"></i>
-                                <span class="text-gray-600">One number</span>
-                            </div>
-                        </div>
-                        <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Password</label>
+                        <input type="password" id="password" placeholder="Create a strong password"
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
+                        <p class="text-xs text-gray-400 mt-1">Min. 8 characters</p>
                     </div>
 
                     <!-- Confirm Password -->
                     <div>
-                        <label for="confirmPassword" class="block text-sm font-bold text-primary mb-2">
-                            Confirm Password *
-                        </label>
-                        <div class="relative">
-                            <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input 
-                                type="password" 
-                                id="confirmPassword" 
-                                name="confirmPassword" 
-                                required
-                                placeholder="Confirm password"
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                            >
-                            <button 
-                                type="button" 
-                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 toggle-password"
-                            >
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm your password"
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
                     </div>
 
                     <!-- Terms & Conditions -->
-                    <div class="flex items-start gap-2 bg-blue-50 p-3 rounded">
-                        <input type="checkbox" id="terms" name="terms" required class="w-4 h-4 mt-1">
-                        <label for="terms" class="text-xs text-gray-700">
-                            I agree that this meter number is associated with my TANESCO account and I authorize SmartLUKU to manage payments and access consumption data.
-                        </label>
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="terms" class="w-4 h-4 mt-1 rounded bg-gray-700 border-gray-600 cursor-pointer">
+                        <label for="terms" class="text-sm text-gray-400">I agree to SmartLUKU <span class="text-yellow-400">Terms & Conditions</span></label>
                     </div>
 
-                    <!-- General Error Message -->
-                    <div id="generalError" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        <i class="fas fa-exclamation-circle mr-2"></i>
-                        <span id="errorText"></span>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button 
-                        type="submit" 
-                        class="w-full btn-accent py-3 mt-6 font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition"
-                    >
-                        <span id="buttonText">Create Account</span>
-                        <i class="fas fa-spinner fa-spin hidden" id="spinner"></i>
+                    <!-- Create Account Button -->
+                    <button type="submit" class="w-full yellow-btn py-3 rounded-lg text-gray-900 font-bold text-lg transition">
+                        Create Account
                     </button>
-                </form>
 
-                <!-- Sign In Link -->
-                <p class="text-center text-gray-600 text-sm mt-6">
-                    Already have an account? 
-                    <a href="./login.html" class="text-accent font-semibold hover:text-primary transition">
-                        Sign in here
-                    </a>
-                </p>
+                    <!-- Already have account -->
+                    <div class="text-center">
+                        <p class="text-gray-400">Already have an account? <a href="./login.html" class="text-yellow-400 font-semibold hover:text-yellow-300">Sign In</a></p>
+                    </div>
+                </form>
             </div>
 
-            <!-- Info Box -->
-            <div class="mt-6 bg-blue-50 border-l-4 border-primary p-4 rounded">
-                <p class="text-xs text-gray-700 mb-2">
-                    <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
-                    <strong>Meter Number:</strong> Find it on your TANESCO electricity bill (10 digits)
-                </p>
-                <p class="text-xs text-gray-700">
-                    <i class="fas fa-lock text-green-500 mr-2"></i>
-                    <strong>Secure:</strong> Your account is protected with encryption. We never share your data.
-                </p>
+            <!-- Benefits -->
+            <div class="mt-8 bg-green-900 bg-opacity-20 border border-green-700 rounded-lg p-6">
+                <h3 class="text-yellow-400 font-bold mb-3">After Registration:</h3>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    <li class="flex items-center gap-2">
+                        <i class="fas fa-check text-green-400"></i> Instant account access
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fas fa-check text-green-400"></i> Pay bills anytime
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fas fa-check text-green-400"></i> Track consumption
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fas fa-check text-green-400"></i> View transaction history
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="../../src/js/core/utils.js"></script>
     <script src="../../src/js/core/auth.js"></script>
     <script>
-        const form = document.getElementById('registerForm');
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirmPassword');
-        const generalError = document.getElementById('generalError');
-        const errorText = document.getElementById('errorText');
-
-        // Password Visibility Toggle
-        document.querySelectorAll('.toggle-password').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const input = btn.previousElementSibling;
-                const type = input.type === 'password' ? 'text' : 'password';
-                input.type = type;
-                btn.innerHTML = type === 'password' 
-                    ? '<i class="fas fa-eye"></i>' 
-                    : '<i class="fas fa-eye-slash"></i>';
-            });
-        });
-
-        // Meter number auto-formatting (only digits)
-        document.getElementById('meterNumber').addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
-        });
-
-        // Password Requirements Validation
-        passwordInput.addEventListener('input', () => {
-            const password = passwordInput.value;
-            const hasLength = password.length >= 8;
-            const hasUpper = /[A-Z]/.test(password);
-            const hasNumber = /[0-9]/.test(password);
-
-            updateRequirement('.req-length', hasLength);
-            updateRequirement('.req-upper', hasUpper);
-            updateRequirement('.req-number', hasNumber);
-        });
-
-        function updateRequirement(selector, met) {
-            const el = document.querySelector(selector);
-            if (met) {
-                el.classList.remove('text-red-500', 'fa-times');
-                el.classList.add('text-green-500', 'fa-check');
-            } else {
-                el.classList.remove('text-green-500', 'fa-check');
-                el.classList.add('text-red-500', 'fa-times');
-            }
-        }
-
-        // Form Submission
-        form.addEventListener('submit', (e) => {
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const meterNumber = document.getElementById('meterNumber').value.trim();
+
+            const meter = document.getElementById('meter').value.trim();
             const fullName = document.getElementById('fullName').value.trim();
-            const email = document.getElementById('email').value.trim() || null;
-            const phone = document.getElementById('phone').value.trim() || null;
-            const password = passwordInput.value;
-            const confirmPassword = confirmPasswordInput.value;
-            const termsAccepted = document.getElementById('terms').checked;
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const terms = document.getElementById('terms').checked;
 
-            generalError.classList.add('hidden');
-            clearFieldErrors();
-
-            // Client-side validation
-            if (meterNumber.length !== 10) {
-                showGeneralError('Meter number must be exactly 10 digits');
+            if (!terms) {
+                new Notification('Error', 'Please agree to Terms & Conditions', 'error');
                 return;
             }
 
-            if (password !== confirmPassword) {
-                showGeneralError('Passwords do not match');
-                return;
+            try {
+                const authManager = new AuthManager();
+                authManager.register(meter, password, fullName, email);
+                new Notification('Success', 'Account created! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../app/dashboard.html';
+                }, 1500);
+            } catch (error) {
+                new Notification('Error', error.message, 'error');
             }
-
-            if (!termsAccepted) {
-                showGeneralError('Please accept the terms to continue');
-                return;
-            }
-
-            const auth = new AuthManager();
-            auth.register({
-                meterNumber,
-                fullName,
-                email,
-                phone,
-                password
-            })
-                .then(user => {
-                    console.log('Registration successful:', user);
-                    SmartLUKU.Notification.success('Account created successfully!');
-                    setTimeout(() => {
-                        window.location.href = '../app/dashboard.html';
-                    }, 1000);
-                })
-                .catch(error => {
-                    console.error('Registration failed:', error);
-                    showGeneralError(error.message);
-                    highlightErrors(error.fields || []);
-                });
         });
-
-        function showGeneralError(message) {
-            errorText.textContent = message;
-            generalError.classList.remove('hidden');
-            generalError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function clearFieldErrors() {
-            document.querySelectorAll('.error-message').forEach(el => {
-                el.classList.add('hidden');
-            });
-        }
-
-        function highlightErrors(fields) {
-            fields.forEach(field => {
-                const input = document.getElementById(field);
-                if (input) {
-                    const errorMsg = input.parentElement.nextElementSibling;
-                    if (errorMsg && errorMsg.classList.contains('error-message')) {
-                        errorMsg.classList.remove('hidden');
-                    }
-                }
-            });
-        }
-
-        // Redirect authenticated users
-        const authCheck = new AuthManager();
-        if (authCheck.isAuthenticated()) {
-            window.location.href = '../app/dashboard.html';
-        }
     </script>
 </body>
 </html>

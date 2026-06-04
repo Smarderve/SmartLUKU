@@ -5,365 +5,167 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - SmartLUKU</title>
     
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Custom Styles -->
     <link rel="stylesheet" href="../../src/css/custom.css">
+    
+    <style>
+        .green-dark { background: linear-gradient(135deg, #1f5a3d 0%, #2a7f56 100%); }
+        .yellow-btn { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+        .yellow-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3); }
+    </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Navigation Bar -->
-    <nav class="sticky top-0 z-50 bg-white shadow-md border-b-4 border-primary">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <a href="../../index.html" class="flex items-center gap-2 hover:opacity-80 transition">
-                    <i class="fas fa-lightning-bolt text-accent text-2xl"></i>
-                    <span class="text-2xl font-bold text-primary">SmartLUKU</span>
-                </a>
-                <a href="../../index.html" class="text-gray-700 hover:text-primary transition">
-                    <i class="fas fa-arrow-left"></i> Back
-                </a>
-            </div>
+<body class="bg-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-green-800 to-green-700 border-b-2 border-yellow-400 py-3">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="../../index.html" class="flex items-center gap-2 hover:opacity-80 transition">
+                <i class="fas fa-bolt text-yellow-400 text-2xl"></i>
+                <span class="text-xl font-bold text-white">SmartLUKU</span>
+            </a>
+            <a href="../../index.html" class="text-gray-300 hover:text-yellow-300 transition">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="min-h-screen flex items-center justify-center py-12 px-4">
+    <div class="min-h-screen flex items-center justify-center py-12">
         <div class="w-full max-w-md">
-            <!-- Login Card -->
-            <div class="bg-white rounded-lg shadow-lg p-8">
-                <div class="text-center mb-8">
-                    <div class="inline-block bg-primary bg-opacity-10 rounded-full p-4 mb-4">
-                        <i class="fas fa-sign-in-alt text-primary text-4xl"></i>
-                    </div>
-                    <h1 class="text-3xl font-bold text-primary">Sign In</h1>
-                    <p class="text-gray-600 mt-2">Access your SmartLUKU account</p>
-                </div>
+            <!-- Card -->
+            <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl p-8">
+                <h1 class="text-3xl font-bold text-white mb-2 text-center">Welcome Back</h1>
+                <p class="text-gray-400 text-center mb-8">Manage your electricity account</p>
 
                 <!-- Login Form -->
-                <form id="loginForm" class="space-y-4">
-                    <!-- Login Method Selector -->
-                    <div class="flex gap-2 mb-6 bg-gray-100 p-1 rounded-lg">
-                        <button type="button" class="login-method-btn flex-1 py-2 bg-white text-primary font-semibold rounded transition active" data-method="meter">
-                            <i class="fas fa-barcode mr-2"></i>Meter Number
-                        </button>
-                        <button type="button" class="login-method-btn flex-1 py-2 text-gray-600 font-semibold rounded transition" data-method="email">
-                            <i class="fas fa-envelope mr-2"></i>Email
-                        </button>
-                    </div>
-
-                    <!-- Meter Number Login (Default) -->
-                    <div id="meterLoginMethod" class="space-y-4">
-                        <!-- Meter Number Field -->
-                        <div>
-                            <label for="meterNumber" class="block text-sm font-bold text-primary mb-2">
-                                <i class="fas fa-barcode mr-2"></i>Meter Number
-                            </label>
-                            <div class="relative">
-                                <i class="fas fa-barcode absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                                <input 
-                                    type="text" 
-                                    id="meterNumber" 
-                                    name="meterNumber" 
-                                    placeholder="10-digit meter number"
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                                    maxlength="10"
-                                    pattern="[0-9]{10}"
-                                >
-                            </div>
-                            <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
-                        </div>
-
-                        <!-- Password Field (Meter Method) -->
-                        <div>
-                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                                Password
-                            </label>
-                            <div class="relative">
-                                <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                                <input 
-                                    type="password" 
-                                    id="password" 
-                                    name="password" 
-                                    placeholder="Enter your password"
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                                >
-                                <button 
-                                    type="button" 
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 toggle-password"
-                                >
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                            <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
-                        </div>
-                    </div>
-
-                    <!-- Email Login Method (Hidden by default) -->
-                    <div id="emailLoginMethod" class="space-y-4 hidden">
-                        <!-- Email Field -->
-                        <div>
-                            <label for="email" class="block text-sm font-bold text-primary mb-2">
-                                <i class="fas fa-envelope mr-2"></i>Email Address
-                            </label>
-                            <div class="relative">
-                                <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    name="email" 
-                                    placeholder="your@email.com"
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                                >
-                            </div>
-                            <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
-                        </div>
-
-                        <!-- Password Field (Email Method) -->
-                        <div>
-                            <label for="passwordEmail" class="block text-sm font-medium text-gray-700 mb-2">
-                                Password
-                            </label>
-                            <div class="relative">
-                                <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                                <input 
-                                    type="password" 
-                                    id="passwordEmail" 
-                                    name="passwordEmail" 
-                                    placeholder="Enter your password"
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                                >
-                                <button 
-                                    type="button" 
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 toggle-password"
-                                >
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                            <span class="error-message text-red-500 text-sm mt-1 hidden"></span>
-                        </div>
-                    </div>
-
-                    <!-- Remember & Forgot Password -->
-                    <div class="flex justify-between items-center text-sm">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" id="remember" name="remember" class="w-4 h-4">
-                            <span class="text-gray-700">Remember me</span>
+                <form id="loginForm" class="space-y-6">
+                    <!-- Login Type Toggle -->
+                    <div class="flex gap-4 p-2 bg-gray-700 rounded-lg">
+                        <label class="flex-1 text-center py-2 cursor-pointer">
+                            <input type="radio" name="loginType" value="meter" checked class="hidden">
+                            <span id="meterTab" class="block px-4 py-1 bg-green-600 text-white rounded font-semibold">Meter No.</span>
                         </label>
-                        <a href="#" class="text-accent hover:text-primary transition">Forgot password?</a>
+                        <label class="flex-1 text-center py-2 cursor-pointer">
+                            <input type="radio" name="loginType" value="email" class="hidden">
+                            <span id="emailTab" class="block px-4 py-1 bg-transparent text-gray-400 rounded font-semibold">Email</span>
+                        </label>
                     </div>
 
-                    <!-- General Error Message -->
-                    <div id="generalError" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        <i class="fas fa-exclamation-circle mr-2"></i>
-                        <span id="errorText"></span>
+                    <!-- Meter Input -->
+                    <div id="meterDiv">
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Meter Number</label>
+                        <input type="text" id="meter" placeholder="Enter your 10-digit meter number" 
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
                     </div>
 
-                    <!-- Submit Button -->
-                    <button 
-                        type="submit" 
-                        class="w-full btn-primary py-3 mt-6 font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition"
-                    >
-                        <span id="buttonText">Sign In</span>
-                        <i class="fas fa-spinner fa-spin hidden" id="spinner"></i>
+                    <!-- Email Input -->
+                    <div id="emailDiv" class="hidden">
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email"
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Password</label>
+                        <input type="password" id="password" placeholder="Enter your password"
+                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="flex items-center">
+                        <input type="checkbox" id="remember" class="w-4 h-4 rounded bg-gray-700 border-gray-600 cursor-pointer">
+                        <label for="remember" class="ml-2 text-sm text-gray-400">Remember me</label>
+                    </div>
+
+                    <!-- Sign In Button -->
+                    <button type="submit" class="w-full yellow-btn py-3 rounded-lg text-gray-900 font-bold text-lg transition">
+                        Sign In
                     </button>
+
+                    <!-- Demo Account Info -->
+                    <div class="bg-green-900 bg-opacity-30 border border-green-700 rounded-lg p-4 text-sm">
+                        <p class="text-gray-300"><span class="font-semibold text-yellow-400">Demo Account:</span></p>
+                        <p class="text-gray-400">Meter: <span class="font-mono text-yellow-300">1234567890</span></p>
+                        <p class="text-gray-400">Password: <span class="font-mono text-yellow-300">Demo@123</span></p>
+                    </div>
+
+                    <!-- Create Account Link -->
+                    <div class="text-center">
+                        <p class="text-gray-400">Don't have an account? <a href="./register.html" class="text-yellow-400 font-semibold hover:text-yellow-300">Create one</a></p>
+                    </div>
                 </form>
-
-                <!-- Divider -->
-                <div class="relative my-6">
-                    <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-300"></div>
-                    </div>
-                    <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-white text-gray-500">or</span>
-                    </div>
-                </div>
-
-                <!-- Demo Login (for testing) -->
-                <div class="space-y-2 mb-6">
-                    <button 
-                        type="button" 
-                        id="demoLoginBtn" 
-                        class="w-full border-2 border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition"
-                    >
-                        <i class="fas fa-play mr-2"></i>Try Demo Account
-                    </button>
-                </div>
-
-                <!-- Create Account Link -->
-                <p class="text-center text-gray-600 text-sm">
-                    Don't have an account? 
-                    <a href="./register.html" class="text-accent font-semibold hover:text-primary transition">
-                        Create one here
-                    </a>
-                </p>
             </div>
 
-            <!-- Info Box -->
-            <div class="mt-6 bg-blue-50 border-l-4 border-primary p-4 rounded">
-                <p class="text-sm text-gray-700 mb-2">
-                    <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
-                    <strong>Demo Meter:</strong> 1234567890
-                </p>
-                <p class="text-sm text-gray-700">
-                    <i class="fas fa-lock text-green-500 mr-2"></i>
-                    <strong>Demo Password:</strong> Demo@123
-                </p>
+            <!-- Features Badge -->
+            <div class="mt-8 grid grid-cols-3 gap-4 text-center">
+                <div class="text-gray-400">
+                    <i class="fas fa-lock text-yellow-400 text-2xl mb-2"></i>
+                    <p class="text-xs">Secure Login</p>
+                </div>
+                <div class="text-gray-400">
+                    <i class="fas fa-clock text-yellow-400 text-2xl mb-2"></i>
+                    <p class="text-xs">24/7 Access</p>
+                </div>
+                <div class="text-gray-400">
+                    <i class="fas fa-shield-alt text-yellow-400 text-2xl mb-2"></i>
+                    <p class="text-xs">Your Data Safe</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="../../src/js/core/utils.js"></script>
     <script src="../../src/js/core/auth.js"></script>
     <script>
-        const form = document.getElementById('loginForm');
-        const meterInput = document.getElementById('meterNumber');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const passwordEmailInput = document.getElementById('passwordEmail');
-        const demoLoginBtn = document.getElementById('demoLoginBtn');
-        const generalError = document.getElementById('generalError');
-        const errorText = document.getElementById('errorText');
-
-        let currentLoginMethod = 'meter';
-
-        // Login Method Toggle
-        document.querySelectorAll('.login-method-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                document.querySelectorAll('.login-method-btn').forEach(b => b.classList.remove('bg-white', 'text-primary'));
-                btn.classList.add('bg-white', 'text-primary');
+        // Toggle between meter and email login
+        document.querySelectorAll('input[name="loginType"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const meterDiv = document.getElementById('meterDiv');
+                const emailDiv = document.getElementById('emailDiv');
+                const meterTab = document.getElementById('meterTab');
+                const emailTab = document.getElementById('emailTab');
                 
-                currentLoginMethod = btn.dataset.method;
-                
-                if (currentLoginMethod === 'meter') {
-                    document.getElementById('meterLoginMethod').classList.remove('hidden');
-                    document.getElementById('emailLoginMethod').classList.add('hidden');
+                if (e.target.value === 'meter') {
+                    meterDiv.classList.remove('hidden');
+                    emailDiv.classList.add('hidden');
+                    meterTab.classList.add('bg-green-600');
+                    meterTab.classList.remove('bg-transparent');
+                    emailTab.classList.remove('bg-green-600');
+                    emailTab.classList.add('bg-transparent');
                 } else {
-                    document.getElementById('meterLoginMethod').classList.add('hidden');
-                    document.getElementById('emailLoginMethod').classList.remove('hidden');
+                    meterDiv.classList.add('hidden');
+                    emailDiv.classList.remove('hidden');
+                    meterTab.classList.remove('bg-green-600');
+                    meterTab.classList.add('bg-transparent');
+                    emailTab.classList.add('bg-green-600');
+                    emailTab.classList.remove('bg-transparent');
                 }
             });
         });
 
-        // Toggle Password Visibility
-        document.querySelectorAll('.toggle-password').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const input = btn.previousElementSibling;
-                const type = input.type === 'password' ? 'text' : 'password';
-                input.type = type;
-                btn.innerHTML = type === 'password' 
-                    ? '<i class="fas fa-eye"></i>' 
-                    : '<i class="fas fa-eye-slash"></i>';
-            });
-        });
-
-        // Meter number auto-formatting (only digits)
-        meterInput.addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
-        });
-
-        // Form Submission
-        form.addEventListener('submit', (e) => {
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            generalError.classList.add('hidden');
-            clearFieldErrors();
+            const loginType = document.querySelector('input[name="loginType"]:checked').value;
+            const password = document.getElementById('password').value;
+            let identifier;
 
-            let credential;
-            let password;
-            let loginType;
-
-            if (currentLoginMethod === 'meter') {
-                credential = meterInput.value.trim();
-                password = passwordInput.value;
-                loginType = 'meter';
-
-                if (!credential || credential.length !== 10) {
-                    showGeneralError('Please enter a valid 10-digit meter number');
-                    return;
-                }
+            if (loginType === 'meter') {
+                identifier = document.getElementById('meter').value;
             } else {
-                credential = emailInput.value.trim();
-                password = passwordEmailInput.value;
-                loginType = 'email';
-
-                if (!credential) {
-                    showGeneralError('Please enter your email address');
-                    return;
-                }
+                identifier = document.getElementById('email').value;
             }
 
-            if (!password) {
-                showGeneralError('Please enter your password');
-                return;
+            try {
+                const authManager = new AuthManager();
+                authManager.login(identifier, password, loginType);
+                window.location.href = '../app/dashboard.html';
+            } catch (error) {
+                new Notification('Error', error.message, 'error');
             }
-
-            const remember = document.getElementById('remember').checked;
-            const auth = new AuthManager();
-
-            auth.login(credential, password, remember, loginType)
-                .then(user => {
-                    console.log('Login successful:', user);
-                    SmartLUKU.Notification.success('Welcome back!');
-                    setTimeout(() => {
-                        window.location.href = '../app/dashboard.html';
-                    }, 500);
-                })
-                .catch(error => {
-                    console.error('Login failed:', error);
-                    showGeneralError(error.message);
-                    highlightErrors(error.fields || []);
-                });
         });
-
-        // Demo Account Login
-        demoLoginBtn.addEventListener('click', () => {
-            currentLoginMethod = 'meter';
-            document.querySelectorAll('.login-method-btn').forEach(b => b.classList.remove('bg-white', 'text-primary'));
-            document.querySelector('[data-method="meter"]').classList.add('bg-white', 'text-primary');
-            document.getElementById('meterLoginMethod').classList.remove('hidden');
-            document.getElementById('emailLoginMethod').classList.add('hidden');
-            
-            meterInput.value = '1234567890';
-            passwordInput.value = 'Demo@123';
-            form.dispatchEvent(new Event('submit'));
-        });
-
-        function showGeneralError(message) {
-            errorText.textContent = message;
-            generalError.classList.remove('hidden');
-            generalError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function clearFieldErrors() {
-            document.querySelectorAll('.error-message').forEach(el => {
-                el.classList.add('hidden');
-            });
-        }
-
-        function highlightErrors(fields) {
-            fields.forEach(field => {
-                const input = document.getElementById(field);
-                if (input) {
-                    const errorMsg = input.closest('div').nextElementSibling;
-                    if (errorMsg && errorMsg.classList.contains('error-message')) {
-                        errorMsg.classList.remove('hidden');
-                    }
-                }
-            });
-        }
-
-        // Redirect authenticated users
-        const authCheck = new AuthManager();
-        if (authCheck.isAuthenticated()) {
-            window.location.href = '../app/dashboard.html';
-        }
     </script>
 </body>
 </html>

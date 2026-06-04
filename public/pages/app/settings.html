@@ -5,333 +5,262 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings - SmartLUKU</title>
     
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Custom Styles -->
     <link rel="stylesheet" href="../../../src/css/custom.css">
+    
+    <style>
+        body { background: linear-gradient(135deg, #0f172a 0%, #1f3a3f 100%); }
+        .sidebar { background: linear-gradient(180deg, #1f5a3d 0%, #0d2a1a 100%); border-right: 2px solid #fbbf24; }
+        .menu-item { transition: all 0.2s ease; border-left: 3px solid transparent; }
+        .menu-item:hover { background-color: rgba(251, 191, 36, 0.1); border-left-color: #fbbf24; }
+        .menu-item.active { background-color: rgba(251, 191, 36, 0.2); border-left-color: #fbbf24; }
+        .card { background: linear-gradient(135deg, rgba(31, 90, 61, 0.3), rgba(10, 41, 26, 0.2)); border: 1px solid rgba(251, 191, 36, 0.3); }
+        .btn-primary { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #1f5a3d; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3); }
+        .setting-item { border-bottom: 1px solid rgba(251, 191, 36, 0.1); padding: 1.5rem 0; }
+        .setting-item:last-child { border-bottom: none; }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <!-- Sidebar (injected by JavaScript) -->
-    <!-- Top Navigation -->
-    <!-- Top Bar -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-20">
-        <div class="px-8 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-gray-800">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <a href="dashboard.html" class="flex items-center gap-2 hover:opacity-80 transition">
-                    <i class="fas fa-arrow-left text-gray-600"></i>
-                    <span class="font-bold text-primary">Back to Dashboard</span>
-                </a>
-                <h1 class="text-2xl font-bold text-primary">Account Settings</h1>
-                <div class="w-20"></div>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar fixed left-0 top-0 w-64 h-screen text-white overflow-y-auto z-30">
+        <div class="p-6 border-b border-yellow-400 border-opacity-20">
+            <a href="../../index.html" class="flex items-center gap-3 hover:opacity-80 transition">
+                <i class="fas fa-bolt text-yellow-400 text-2xl"></i>
+                <div>
+                    <div class="text-lg font-bold">SmartLUKU</div>
+                    <div class="text-xs text-gray-300">TANESCO Portal</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="bg-green-900 bg-opacity-20 p-4 border-b border-yellow-400 border-opacity-20">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 bg-yellow-400 text-green-900 rounded-full flex items-center justify-center font-bold text-sm">
+                    <span id="userInitial">D</span>
+                </div>
+                <div class="text-xs">
+                    <p id="userFullName" class="font-semibold text-sm"></p>
+                    <p id="userMeterNumber" class="text-gray-300 font-mono">—</p>
+                </div>
             </div>
         </div>
-    </header>
 
-        <!-- Main Content Area -->
-    <div class="ml-64 flex flex-col min-h-screen">
-        <!-- Top Content -->
-    <div class="container mx-auto px-4 py-8">
-        <div class="grid md:grid-cols-4 gap-6">
-            <!-- Settings Menu -->
+        <nav class="p-4 space-y-2">
+            <a href="./dashboard.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
+                <i class="fas fa-home w-5"></i> <span>Dashboard</span>
+            </a>
+            <a href="./payment.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
+                <i class="fas fa-credit-card w-5"></i> <span>Pay Bill</span>
+            </a>
+            <a href="./monitoring.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
+                <i class="fas fa-chart-line w-5"></i> <span>Monitoring</span>
+            </a>
+            <a href="./history.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
+                <i class="fas fa-history w-5"></i> <span>History</span>
+            </a>
+            <a href="./analytics.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
+                <i class="fas fa-chart-bar w-5"></i> <span>Analytics</span>
+            </a>
+            <a href="./settings.html" class="menu-item active w-full text-left px-4 py-3 rounded-lg flex items-center gap-3">
+                <i class="fas fa-cog w-5"></i> <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-yellow-400 border-opacity-20">
+            <button onclick="logout()" class="w-full px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-red-600 hover:bg-opacity-20 transition">
+                <i class="fas fa-sign-out-alt w-5"></i> <span>Sign Out</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 p-8">
+        <div class="flex justify-between items-center mb-8">
             <div>
-                <div class="card p-0">
-                    <nav class="space-y-0">
-                        <button class="settings-menu-item active w-full text-left px-4 py-3 hover:bg-primary hover:text-white transition" data-section="profile">
-                            <i class="fas fa-user mr-2"></i>Profile
-                        </button>
-                        <button class="settings-menu-item w-full text-left px-4 py-3 hover:bg-primary hover:text-white transition border-t" data-section="notifications">
-                            <i class="fas fa-bell mr-2"></i>Notifications
-                        </button>
-                        <button class="settings-menu-item w-full text-left px-4 py-3 hover:bg-primary hover:text-white transition border-t" data-section="security">
-                            <i class="fas fa-lock mr-2"></i>Security
-                        </button>
-                        <button class="settings-menu-item w-full text-left px-4 py-3 hover:bg-primary hover:text-white transition border-t" data-section="billing">
-                            <i class="fas fa-credit-card mr-2"></i>Billing
-                        </button>
-                        <button class="settings-menu-item w-full text-left px-4 py-3 hover:bg-primary hover:text-white transition border-t" data-section="preferences">
-                            <i class="fas fa-sliders-h mr-2"></i>Preferences
-                        </button>
-                    </nav>
-                </div>
+                <h1 class="text-3xl font-bold text-white">Settings</h1>
+                <p class="text-gray-400">Manage your account preferences</p>
+            </div>
+            <button onclick="logout()" class="px-4 py-2 rounded-lg btn-primary font-semibold">Sign Out</button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Settings Menu -->
+            <div class="card p-6 rounded-lg h-fit">
+                <h2 class="text-lg font-bold text-white mb-4">Settings Menu</h2>
+                <nav class="space-y-2">
+                    <button onclick="showSection('profile')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-yellow-400 hover:bg-opacity-10 transition text-gray-300 hover:text-yellow-300 font-semibold">
+                        <i class="fas fa-user mr-2"></i> Profile
+                    </button>
+                    <button onclick="showSection('notifications')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-yellow-400 hover:bg-opacity-10 transition text-gray-300 hover:text-yellow-300 font-semibold">
+                        <i class="fas fa-bell mr-2"></i> Notifications
+                    </button>
+                    <button onclick="showSection('security')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-yellow-400 hover:bg-opacity-10 transition text-gray-300 hover:text-yellow-300 font-semibold">
+                        <i class="fas fa-lock mr-2"></i> Security
+                    </button>
+                    <button onclick="showSection('billing')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-yellow-400 hover:bg-opacity-10 transition text-gray-300 hover:text-yellow-300 font-semibold">
+                        <i class="fas fa-credit-card mr-2"></i> Billing
+                    </button>
+                </nav>
             </div>
 
             <!-- Settings Content -->
-            <div class="md:col-span-3 space-y-6">
-                <!-- Profile Settings -->
-                <div id="profileSection" class="settings-section">
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-primary mb-6">Profile Information</h3>
-                        
-                        <form id="profileForm" class="space-y-4">
-                            <!-- Meter Number (Read-only) -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Meter Number</label>
-                                <input type="text" id="meterNumber" class="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 cursor-not-allowed" readonly>
-                                <p class="text-xs text-gray-500 mt-1">Cannot be changed. This is your account identifier.</p>
-                            </div>
-
-                            <!-- Full Name -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
-                                <input type="text" id="fullName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                            </div>
-
-                            <!-- Phone Number -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
-                                <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="+255...">
-                            </div>
-
-                            <!-- Email -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-                                <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="email@example.com">
-                            </div>
-
-                            <!-- Account Status -->
-                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary">
-                                <p class="text-sm text-gray-600 mb-1">Account Status</p>
-                                <p id="accountStatus" class="font-bold text-primary">Active</p>
-                                <p class="text-xs text-gray-500 mt-2">Your account is in good standing.</p>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save mr-2"></i>Save Changes
-                            </button>
-                        </form>
+            <div class="lg:col-span-2">
+                <!-- Profile Section -->
+                <div id="profile" class="card p-8 rounded-lg">
+                    <h2 class="text-2xl font-bold text-white mb-6">Profile Information</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-gray-300 text-sm font-semibold mb-2">Full Name</label>
+                            <input type="text" id="fullNameInput" placeholder="Your full name" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-semibold mb-2">Email</label>
+                            <input type="email" placeholder="Your email" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-semibold mb-2">Meter Number</label>
+                            <input type="text" id="meterInput" disabled class="w-full px-4 py-3 bg-gray-600 border border-gray-600 rounded-lg text-gray-400 cursor-not-allowed">
+                            <p class="text-xs text-gray-400 mt-1">Cannot be changed</p>
+                        </div>
+                        <button onclick="saveProfile()" class="btn-primary px-6 py-3 rounded-lg font-semibold transition">Save Changes</button>
                     </div>
                 </div>
 
-                <!-- Notification Settings -->
-                <div id="notificationsSection" class="settings-section hidden">
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-primary mb-6">Notification Preferences</h3>
-                        
-                        <div class="space-y-4">
-                            <!-- Low Balance Alerts -->
-                            <div class="flex items-center justify-between p-4 border rounded-lg">
+                <!-- Notifications Section -->
+                <div id="notifications" class="card p-8 rounded-lg hidden">
+                    <h2 class="text-2xl font-bold text-white mb-6">Notification Preferences</h2>
+                    <div class="space-y-6">
+                        <div class="setting-item">
+                            <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="font-semibold text-gray-800">Low Balance Alerts</p>
-                                    <p class="text-sm text-gray-600">Notify when balance drops below threshold</p>
+                                    <p class="font-semibold text-white">Low Balance Alert</p>
+                                    <p class="text-sm text-gray-400 mt-1">Get notified when balance drops below 10 kWh</p>
                                 </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="lowBalanceAlert" class="sr-only peer" checked>
-                                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                                </label>
+                                <input type="checkbox" checked class="w-5 h-5 rounded cursor-pointer">
                             </div>
-
-                            <!-- Payment Confirmations -->
-                            <div class="flex items-center justify-between p-4 border rounded-lg">
+                        </div>
+                        <div class="setting-item">
+                            <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="font-semibold text-gray-800">Payment Confirmations</p>
-                                    <p class="text-sm text-gray-600">Confirm all payment transactions</p>
+                                    <p class="font-semibold text-white">Payment Reminders</p>
+                                    <p class="text-sm text-gray-400 mt-1">Remind me when bills are due</p>
                                 </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="paymentConfirm" class="sr-only peer" checked>
-                                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                                </label>
+                                <input type="checkbox" checked class="w-5 h-5 rounded cursor-pointer">
                             </div>
-
-                            <!-- Delivery Methods -->
-                            <div class="pt-4 border-t">
-                                <p class="font-semibold text-gray-800 mb-4">How to receive notifications</p>
-                                
-                                <div class="space-y-2">
-                                    <label class="flex items-center gap-3 cursor-pointer">
-                                        <input type="checkbox" id="emailNotif" class="w-4 h-4 text-primary cursor-pointer">
-                                        <span class="text-gray-700">Email Notifications</span>
-                                    </label>
-                                    <label class="flex items-center gap-3 cursor-pointer">
-                                        <input type="checkbox" id="smsNotif" class="w-4 h-4 text-primary cursor-pointer">
-                                        <span class="text-gray-700">SMS Notifications</span>
-                                    </label>
-                                    <label class="flex items-center gap-3 cursor-pointer">
-                                        <input type="checkbox" id="pushNotif" class="w-4 h-4 text-primary cursor-pointer" checked>
-                                        <span class="text-gray-700">In-App Notifications</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Low Balance Threshold -->
-                            <div class="pt-4 border-t">
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Alert Threshold (kWh)</label>
-                                <input type="number" id="alertThreshold" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" value="20" min="1" max="100">
-                                <p class="text-xs text-gray-500 mt-1">You'll be alerted when remaining units drop below this value</p>
-                            </div>
-
-                            <button class="btn btn-primary mt-4" id="saveNotifications">
-                                <i class="fas fa-save mr-2"></i>Save Preferences
-                            </button>
                         </div>
+                        <div class="setting-item">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-semibold text-white">High Usage Alert</p>
+                                    <p class="text-sm text-gray-400 mt-1">Alert me if daily usage exceeds average</p>
+                                </div>
+                                <input type="checkbox" class="w-5 h-5 rounded cursor-pointer">
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-semibold text-white">Promotional Offers</p>
+                                    <p class="text-sm text-gray-400 mt-1">Receive special offers and promotions</p>
+                                </div>
+                                <input type="checkbox" class="w-5 h-5 rounded cursor-pointer">
+                            </div>
+                        </div>
+                        <button onclick="saveNotifications()" class="btn-primary px-6 py-3 rounded-lg font-semibold transition">Save Preferences</button>
                     </div>
                 </div>
 
-                <!-- Security Settings -->
-                <div id="securitySection" class="settings-section hidden">
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-primary mb-6">Security & Password</h3>
-                        
-                        <form id="passwordForm" class="space-y-4">
-                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-primary mb-4">
-                                <p class="text-sm text-gray-600">Last password change: <span id="lastPasswordChange" class="font-semibold">—</span></p>
-                            </div>
-
-                            <!-- Current Password -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Current Password</label>
-                                <input type="password" id="currentPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                            </div>
-
-                            <!-- New Password -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">New Password</label>
-                                <input type="password" id="newPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Min 8 chars, 1 uppercase, 1 number">
-                                <div id="passwordStrength" class="mt-2 text-xs text-gray-500"></div>
-                            </div>
-
-                            <!-- Confirm Password -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Confirm New Password</label>
-                                <input type="password" id="confirmPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-key mr-2"></i>Change Password
-                            </button>
-                        </form>
-
-                        <!-- Linked Meters -->
-                        <div class="mt-8 pt-8 border-t">
-                            <h4 class="text-lg font-bold text-primary mb-4">Linked Meters</h4>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <p id="linkedMeter" class="font-semibold text-primary text-lg">—</p>
-                                <p class="text-xs text-gray-500 mt-1">Primary meter for this account</p>
-                            </div>
+                <!-- Security Section -->
+                <div id="security" class="card p-8 rounded-lg hidden">
+                    <h2 class="text-2xl font-bold text-white mb-6">Security Settings</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-gray-300 text-sm font-semibold mb-2">Current Password</label>
+                            <input type="password" placeholder="Enter current password" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
                         </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-semibold mb-2">New Password</label>
+                            <input type="password" placeholder="Enter new password" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-semibold mb-2">Confirm New Password</label>
+                            <input type="password" placeholder="Confirm new password" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
+                        </div>
+                        <button onclick="changePassword()" class="btn-primary px-6 py-3 rounded-lg font-semibold transition">Change Password</button>
                     </div>
                 </div>
 
-                <!-- Billing Settings -->
-                <div id="billingSection" class="settings-section hidden">
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-primary mb-6">Billing Information</h3>
-                        
-                        <div class="space-y-4">
-                            <!-- Default Payment Method -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Default Payment Method</label>
-                                <select id="defaultPaymentMethod" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                    <option value="">Select a method</option>
-                                    <option value="card">Debit/Credit Card</option>
-                                    <option value="mpesa">M-Pesa</option>
-                                    <option value="airtel">Airtel Money</option>
-                                    <option value="bank">Bank Transfer</option>
-                                </select>
-                            </div>
-
-                            <!-- Billing History -->
-                            <div>
-                                <h4 class="font-semibold text-gray-800 mb-3">Recent Payments</h4>
-                                <div class="space-y-2">
-                                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                        <div>
-                                            <p class="font-semibold text-gray-800">Payment on Dec 15, 2024</p>
-                                            <p class="text-sm text-gray-600">Reference: REF001</p>
-                                        </div>
-                                        <span class="font-bold text-primary">TZS 50,000</span>
-                                    </div>
-                                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                        <div>
-                                            <p class="font-semibold text-gray-800">Payment on Dec 8, 2024</p>
-                                            <p class="text-sm text-gray-600">Reference: REF002</p>
-                                        </div>
-                                        <span class="font-bold text-primary">TZS 35,000</span>
-                                    </div>
+                <!-- Billing Section -->
+                <div id="billing" class="card p-8 rounded-lg hidden">
+                    <h2 class="text-2xl font-bold text-white mb-6">Billing Information</h2>
+                    <div class="space-y-6">
+                        <div class="bg-green-900 bg-opacity-20 border border-green-600 border-opacity-30 rounded-lg p-4">
+                            <p class="text-gray-400 text-sm">Account Balance</p>
+                            <p class="text-2xl font-bold text-green-400" id="balanceDisplay">150 kWh</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-300 font-semibold mb-3">Saved Payment Methods</p>
+                            <div class="space-y-3">
+                                <div class="bg-gray-800 bg-opacity-50 p-4 rounded-lg flex items-center justify-between">
+                                    <span class="text-gray-300"><i class="fas fa-mobile-alt mr-2"></i> M-Pesa • +255 711 123 456</span>
+                                    <button class="text-red-400 hover:text-red-300">Remove</button>
                                 </div>
                             </div>
-
-                            <button class="btn btn-primary">
-                                <i class="fas fa-history mr-2"></i>View Full Billing History
-                            </button>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Preferences -->
-                <div id="preferencesSection" class="settings-section hidden">
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-primary mb-6">Other Preferences</h3>
-                        
-                        <div class="space-y-4">
-                            <!-- Language -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Language</label>
-                                <select id="language" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                    <option value="en">English</option>
-                                    <option value="sw">Swahili</option>
-                                </select>
-                            </div>
-
-                            <!-- Currency -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Currency</label>
-                                <select id="currency" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                    <option value="TZS">Tanzanian Shilling (TZS)</option>
-                                    <option value="USD">US Dollar (USD)</option>
-                                </select>
-                            </div>
-
-                            <!-- Theme -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Theme</label>
-                                <select id="theme" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                    <option value="light">Light</option>
-                                    <option value="dark">Dark (Coming Soon)</option>
-                                </select>
-                            </div>
-
-                            <!-- Session Timeout -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Session Timeout (minutes)</label>
-                                <select id="sessionTimeout" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                    <option value="15">15 minutes</option>
-                                    <option value="30" selected>30 minutes</option>
-                                    <option value="60">1 hour</option>
-                                    <option value="120">2 hours</option>
-                                </select>
-                            </div>
-
-                            <button class="btn btn-primary" id="savePreferences">
-                                <i class="fas fa-save mr-2"></i>Save Preferences
-                            </button>
-
-                            <!-- Danger Zone -->
-                            <div class="mt-8 pt-8 border-t">
-                                <h4 class="text-lg font-bold text-red-600 mb-4">Danger Zone</h4>
-                                <button class="btn btn-secondary" id="logoutBtn">
-                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout from All Devices
-                                </button>
-                                <button class="btn bg-red-600 text-white hover:bg-red-700 mt-2" id="deleteBtn">
-                                    <i class="fas fa-trash mr-2"></i>Delete Account
-                                </button>
-                            </div>
-                        </div>
+                        <button class="btn-primary px-6 py-3 rounded-lg font-semibold transition">Add Payment Method</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="../../../src/js/core/utils.js"></script>
     <script src="../../../src/js/core/auth.js"></script>
     <script src="../../../src/js/core/data.js"></script>
-    <script src="../../../src/js/modules/settings.js"></script>
+
+    <script>
+        const authManager = new AuthManager();
+        const dataManager = new DataManager();
+
+        if (!authManager.isLoggedIn()) {
+            window.location.href = '../auth/login.html';
+        }
+
+        const user = authManager.getCurrentUser();
+        const userData = dataManager.getUserData(user.meter);
+
+        document.getElementById('userInitial').textContent = (user.fullName || 'U')[0].toUpperCase();
+        document.getElementById('userFullName').textContent = user.fullName || 'User';
+        document.getElementById('userMeterNumber').textContent = user.meter;
+        document.getElementById('fullNameInput').value = user.fullName || '';
+        document.getElementById('meterInput').value = user.meter;
+        document.getElementById('balanceDisplay').textContent = userData.balance.toFixed(2) + ' kWh';
+
+        function showSection(section) {
+            document.querySelectorAll('[id^="profile"], [id^="notifications"], [id^="security"], [id^="billing"]').forEach(el => {
+                if (el.id === section) el.classList.remove('hidden');
+                else el.classList.add('hidden');
+            });
+        }
+
+        function saveProfile() {
+            new Notification('Success', 'Profile updated successfully', 'success');
+        }
+
+        function saveNotifications() {
+            new Notification('Success', 'Notification preferences saved', 'success');
+        }
+
+        function changePassword() {
+            new Notification('Success', 'Password changed successfully', 'success');
+        }
+
+        function logout() {
+            authManager.logout();
+            window.location.href = '../auth/login.html';
+        }
+    </script>
 </body>
 </html>
