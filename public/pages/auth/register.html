@@ -10,115 +10,192 @@
     <link rel="stylesheet" href="../../src/css/custom.css">
     
     <style>
-        .yellow-btn { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
-        .yellow-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3); }
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --green-dark: #1f5a3d;
+            --yellow-main: #fbbf24;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, #f3f4f6 100%);
+            [data-theme="dark"] & {
+                background: linear-gradient(135deg, var(--bg-secondary) 0%, #0f172a 100%);
+            }
+        }
+
+        .form-container {
+            background-color: var(--bg-primary);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        [data-theme="dark"] .form-input {
+            border-color: #475569;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--green-dark);
+            box-shadow: 0 0 0 3px rgba(31, 90, 61, 0.1);
+        }
+
+        .nav-bar {
+            background: linear-gradient(90deg, var(--green-dark) 0%, #2a7f56 100%);
+            border-bottom: 2px solid var(--yellow-main);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        @media (max-width: 640px) {
+            .form-container {
+                padding: 1.5rem;
+                margin: 0 1rem;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-900">
-    <!-- Navigation -->
-    <nav class="bg-gradient-to-r from-green-800 to-green-700 border-b-2 border-yellow-400 py-3">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <a href="../../index.html" class="flex items-center gap-2 hover:opacity-80 transition">
-                <i class="fas fa-bolt text-yellow-400 text-2xl"></i>
-                <span class="text-xl font-bold text-white">SmartLUKU</span>
-            </a>
-            <a href="../../index.html" class="text-gray-300 hover:text-yellow-300 transition">
-                <i class="fas fa-arrow-left"></i> Back to Home
-            </a>
-        </div>
-    </nav>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 nav-bar flex justify-between items-center z-50">
+        <a href="../../index.html" class="flex items-center gap-2 text-white">
+            <i class="fas fa-bolt" style="color: var(--yellow-main); font-size: 1.5rem;"></i>
+            <span class="font-bold">SmartLUKU</span>
+        </a>
+        <button class="theme-toggle" id="themeToggle" data-theme-icon>
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
 
-    <!-- Main Content -->
-    <div class="min-h-screen flex items-center justify-center py-12">
-        <div class="w-full max-w-md">
-            <!-- Card -->
-            <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl p-8">
-                <h1 class="text-3xl font-bold text-white mb-2 text-center">Create Account</h1>
-                <p class="text-gray-400 text-center mb-8">Start managing your electricity today</p>
+    <div class="form-container" style="margin-top: 6rem;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem; color: var(--text-primary);">Create Account</h1>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem;">Start managing your electricity today</p>
 
-                <!-- Registration Form -->
-                <form id="registerForm" class="space-y-5">
-                    <!-- Meter Number (FIRST) -->
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Meter Number *</label>
-                        <input type="text" id="meter" placeholder="Enter your 10-digit meter number"
-                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
-                        <p class="text-xs text-gray-400 mt-1">Required to verify your account</p>
-                    </div>
-
-                    <!-- Full Name -->
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Full Name</label>
-                        <input type="text" id="fullName" placeholder="Enter your full name"
-                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
-                    </div>
-
-                    <!-- Email (Optional) -->
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Email (Optional)</label>
-                        <input type="email" id="email" placeholder="Enter your email"
-                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
-                        <p class="text-xs text-gray-400 mt-1">For account recovery</p>
-                    </div>
-
-                    <!-- Password -->
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Password</label>
-                        <input type="password" id="password" placeholder="Create a strong password"
-                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
-                        <p class="text-xs text-gray-400 mt-1">Min. 8 characters</p>
-                    </div>
-
-                    <!-- Confirm Password -->
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Confirm Password</label>
-                        <input type="password" id="confirmPassword" placeholder="Confirm your password"
-                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
-                    </div>
-
-                    <!-- Terms & Conditions -->
-                    <div class="flex items-start gap-3">
-                        <input type="checkbox" id="terms" class="w-4 h-4 mt-1 rounded bg-gray-700 border-gray-600 cursor-pointer">
-                        <label for="terms" class="text-sm text-gray-400">I agree to SmartLUKU <span class="text-yellow-400">Terms & Conditions</span></label>
-                    </div>
-
-                    <!-- Create Account Button -->
-                    <button type="submit" class="w-full yellow-btn py-3 rounded-lg text-gray-900 font-bold text-lg transition">
-                        Create Account
-                    </button>
-
-                    <!-- Already have account -->
-                    <div class="text-center">
-                        <p class="text-gray-400">Already have an account? <a href="./login.html" class="text-yellow-400 font-semibold hover:text-yellow-300">Sign In</a></p>
-                    </div>
-                </form>
+        <form id="registerForm" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Meter Number (FIRST) -->
+            <div>
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">
+                    Meter Number *
+                </label>
+                <input type="text" id="meter" placeholder="Enter 10-digit meter number" class="form-input" required>
+                <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                    Found on your electricity bill
+                </p>
             </div>
 
-            <!-- Benefits -->
-            <div class="mt-8 bg-green-900 bg-opacity-20 border border-green-700 rounded-lg p-6">
-                <h3 class="text-yellow-400 font-bold mb-3">After Registration:</h3>
-                <ul class="space-y-2 text-sm text-gray-300">
-                    <li class="flex items-center gap-2">
-                        <i class="fas fa-check text-green-400"></i> Instant account access
-                    </li>
-                    <li class="flex items-center gap-2">
-                        <i class="fas fa-check text-green-400"></i> Pay bills anytime
-                    </li>
-                    <li class="flex items-center gap-2">
-                        <i class="fas fa-check text-green-400"></i> Track consumption
-                    </li>
-                    <li class="flex items-center gap-2">
-                        <i class="fas fa-check text-green-400"></i> View transaction history
-                    </li>
-                </ul>
+            <!-- Full Name -->
+            <div>
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">
+                    Full Name
+                </label>
+                <input type="text" id="fullName" placeholder="Your full name" class="form-input">
             </div>
+
+            <!-- Email -->
+            <div>
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">
+                    Email (Optional)
+                </label>
+                <input type="email" id="email" placeholder="your@email.com" class="form-input">
+                <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                    For account recovery
+                </p>
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">
+                    Password *
+                </label>
+                <input type="password" id="password" placeholder="Min. 8 characters" class="form-input" required>
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">
+                    Confirm Password *
+                </label>
+                <input type="password" id="confirmPassword" placeholder="Re-enter password" class="form-input" required>
+            </div>
+
+            <!-- Terms -->
+            <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                <input type="checkbox" id="terms" style="cursor: pointer; margin-top: 0.25rem;">
+                <label for="terms" style="color: var(--text-secondary); cursor: pointer; font-size: 0.95rem;">
+                    I agree to SmartLUKU <span style="color: var(--yellow-main); font-weight: 600;">Terms & Conditions</span>
+                </label>
+            </div>
+
+            <!-- Create Button -->
+            <button type="submit" class="btn" style="background: linear-gradient(135deg, var(--yellow-main) 0%, #f59e0b 100%); color: var(--green-dark); font-weight: 700; width: 100%; padding: 0.75rem;">
+                Create Account
+            </button>
+
+            <!-- Sign In Link -->
+            <div style="text-align: center;">
+                <p style="margin: 0; color: var(--text-secondary);">
+                    Already have account? 
+                    <a href="./login.html" style="color: var(--yellow-main); font-weight: 600;">Sign In</a>
+                </p>
+            </div>
+        </form>
+
+        <!-- Benefits -->
+        <div style="background-color: rgba(31, 90, 61, 0.05); border: 1px solid rgba(31, 90, 61, 0.2); border-radius: 0.75rem; padding: 1.5rem; margin-top: 1.5rem;">
+            <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem;">After Registration:</p>
+            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.875rem;">
+                <li style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary);">
+                    <i class="fas fa-check" style="color: #10b981;"></i> Instant account access
+                </li>
+                <li style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary);">
+                    <i class="fas fa-check" style="color: #10b981;"></i> Pay bills anytime
+                </li>
+                <li style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary);">
+                    <i class="fas fa-check" style="color: #10b981;"></i> Track consumption
+                </li>
+            </ul>
         </div>
     </div>
 
     <script src="../../src/js/core/utils.js"></script>
+    <script src="../../src/js/core/theme.js"></script>
     <script src="../../src/js/core/auth.js"></script>
+
     <script>
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        const authManager = new AuthManager();
+
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
             e.preventDefault();
 
             const meter = document.getElementById('meter').value.trim();
@@ -133,8 +210,12 @@
                 return;
             }
 
+            if (password !== confirmPassword) {
+                new Notification('Error', 'Passwords do not match', 'error');
+                return;
+            }
+
             try {
-                const authManager = new AuthManager();
                 authManager.register(meter, password, fullName, email);
                 new Notification('Success', 'Account created! Redirecting...', 'success');
                 setTimeout(() => {
@@ -143,6 +224,10 @@
             } catch (error) {
                 new Notification('Error', error.message, 'error');
             }
+        });
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            themeManager.toggle();
         });
     </script>
 </body>

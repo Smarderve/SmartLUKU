@@ -10,161 +10,282 @@
     <link rel="stylesheet" href="../../src/css/custom.css">
     
     <style>
-        .green-dark { background: linear-gradient(135deg, #1f5a3d 0%, #2a7f56 100%); }
-        .yellow-btn { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
-        .yellow-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3); }
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --green-dark: #1f5a3d;
+            --yellow-main: #fbbf24;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, #f3f4f6 100%);
+            [data-theme="dark"] & {
+                background: linear-gradient(135deg, var(--bg-secondary) 0%, #0f172a 100%);
+            }
+        }
+
+        .form-container {
+            background-color: var(--bg-primary);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .form-input {
+            border-color: #475569;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--green-dark);
+            box-shadow: 0 0 0 3px rgba(31, 90, 61, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, var(--yellow-main) 0%, #f59e0b 100%);
+            color: var(--green-dark);
+            font-weight: 700;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3);
+        }
+
+        .nav-bar {
+            background: linear-gradient(90deg, var(--green-dark) 0%, #2a7f56 100%);
+            border-bottom: 2px solid var(--yellow-main);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] .toggle-btn {
+            border-color: #475569;
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, var(--yellow-main) 0%, #f59e0b 100%);
+            color: var(--green-dark);
+            border-color: var(--yellow-main);
+        }
+
+        .benefits-box {
+            background-color: rgba(31, 90, 61, 0.05);
+            border: 1px solid rgba(31, 90, 61, 0.2);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        [data-theme="dark"] .benefits-box {
+            background-color: rgba(42, 127, 86, 0.1);
+            border-color: rgba(251, 191, 36, 0.2);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 640px) {
+            .form-container {
+                padding: 1.5rem;
+                margin: 0 1rem;
+            }
+
+            h1 { font-size: 1.75rem; }
+            p { font-size: 0.95rem; }
+        }
     </style>
 </head>
-<body class="bg-gray-900">
-    <!-- Navigation -->
-    <nav class="bg-gradient-to-r from-green-800 to-green-700 border-b-2 border-yellow-400 py-3">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <a href="../../index.html" class="flex items-center gap-2 hover:opacity-80 transition">
-                <i class="fas fa-bolt text-yellow-400 text-2xl"></i>
-                <span class="text-xl font-bold text-white">SmartLUKU</span>
-            </a>
-            <a href="../../index.html" class="text-gray-300 hover:text-yellow-300 transition">
-                <i class="fas fa-arrow-left"></i> Back to Home
-            </a>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 nav-bar flex justify-between items-center z-50">
+        <a href="../../index.html" class="flex items-center gap-2 hover:opacity-80 transition text-white">
+            <i class="fas fa-bolt" style="color: var(--yellow-main); font-size: 1.5rem;"></i>
+            <span class="font-bold">SmartLUKU</span>
+        </a>
+        <button class="theme-toggle" id="themeToggle" data-theme-icon>
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- Form Container -->
+    <div class="form-container" style="margin-top: 6rem;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem; color: var(--text-primary);">Sign In</h1>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem;">Access your TANESCO account</p>
+
+        <!-- Login Type Toggle -->
+        <div class="toggle-group">
+            <button class="toggle-btn active" onclick="setLoginType('meter')" id="meterBtn">
+                <i class="fas fa-tag"></i> Meter Number
+            </button>
+            <button class="toggle-btn" onclick="setLoginType('email')" id="emailBtn">
+                <i class="fas fa-envelope"></i> Email
+            </button>
         </div>
-    </nav>
 
-    <!-- Main Content -->
-    <div class="min-h-screen flex items-center justify-center py-12">
-        <div class="w-full max-w-md">
-            <!-- Card -->
-            <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl p-8">
-                <h1 class="text-3xl font-bold text-white mb-2 text-center">Welcome Back</h1>
-                <p class="text-gray-400 text-center mb-8">Manage your electricity account</p>
-
-                <!-- Login Form -->
-                <form id="loginForm" class="space-y-6">
-                    <!-- Login Type Toggle -->
-                    <div class="flex gap-4 p-2 bg-gray-700 rounded-lg">
-                        <label class="flex-1 text-center py-2 cursor-pointer">
-                            <input type="radio" name="loginType" value="meter" checked class="hidden">
-                            <span id="meterTab" class="block px-4 py-1 bg-green-600 text-white rounded font-semibold">Meter No.</span>
-                        </label>
-                        <label class="flex-1 text-center py-2 cursor-pointer">
-                            <input type="radio" name="loginType" value="email" class="hidden">
-                            <span id="emailTab" class="block px-4 py-1 bg-transparent text-gray-400 rounded font-semibold">Email</span>
-                        </label>
-                    </div>
-
-                    <!-- Meter Input -->
-                    <div id="meterDiv">
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Meter Number</label>
-                        <input type="text" id="meter" placeholder="Enter your 10-digit meter number" 
-                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
-                    </div>
-
-                    <!-- Email Input -->
-                    <div id="emailDiv" class="hidden">
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Email Address</label>
-                        <input type="email" id="email" placeholder="Enter your email"
-                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
-                    </div>
-
-                    <!-- Password -->
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Password</label>
-                        <input type="password" id="password" placeholder="Enter your password"
-                               class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-yellow-400 focus:outline-none">
-                    </div>
-
-                    <!-- Remember Me -->
-                    <div class="flex items-center">
-                        <input type="checkbox" id="remember" class="w-4 h-4 rounded bg-gray-700 border-gray-600 cursor-pointer">
-                        <label for="remember" class="ml-2 text-sm text-gray-400">Remember me</label>
-                    </div>
-
-                    <!-- Sign In Button -->
-                    <button type="submit" class="w-full yellow-btn py-3 rounded-lg text-gray-900 font-bold text-lg transition">
-                        Sign In
-                    </button>
-
-                    <!-- Demo Account Info -->
-                    <div class="bg-green-900 bg-opacity-30 border border-green-700 rounded-lg p-4 text-sm">
-                        <p class="text-gray-300"><span class="font-semibold text-yellow-400">Demo Account:</span></p>
-                        <p class="text-gray-400">Meter: <span class="font-mono text-yellow-300">1234567890</span></p>
-                        <p class="text-gray-400">Password: <span class="font-mono text-yellow-300">Demo@123</span></p>
-                    </div>
-
-                    <!-- Create Account Link -->
-                    <div class="text-center">
-                        <p class="text-gray-400">Don't have an account? <a href="./register.html" class="text-yellow-400 font-semibold hover:text-yellow-300">Create one</a></p>
-                    </div>
-                </form>
+        <!-- Login Form -->
+        <form id="loginForm" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Meter/Email Input -->
+            <div>
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">
+                    <span id="inputLabel">Meter Number</span> *
+                </label>
+                <input type="text" id="identifier" placeholder="Enter your meter number" class="form-input" required>
+                <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.25rem;" id="inputHelp">
+                    10-digit meter number on your bill
+                </p>
             </div>
 
-            <!-- Features Badge -->
-            <div class="mt-8 grid grid-cols-3 gap-4 text-center">
-                <div class="text-gray-400">
-                    <i class="fas fa-lock text-yellow-400 text-2xl mb-2"></i>
-                    <p class="text-xs">Secure Login</p>
+            <!-- Password -->
+            <div>
+                <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">
+                    Password *
+                </label>
+                <input type="password" id="password" placeholder="Enter your password" class="form-input" required>
+            </div>
+
+            <!-- Remember Me -->
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" id="rememberMe" style="cursor: pointer;">
+                <label for="rememberMe" style="color: var(--text-secondary); cursor: pointer;">Remember me</label>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" class="btn btn-login" style="width: 100%; padding: 0.75rem;">
+                Sign In
+            </button>
+
+            <!-- Sign Up Link -->
+            <div style="text-align: center;">
+                <p style="margin: 0; color: var(--text-secondary);">
+                    Don't have an account? 
+                    <a href="./register.html" style="color: var(--yellow-main); font-weight: 600;">Create one</a>
+                </p>
+            </div>
+        </form>
+
+        <!-- Demo Info -->
+        <div class="benefits-box">
+            <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem;">Demo Account</p>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.875rem;">
+                <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                    <span>Meter:</span>
+                    <code style="background-color: var(--bg-secondary); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-family: monospace;">1234567890</code>
                 </div>
-                <div class="text-gray-400">
-                    <i class="fas fa-clock text-yellow-400 text-2xl mb-2"></i>
-                    <p class="text-xs">24/7 Access</p>
-                </div>
-                <div class="text-gray-400">
-                    <i class="fas fa-shield-alt text-yellow-400 text-2xl mb-2"></i>
-                    <p class="text-xs">Your Data Safe</p>
+                <div style="display: flex; justify-content: space-between; color: var(--text-secondary);">
+                    <span>Password:</span>
+                    <code style="background-color: var(--bg-secondary); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-family: monospace;">Demo@123</code>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="../../src/js/core/utils.js"></script>
+    <script src="../../src/js/core/theme.js"></script>
     <script src="../../src/js/core/auth.js"></script>
+
     <script>
-        // Toggle between meter and email login
-        document.querySelectorAll('input[name="loginType"]').forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                const meterDiv = document.getElementById('meterDiv');
-                const emailDiv = document.getElementById('emailDiv');
-                const meterTab = document.getElementById('meterTab');
-                const emailTab = document.getElementById('emailTab');
-                
-                if (e.target.value === 'meter') {
-                    meterDiv.classList.remove('hidden');
-                    emailDiv.classList.add('hidden');
-                    meterTab.classList.add('bg-green-600');
-                    meterTab.classList.remove('bg-transparent');
-                    emailTab.classList.remove('bg-green-600');
-                    emailTab.classList.add('bg-transparent');
-                } else {
-                    meterDiv.classList.add('hidden');
-                    emailDiv.classList.remove('hidden');
-                    meterTab.classList.remove('bg-green-600');
-                    meterTab.classList.add('bg-transparent');
-                    emailTab.classList.add('bg-green-600');
-                    emailTab.classList.remove('bg-transparent');
-                }
-            });
-        });
+        let loginType = 'meter';
+        const authManager = new AuthManager();
 
-        // Handle form submission
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const loginType = document.querySelector('input[name="loginType"]:checked').value;
-            const password = document.getElementById('password').value;
-            let identifier;
+        function setLoginType(type) {
+            loginType = type;
+            const meterBtn = document.getElementById('meterBtn');
+            const emailBtn = document.getElementById('emailBtn');
+            const inputLabel = document.getElementById('inputLabel');
+            const inputHelp = document.getElementById('inputHelp');
+            const identifier = document.getElementById('identifier');
 
-            if (loginType === 'meter') {
-                identifier = document.getElementById('meter').value;
+            if (type === 'meter') {
+                meterBtn.classList.add('active');
+                emailBtn.classList.remove('active');
+                inputLabel.textContent = 'Meter Number';
+                inputHelp.textContent = '10-digit meter number on your bill';
+                identifier.placeholder = 'Enter your meter number';
+                identifier.type = 'text';
             } else {
-                identifier = document.getElementById('email').value;
+                emailBtn.classList.add('active');
+                meterBtn.classList.remove('active');
+                inputLabel.textContent = 'Email Address';
+                inputHelp.textContent = 'Email linked to your account';
+                identifier.placeholder = 'Enter your email address';
+                identifier.type = 'email';
             }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const identifier = document.getElementById('identifier').value;
+            const password = document.getElementById('password').value;
 
             try {
-                const authManager = new AuthManager();
                 authManager.login(identifier, password, loginType);
-                window.location.href = '../app/dashboard.html';
+                new Notification('Success', 'Logging in...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../app/dashboard.html';
+                }, 1000);
             } catch (error) {
                 new Notification('Error', error.message, 'error');
             }
+        });
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            themeManager.toggle();
         });
     </script>
 </body>

@@ -10,167 +10,589 @@
     <link rel="stylesheet" href="../../../src/css/custom.css">
     
     <style>
-        body { background: linear-gradient(135deg, #0f172a 0%, #1f3a3f 100%); }
-        .sidebar { background: linear-gradient(180deg, #1f5a3d 0%, #0d2a1a 100%); border-right: 2px solid #fbbf24; }
-        .menu-item { transition: all 0.2s ease; border-left: 3px solid transparent; }
-        .menu-item:hover { background-color: rgba(251, 191, 36, 0.1); border-left-color: #fbbf24; }
-        .menu-item.active { background-color: rgba(251, 191, 36, 0.2); border-left-color: #fbbf24; }
-        .stat-box { background: linear-gradient(135deg, rgba(31, 90, 61, 0.3), rgba(10, 41, 26, 0.2)); border: 1px solid rgba(251, 191, 36, 0.3); border-top: 3px solid #fbbf24; }
-        .btn-primary { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #1f5a3d; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3); }
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --green-dark: #1f5a3d;
+            --green-main: #2a7f56;
+            --yellow-main: #fbbf24;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+        }
+
+        body {
+            background-color: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Responsive Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--green-dark) 0%, var(--green-main) 100%);
+            color: white;
+            overflow-y: auto;
+            z-index: 40;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .topbar {
+            display: none;
+            background-color: var(--bg-primary);
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            gap: 1rem;
+        }
+
+        .menu-icon {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .logo-mobile {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            color: var(--green-dark);
+        }
+
+        /* Mobile Menu */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                bottom: 0;
+                transform: translateY(100%);
+                border-radius: 1rem 1rem 0 0;
+                z-index: 50;
+            }
+
+            .sidebar.hidden {
+                transform: translateY(100%);
+            }
+
+            .sidebar.visible {
+                transform: translateY(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-bottom: 6rem;
+            }
+
+            .topbar {
+                display: flex;
+            }
+
+            .menu-icon {
+                display: block;
+            }
+
+            .logo-mobile {
+                display: flex;
+            }
+
+            .sidebar-nav {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                gap: 0.5rem;
+                padding: 1rem;
+            }
+
+            .sidebar-nav a {
+                padding: 0.75rem;
+                text-align: center;
+                font-size: 0.875rem;
+                border-radius: 0.5rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+            }
+
+            .sidebar-nav a:hover {
+                background-color: rgba(251, 191, 36, 0.2);
+            }
+
+            .sidebar-nav a.active {
+                background-color: rgba(251, 191, 36, 0.2);
+                border-bottom: 3px solid var(--yellow-main);
+            }
+
+            .sidebar-header, .sidebar-user, .sidebar-logout {
+                display: none;
+            }
+
+            h1 { font-size: 1.5rem; }
+            h2 { font-size: 1.25rem; }
+            .grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-cols-3 { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 0.75rem;
+            }
+
+            .grid-cols-2 { grid-template-columns: 1fr; }
+        }
+
+        /* Sidebar Styles */
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .sidebar-header a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-header a:hover {
+            opacity: 0.8;
+        }
+
+        .sidebar-icon {
+            font-size: 1.75rem;
+            color: var(--yellow-main);
+        }
+
+        .sidebar-user {
+            padding: 1rem 1.5rem;
+            background-color: rgba(251, 191, 36, 0.1);
+            border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--yellow-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--green-dark);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .user-info p {
+            margin: 0;
+            color: white;
+            font-size: 0.875rem;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-nav a:hover {
+            background-color: rgba(251, 191, 36, 0.1);
+            border-left-color: var(--yellow-main);
+            color: white;
+        }
+
+        .sidebar-nav a.active {
+            background-color: rgba(251, 191, 36, 0.15);
+            border-left-color: var(--yellow-main);
+            color: white;
+        }
+
+        .sidebar-logout {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 1rem;
+            border-top: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .btn-logout {
+            width: 100%;
+            background-color: rgba(239, 68, 68, 0.2);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background-color: rgba(239, 68, 68, 0.3);
+        }
+
+        /* Dashboard Grid */
+        .stat-card {
+            background-color: var(--bg-primary);
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .stat-card {
+            border-color: #475569;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+            border-color: var(--green-main);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--green-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-subtext {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        .page-title p {
+            margin: 0.5rem 0 0 0;
+            color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            color: var(--green-main);
+            transform: scale(1.1);
+        }
+
+        /* Quick Actions */
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            background-color: var(--bg-primary);
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .action-btn {
+            border-color: #475569;
+        }
+
+        .action-btn:hover {
+            border-color: var(--yellow-main);
+            box-shadow: 0 10px 25px -5px rgba(251, 191, 36, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            font-size: 1.75rem;
+            color: var(--yellow-main);
+        }
+
+        .action-text {
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        /* Alert */
+        .alert-banner {
+            background-color: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--yellow-main);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .alert-icon {
+            color: var(--yellow-main);
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-content strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .alert-content p {
+            margin: 0;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
+    <!-- Mobile Topbar -->
+    <div class="topbar">
+        <button class="menu-icon" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo-mobile">
+            <i class="fas fa-bolt" style="color: var(--yellow-main); font-size: 1.25rem;"></i>
+            <span>SmartLUKU</span>
+        </div>
+        <button class="theme-toggle" id="themeToggleBtn" data-theme-icon>
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
     <!-- Sidebar Navigation -->
-    <div class="sidebar fixed left-0 top-0 w-64 h-screen text-white overflow-y-auto z-30">
-        <!-- Logo Section -->
-        <div class="p-6 border-b border-yellow-400 border-opacity-20">
-            <a href="../../index.html" class="flex items-center gap-3 hover:opacity-80 transition">
-                <i class="fas fa-bolt text-yellow-400 text-2xl"></i>
+    <div class="sidebar hidden" id="sidebar">
+        <!-- Logo -->
+        <div class="sidebar-header">
+            <a href="../../index.html">
+                <i class="fas fa-bolt sidebar-icon"></i>
                 <div>
-                    <div class="text-lg font-bold">SmartLUKU</div>
-                    <div class="text-xs text-gray-300">TANESCO Portal</div>
+                    <div style="font-size: 1.1rem; line-height: 1;">SmartLUKU</div>
+                    <div style="font-size: 0.75rem; opacity: 0.8;">TANESCO Portal</div>
                 </div>
             </a>
         </div>
 
-        <!-- User Info Section -->
-        <div class="bg-green-900 bg-opacity-20 p-4 border-b border-yellow-400 border-opacity-20">
-            <div class="flex items-center gap-3 mb-2">
-                <div class="w-10 h-10 bg-yellow-400 text-green-900 rounded-full flex items-center justify-center font-bold text-sm">
-                    <span id="userInitial">D</span>
-                </div>
-                <div class="text-xs">
-                    <p id="userFullName" class="font-semibold text-sm"></p>
-                    <p id="userMeterNumber" class="text-gray-300 font-mono">—</p>
-                </div>
+        <!-- User Profile -->
+        <div class="sidebar-user flex items-center gap-3">
+            <div class="user-avatar" id="userInitial">D</div>
+            <div class="user-info flex-1">
+                <p id="userFullName" style="font-weight: 600;">User</p>
+                <p id="userMeterNumber" style="opacity: 0.8;">—</p>
             </div>
         </div>
 
         <!-- Navigation Menu -->
-        <nav class="p-4 space-y-2">
-            <a href="./dashboard.html" class="menu-item active w-full text-left px-4 py-3 rounded-lg flex items-center gap-3">
-                <i class="fas fa-home w-5"></i> <span>Dashboard</span>
+        <nav class="sidebar-nav">
+            <a href="./dashboard.html" class="active">
+                <i class="fas fa-home" style="width: 20px; text-align: center;"></i>
+                <span>Dashboard</span>
             </a>
-            <a href="./payment.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
-                <i class="fas fa-credit-card w-5"></i> <span>Pay Bill</span>
+            <a href="./payment.html">
+                <i class="fas fa-credit-card" style="width: 20px; text-align: center;"></i>
+                <span>Pay Bill</span>
             </a>
-            <a href="./monitoring.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
-                <i class="fas fa-chart-line w-5"></i> <span>Monitoring</span>
+            <a href="./monitoring.html">
+                <i class="fas fa-chart-line" style="width: 20px; text-align: center;"></i>
+                <span>Monitoring</span>
             </a>
-            <a href="./history.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
-                <i class="fas fa-history w-5"></i> <span>History</span>
+            <a href="./history.html">
+                <i class="fas fa-history" style="width: 20px; text-align: center;"></i>
+                <span>History</span>
             </a>
-            <a href="./analytics.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
-                <i class="fas fa-chart-bar w-5"></i> <span>Analytics</span>
+            <a href="./analytics.html">
+                <i class="fas fa-chart-bar" style="width: 20px; text-align: center;"></i>
+                <span>Analytics</span>
             </a>
-            <a href="./settings.html" class="menu-item w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-green-800 hover:bg-opacity-20">
-                <i class="fas fa-cog w-5"></i> <span>Settings</span>
+            <a href="./settings.html">
+                <i class="fas fa-cog" style="width: 20px; text-align: center;"></i>
+                <span>Settings</span>
             </a>
         </nav>
 
-        <!-- Logout -->
-        <div class="p-4 border-t border-yellow-400 border-opacity-20">
-            <button onclick="logout()" class="w-full px-4 py-3 rounded-lg flex items-center gap-3 hover:bg-red-600 hover:bg-opacity-20 transition">
-                <i class="fas fa-sign-out-alt w-5"></i> <span>Sign Out</span>
+        <!-- Logout Button -->
+        <div class="sidebar-logout">
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Sign Out
             </button>
         </div>
     </div>
 
     <!-- Main Content -->
-    <div class="ml-64 p-8">
-        <!-- Top Navigation Bar -->
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-3xl font-bold text-white">Dashboard</h1>
-                <p class="text-gray-400">Welcome to SmartLUKU</p>
+    <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>Dashboard</h1>
+                <p>Welcome back! Here's your electricity overview</p>
             </div>
-            <div class="flex items-center gap-4">
-                <button class="p-3 rounded-lg bg-green-900 bg-opacity-20 hover:bg-opacity-40 transition text-yellow-400">
-                    <i class="fas fa-bell"></i>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle" data-theme-icon>
+                    <i class="fas fa-moon"></i>
                 </button>
-                <button onclick="logout()" class="px-4 py-2 rounded-lg btn-primary font-semibold">Sign Out</button>
+                <a href="../../index.html" class="btn btn-sm btn-secondary">Home</a>
             </div>
         </div>
 
-        <!-- Alerts Section -->
-        <div id="alerts" class="mb-8"></div>
+        <!-- Alert Section -->
+        <div id="alerts"></div>
 
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="stat-box p-6 rounded-lg">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-400 text-sm mb-2">Current Balance</p>
-                        <p class="text-3xl font-bold text-yellow-400" id="balanceDisplay">0 kWh</p>
-                    </div>
-                    <i class="fas fa-battery-full text-4xl text-yellow-400 opacity-20"></i>
-                </div>
+        <!-- Statistics Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Current Balance -->
+            <div class="stat-card">
+                <div class="stat-label">Current Balance</div>
+                <div class="stat-value" id="balanceDisplay">0 kWh</div>
+                <div class="stat-subtext">Available units</div>
             </div>
 
-            <div class="stat-box p-6 rounded-lg">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-400 text-sm mb-2">Today's Usage</p>
-                        <p class="text-3xl font-bold text-green-400" id="todayUsage">0 kWh</p>
-                    </div>
-                    <i class="fas fa-plug text-4xl text-green-400 opacity-20"></i>
-                </div>
+            <!-- Today's Usage -->
+            <div class="stat-card">
+                <div class="stat-label">Today's Usage</div>
+                <div style="font-size: 2rem; font-weight: 700; color: #10b981; margin-bottom: 0.5rem;" id="todayUsage">0 kWh</div>
+                <div class="stat-subtext">Current consumption</div>
             </div>
 
-            <div class="stat-box p-6 rounded-lg">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-400 text-sm mb-2">This Month</p>
-                        <p class="text-3xl font-bold text-blue-400" id="monthUsage">0 kWh</p>
-                    </div>
-                    <i class="fas fa-chart-line text-4xl text-blue-400 opacity-20"></i>
-                </div>
+            <!-- Monthly Usage -->
+            <div class="stat-card">
+                <div class="stat-label">This Month</div>
+                <div style="font-size: 2rem; font-weight: 700; color: #3b82f6; margin-bottom: 0.5rem;" id="monthUsage">0 kWh</div>
+                <div class="stat-subtext">Total usage</div>
             </div>
 
-            <div class="stat-box p-6 rounded-lg">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-400 text-sm mb-2">Status</p>
-                        <p class="text-lg font-bold text-green-400" id="status">Connected</p>
-                    </div>
-                    <i class="fas fa-check-circle text-4xl text-green-400 opacity-20"></i>
-                </div>
+            <!-- Status -->
+            <div class="stat-card">
+                <div class="stat-label">Connection Status</div>
+                <div style="font-size: 2rem; font-weight: 700; color: #10b981; margin-bottom: 0.5rem;" id="status">Connected</div>
+                <div class="stat-subtext">System operational</div>
             </div>
         </div>
 
         <!-- Quick Actions -->
-        <div class="mb-8">
-            <h2 class="text-xl font-bold text-white mb-4">Quick Actions</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <a href="./payment.html" class="p-6 rounded-lg border border-yellow-400 border-opacity-30 hover:border-opacity-100 hover:bg-yellow-400 hover:bg-opacity-10 transition">
-                    <i class="fas fa-credit-card text-2xl text-yellow-400 mb-3"></i>
-                    <p class="font-semibold text-white">Pay Bill</p>
-                    <p class="text-xs text-gray-400 mt-1">Top-up instantly</p>
+        <div style="margin-bottom: 2rem;">
+            <h2 style="margin-bottom: 1rem;">Quick Actions</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                <a href="./payment.html" class="action-btn">
+                    <div class="action-icon">💳</div>
+                    <div class="action-text">Pay Bill</div>
                 </a>
-                <a href="./monitoring.html" class="p-6 rounded-lg border border-yellow-400 border-opacity-30 hover:border-opacity-100 hover:bg-yellow-400 hover:bg-opacity-10 transition">
-                    <i class="fas fa-chart-line text-2xl text-yellow-400 mb-3"></i>
-                    <p class="font-semibold text-white">Real-time Monitor</p>
-                    <p class="text-xs text-gray-400 mt-1">Check consumption</p>
+                <a href="./monitoring.html" class="action-btn">
+                    <div class="action-icon">📊</div>
+                    <div class="action-text">Monitor</div>
                 </a>
-                <a href="./settings.html" class="p-6 rounded-lg border border-yellow-400 border-opacity-30 hover:border-opacity-100 hover:bg-yellow-400 hover:bg-opacity-10 transition">
-                    <i class="fas fa-bell text-2xl text-yellow-400 mb-3"></i>
-                    <p class="font-semibold text-white">Alerts</p>
-                    <p class="text-xs text-gray-400 mt-1">Manage preferences</p>
+                <a href="./analytics.html" class="action-btn">
+                    <div class="action-icon">📈</div>
+                    <div class="action-text">Analytics</div>
+                </a>
+                <a href="./settings.html" class="action-btn">
+                    <div class="action-icon">⚙️</div>
+                    <div class="action-text">Settings</div>
                 </a>
             </div>
         </div>
 
         <!-- Recent Transactions -->
-        <div class="bg-green-900 bg-opacity-10 border border-green-600 border-opacity-30 rounded-lg p-6">
-            <h2 class="text-xl font-bold text-white mb-4">Recent Transactions</h2>
-            <div id="transactionsList" class="space-y-3">
-                <p class="text-gray-400">Loading transactions...</p>
-            </div>
+        <div style="background-color: var(--bg-primary); border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.5rem; overflow-x: auto;">
+            <h2 style="margin-top: 0;">Recent Transactions</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #e5e7eb;">
+                        <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 0.875rem;">Date</th>
+                        <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 0.875rem;">Type</th>
+                        <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 0.875rem;">Description</th>
+                        <th style="padding: 1rem; text-align: right; font-weight: 600; color: var(--text-secondary); font-size: 0.875rem;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionsList">
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                            <i class="fas fa-spinner fa-spin"></i> Loading transactions...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
+    </main>
 
     <script src="../../../src/js/core/utils.js"></script>
+    <script src="../../../src/js/core/theme.js"></script>
     <script src="../../../src/js/core/auth.js"></script>
     <script src="../../../src/js/core/data.js"></script>
 
@@ -187,7 +609,6 @@
         document.getElementById('userFullName').textContent = user.fullName || 'User';
         document.getElementById('userMeterNumber').textContent = user.meter;
 
-        // Load dashboard data
         const userData = dataManager.getUserData(user.meter);
         document.getElementById('balanceDisplay').textContent = userData.balance.toFixed(2) + ' kWh';
         document.getElementById('todayUsage').textContent = userData.todayUsage.toFixed(2) + ' kWh';
@@ -198,32 +619,61 @@
         const transactionsList = document.getElementById('transactionsList');
         if (transactions.length > 0) {
             transactionsList.innerHTML = transactions.slice(0, 5).map(t => `
-                <div class="flex justify-between items-center p-3 bg-gray-800 bg-opacity-30 rounded-lg">
-                    <div>
-                        <p class="font-semibold text-white">${t.type === 'payment' ? 'Payment' : 'Usage'}</p>
-                        <p class="text-xs text-gray-400">${new Date(t.date).toLocaleDateString()}</p>
-                    </div>
-                    <p class="font-bold ${t.type === 'payment' ? 'text-green-400' : 'text-red-400'}">
+                <tr style="border-bottom: 1px solid #e5e7eb;">
+                    <td style="padding: 1rem;">${new Date(t.date).toLocaleDateString()}</td>
+                    <td style="padding: 1rem;">
+                        <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; background-color: ${t.type === 'payment' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(59, 130, 246, 0.1)'}; color: ${t.type === 'payment' ? '#10b981' : '#3b82f6'};">
+                            ${t.type === 'payment' ? 'Payment' : 'Usage'}
+                        </span>
+                    </td>
+                    <td style="padding: 1rem;">${t.description || '—'}</td>
+                    <td style="padding: 1rem; text-align: right; font-weight: 600; color: ${t.type === 'payment' ? '#10b981' : '#ef4444'};">
                         ${t.type === 'payment' ? '+' : '-'}${t.amount} kWh
-                    </p>
-                </div>
+                    </td>
+                </tr>
             `).join('');
         } else {
-            transactionsList.innerHTML = '<p class="text-gray-400">No transactions yet</p>';
+            transactionsList.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No transactions yet</td></tr>';
         }
 
         // Low balance alert
         if (userData.balance < 10) {
             document.getElementById('alerts').innerHTML = `
-                <div class="bg-orange-900 bg-opacity-30 border border-orange-600 border-opacity-50 rounded-lg p-4 flex items-center gap-3">
-                    <i class="fas fa-exclamation-triangle text-orange-400 text-xl"></i>
-                    <div>
-                        <p class="font-semibold text-orange-300">Low Balance Alert</p>
-                        <p class="text-sm text-orange-200">Your balance is below 10 kWh. Please top-up to avoid disconnection.</p>
+                <div class="alert-banner">
+                    <i class="fas fa-exclamation-triangle alert-icon"></i>
+                    <div class="alert-content">
+                        <strong>Low Balance Alert</strong>
+                        <p>Your balance is below 10 kWh. Please top-up to avoid disconnection.</p>
                     </div>
                 </div>
             `;
         }
+
+        // Theme Toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            themeManager.toggle();
+        });
+
+        document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+            themeManager.toggle();
+        });
+
+        // Mobile Menu Toggle
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+        mobileMenuBtn?.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('visible');
+        });
+
+        // Close menu on navigation
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('visible');
+            });
+        });
 
         function logout() {
             authManager.logout();
