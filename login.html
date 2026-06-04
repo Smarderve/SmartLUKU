@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #1f5a3d 0%, #2d7d54 100%);
             min-height: 100vh;
             display: flex;
@@ -17,29 +17,34 @@
             padding: 1rem;
         }
         
-        .login-container {
+        .login-box {
             background: white;
             border-radius: 1rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 420px;
             width: 100%;
-            padding: 2rem;
+            padding: 2.5rem;
         }
         
-        .logo {
+        .login-header {
             text-align: center;
             margin-bottom: 2rem;
         }
         
-        .logo h1 {
-            font-size: 2rem;
+        .login-header h1 {
+            font-size: 2.2rem;
             color: #1f5a3d;
             margin-bottom: 0.5rem;
         }
         
-        .logo p {
+        .login-header i {
+            color: #fbbf24;
+            margin-right: 0.5rem;
+        }
+        
+        .login-header p {
             color: #6b7280;
-            font-size: 0.875rem;
+            font-size: 0.95rem;
         }
         
         .form-group {
@@ -48,14 +53,14 @@
         
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
             font-weight: 500;
             color: #111827;
         }
         
         .form-group input {
             width: 100%;
-            padding: 0.875rem;
+            padding: 0.9rem;
             border: 1px solid #e5e7eb;
             border-radius: 0.5rem;
             font-size: 1rem;
@@ -68,88 +73,98 @@
             box-shadow: 0 0 0 3px rgba(31, 90, 61, 0.1);
         }
         
-        .remember-forgot {
+        .form-options {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
         }
         
-        .remember-forgot label {
+        .form-options label {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             cursor: pointer;
+            margin: 0;
         }
         
-        .remember-forgot a {
+        .form-options a {
             color: #1f5a3d;
             text-decoration: none;
         }
         
-        .remember-forgot a:hover {
+        .form-options a:hover {
             text-decoration: underline;
         }
         
         .btn-login {
             width: 100%;
-            padding: 0.875rem;
+            padding: 0.95rem;
             background: linear-gradient(135deg, #1f5a3d 0%, #2d7d54 100%);
             color: white;
             border: none;
             border-radius: 0.5rem;
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         
         .btn-login:hover {
             opacity: 0.9;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(31, 90, 61, 0.3);
         }
         
         .divider {
             text-align: center;
             margin-bottom: 1.5rem;
-            font-size: 0.875rem;
-            color: #6b7280;
+            color: #9ca3af;
+            font-size: 0.9rem;
         }
         
-        .signup-prompt {
+        .signup-section {
             text-align: center;
-            font-size: 0.875rem;
+            font-size: 0.95rem;
         }
         
-        .signup-prompt a {
+        .signup-section a {
             color: #1f5a3d;
             text-decoration: none;
             font-weight: 600;
         }
         
-        .signup-prompt a:hover {
+        .signup-section a:hover {
             text-decoration: underline;
         }
         
-        @media (max-width: 640px) {
-            .login-container {
-                padding: 1.5rem;
-            }
-            
-            .logo h1 {
-                font-size: 1.5rem;
-            }
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+            border: 1px solid #fca5a5;
+        }
+        
+        @media (max-width: 480px) {
+            .login-box { padding: 1.5rem; }
+            .login-header h1 { font-size: 1.75rem; }
+            .form-options { flex-direction: column; gap: 0.75rem; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo">
+    <div class="login-box">
+        <div class="login-header">
             <h1><i class="fas fa-lightning-bolt"></i> SmartLUKU</h1>
             <p>TANESCO Electricity Management</p>
         </div>
+        
+        <div class="error" id="errorMsg"></div>
         
         <form onsubmit="handleLogin(event)">
             <div class="form-group">
@@ -162,10 +177,9 @@
                 <input type="password" id="password" placeholder="Enter your password" required>
             </div>
             
-            <div class="remember-forgot">
+            <div class="form-options">
                 <label>
-                    <input type="checkbox">
-                    Remember me
+                    <input type="checkbox"> Remember me
                 </label>
                 <a href="#">Forgot password?</a>
             </div>
@@ -175,21 +189,42 @@
         
         <div class="divider">or</div>
         
-        <div class="signup-prompt">
-            Don't have an account? <a href="register.html">Sign up</a>
+        <div class="signup-section">
+            Don't have an account? <a href="register.html">Create one</a>
         </div>
     </div>
     
     <script>
         function handleLogin(event) {
             event.preventDefault();
-            const meter = document.getElementById('meter').value;
+            const meter = document.getElementById('meter').value.trim();
             const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
             
-            if (meter && password) {
-                localStorage.setItem('user', meter);
-                window.location.href = 'app.html';
+            // Simple validation
+            if (!meter || !password) {
+                showError('Please fill in all fields');
+                return;
             }
+            
+            if (password.length < 4) {
+                showError('Password must be at least 4 characters');
+                return;
+            }
+            
+            // Store user info and redirect
+            localStorage.setItem('smartluku-user', meter);
+            localStorage.setItem('smartluku-theme', 'light');
+            window.location.href = 'app.html';
+        }
+        
+        function showError(msg) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = msg;
+            errorMsg.style.display = 'block';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 4000);
         }
     </script>
 </body>

@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartLUKU - TANESCO Electricity Management</title>
+    <title>SmartLUKU - TANESCO Electricity Management Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            color: #111827;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
+            color: #111827;
         }
         
         /* Navigation */
@@ -18,184 +18,352 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 2rem;
+            padding: 1.5rem 3rem;
             background: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
         }
         
-        .logo { font-size: 1.5rem; font-weight: 700; color: #1f5a3d; }
-        .logo i { color: #fbbf24; margin-right: 0.5rem; }
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1f5a3d;
+        }
         
-        .nav-links { display: flex; gap: 2rem; }
-        .nav-links a { text-decoration: none; color: #111827; transition: 0.2s; }
-        .nav-links a:hover { color: #1f5a3d; }
+        .logo i {
+            color: #fbbf24;
+            margin-right: 0.5rem;
+        }
         
-        .btn-group { display: flex; gap: 1rem; }
-        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; cursor: pointer; text-decoration: none; font-weight: 600; transition: all 0.2s; }
-        .btn-primary { background: linear-gradient(135deg, #1f5a3d 0%, #2d7d54 100%); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
-        .btn-secondary { background: transparent; color: #1f5a3d; border: 2px solid #1f5a3d; }
-        .btn-secondary:hover { background: #f0fdf4; }
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: #111827;
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: #1f5a3d;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.95rem;
+        }
+        
+        .btn-login {
+            background: transparent;
+            color: #1f5a3d;
+            border: 2px solid #1f5a3d;
+        }
+        
+        .btn-login:hover {
+            background: #f0fdf4;
+        }
+        
+        .btn-signup {
+            background: linear-gradient(135deg, #1f5a3d 0%, #2d7d54 100%);
+            color: white;
+        }
+        
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(31, 90, 61, 0.3);
+        }
         
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, #1f5a3d 0%, #2d7d54 100%);
             color: white;
-            padding: 4rem 2rem;
+            padding: 5rem 3rem;
             text-align: center;
         }
         
-        .hero h1 { font-size: 3rem; margin-bottom: 1rem; line-height: 1.2; }
-        .hero p { font-size: 1.25rem; margin-bottom: 2rem; opacity: 0.95; }
-        .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
         
-        /* Features Grid */
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-hero {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+        }
+        
+        .btn-hero-primary {
+            background: white;
+            color: #1f5a3d;
+        }
+        
+        .btn-hero-primary:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+        }
+        
+        .btn-hero-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-hero-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Features Section */
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            padding: 4rem 2rem;
-            max-width: 1200px;
+            padding: 5rem 3rem;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
         .feature-card {
             background: white;
             border-radius: 1rem;
-            padding: 2rem;
+            padding: 2.5rem;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             transition: all 0.3s;
+            border: 1px solid #f3f4f6;
         }
         
-        .feature-card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
-        .feature-icon { font-size: 3rem; color: #fbbf24; margin-bottom: 1rem; }
-        .feature-card h3 { font-size: 1.25rem; margin-bottom: 0.75rem; color: #1f5a3d; }
-        .feature-card p { color: #6b7280; }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(31, 90, 61, 0.15);
+        }
+        
+        .feature-icon {
+            font-size: 3.5rem;
+            color: #fbbf24;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.35rem;
+            color: #1f5a3d;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
         
         /* Demo Section */
-        .demo-section {
+        .demo {
             background: #f9fafb;
-            padding: 4rem 2rem;
+            padding: 5rem 3rem;
         }
         
         .demo-content {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
         .demo-content h2 {
             text-align: center;
-            font-size: 2rem;
-            margin-bottom: 3rem;
+            font-size: 2.5rem;
             color: #1f5a3d;
+            margin-bottom: 3rem;
         }
         
         .demo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
         
-        .demo-item {
-            background: white;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        
-        .demo-item-phone {
+        .phone-mockup {
             aspect-ratio: 9/16;
-            background: linear-gradient(135deg, #000 0%, #333 100%);
-            border-radius: 2.5rem;
-            padding: 1rem;
+            background: #000;
+            border-radius: 3rem;
+            padding: 0.75rem;
             position: relative;
         }
         
-        .demo-item-phone::before {
+        .phone-mockup::before {
             content: '';
             position: absolute;
-            top: -15px;
+            top: -18px;
             left: 50%;
             transform: translateX(-50%);
-            width: 150px;
-            height: 25px;
+            width: 160px;
+            height: 28px;
             background: #000;
             border-radius: 0 0 2rem 2rem;
+            z-index: 10;
         }
         
-        .demo-item-phone-content {
+        .phone-content {
             width: 100%;
             height: 100%;
             background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-            border-radius: 1.5rem;
+            border-radius: 2.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 1rem;
             text-align: center;
+            color: #1f5a3d;
         }
         
-        .demo-item-phone i { font-size: 3rem; color: #1f5a3d; margin-bottom: 0.75rem; }
-        .demo-item-phone-label { font-size: 0.875rem; color: #1f5a3d; font-weight: 600; }
+        .phone-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: #1f5a3d;
+        }
         
-        .demo-item-description {
+        .phone-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        
+        .demo-description {
             background: white;
             border-radius: 1rem;
-            padding: 1.5rem;
+            padding: 2rem;
+            border: 1px solid #f3f4f6;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
         
-        .demo-item-description h4 { color: #1f5a3d; margin-bottom: 0.75rem; font-size: 1.125rem; }
-        .demo-item-description p { color: #6b7280; font-size: 0.95rem; }
+        .demo-description h4 {
+            color: #1f5a3d;
+            font-size: 1.35rem;
+            margin-bottom: 1rem;
+        }
+        
+        .demo-description p {
+            color: #6b7280;
+            line-height: 1.7;
+        }
         
         /* CTA Section */
-        .cta-section {
+        .cta {
             background: linear-gradient(135deg, #1f5a3d 0%, #2d7d54 100%);
             color: white;
-            padding: 4rem 2rem;
+            padding: 4rem 3rem;
             text-align: center;
         }
         
-        .cta-section h2 { font-size: 2rem; margin-bottom: 1.5rem; }
-        .cta-section p { font-size: 1.125rem; margin-bottom: 2rem; opacity: 0.95; }
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
         
         /* Footer */
         footer {
             background: #1f2937;
             color: white;
-            padding: 2rem;
+            padding: 2rem 3rem;
             text-align: center;
-            font-size: 0.875rem;
+            font-size: 0.95rem;
         }
         
-        footer a { color: #fbbf24; text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
+        footer a {
+            color: #fbbf24;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
         
         /* Mobile Responsive */
         @media (max-width: 768px) {
-            nav { flex-direction: column; gap: 1rem; }
-            .nav-links { flex-direction: column; gap: 1rem; text-align: center; }
-            .hero h1 { font-size: 2rem; }
-            .hero p { font-size: 1rem; }
-            .hero-buttons { flex-direction: column; }
-            .demo-grid { grid-template-columns: 1fr; }
-            .cta-section h2 { font-size: 1.5rem; }
-        }
-        
-        @media (max-width: 480px) {
-            .logo { font-size: 1.25rem; }
-            .hero { padding: 2rem 1rem; }
-            .hero h1 { font-size: 1.5rem; }
-            .features { padding: 2rem 1rem; gap: 1.5rem; }
-            .btn { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
+            nav {
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 1.5rem 1rem;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .hero {
+                padding: 3rem 1.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn-hero {
+                width: 100%;
+            }
+            
+            .features,
+            .demo {
+                padding: 3rem 1.5rem;
+            }
+            
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta {
+                padding: 3rem 1.5rem;
+            }
         }
     </style>
 </head>
@@ -205,12 +373,12 @@
         <div class="logo"><i class="fas fa-lightning-bolt"></i> SmartLUKU</div>
         <div class="nav-links">
             <a href="#features">Features</a>
-            <a href="#demo">Demo</a>
-            <a href="#about">About</a>
+            <a href="#demo">How It Works</a>
+            <a href="#contact">About</a>
         </div>
-        <div class="btn-group">
-            <a href="login.html" class="btn btn-secondary">Login</a>
-            <a href="register.html" class="btn btn-primary">Sign Up</a>
+        <div class="nav-buttons">
+            <a href="login.html" class="btn btn-login">Login</a>
+            <a href="register.html" class="btn btn-signup">Sign Up</a>
         </div>
     </nav>
     
@@ -219,8 +387,8 @@
         <h1>Manage Your Electricity Smarter</h1>
         <p>Real-time monitoring, instant payments, and complete control of your TANESCO account</p>
         <div class="hero-buttons">
-            <a href="register.html" class="btn btn-primary">Get Started</a>
-            <a href="#demo" class="btn" style="background: rgba(255,255,255,0.2); color: white;">See Demo</a>
+            <a href="register.html" class="btn btn-hero btn-hero-primary">Get Started Free</a>
+            <a href="#demo" class="btn btn-hero btn-hero-secondary">See How It Works</a>
         </div>
     </section>
     
@@ -264,69 +432,57 @@
     </section>
     
     <!-- Demo Section -->
-    <section class="demo-section" id="demo">
+    <section class="demo" id="demo">
         <div class="demo-content">
             <h2>How SmartLUKU Works</h2>
             
             <div class="demo-grid">
-                <div>
-                    <div class="demo-item-phone">
-                        <div class="demo-item-phone-content">
-                            <i class="fas fa-mobile-alt"></i>
-                            <div class="demo-item-phone-label">Check Balance</div>
-                        </div>
+                <div class="phone-mockup">
+                    <div class="phone-content">
+                        <div class="phone-icon"><i class="fas fa-battery-three-quarters"></i></div>
+                        <div class="phone-label">Check Balance</div>
                     </div>
                 </div>
-                
-                <div class="demo-item-description">
+                <div class="demo-description">
                     <h4>1. Check Your Balance</h4>
                     <p>View your current electricity units and account status instantly. Know exactly how much credit you have left before running out.</p>
                 </div>
             </div>
             
             <div class="demo-grid" style="direction: rtl;">
-                <div>
-                    <div class="demo-item-phone">
-                        <div class="demo-item-phone-content">
-                            <i class="fas fa-credit-card"></i>
-                            <div class="demo-item-phone-label">Make Payment</div>
-                        </div>
+                <div class="phone-mockup">
+                    <div class="phone-content">
+                        <div class="phone-icon"><i class="fas fa-credit-card"></i></div>
+                        <div class="phone-label">Fast Payment</div>
                     </div>
                 </div>
-                
-                <div class="demo-item-description" style="direction: ltr;">
+                <div class="demo-description" style="direction: ltr;">
                     <h4>2. Fast & Secure Payments</h4>
                     <p>Pay for electricity using your preferred method - mobile money, bank card, or direct transfer. Payments are processed instantly.</p>
                 </div>
             </div>
             
             <div class="demo-grid">
-                <div>
-                    <div class="demo-item-phone">
-                        <div class="demo-item-phone-content">
-                            <i class="fas fa-chart-line"></i>
-                            <div class="demo-item-phone-label">Monitor Usage</div>
-                        </div>
+                <div class="phone-mockup">
+                    <div class="phone-content">
+                        <div class="phone-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="phone-label">Monitor Usage</div>
                     </div>
                 </div>
-                
-                <div class="demo-item-description">
+                <div class="demo-description">
                     <h4>3. Monitor Real-time Usage</h4>
                     <p>Track your consumption patterns with detailed analytics. Identify peak usage times and take control of your electricity bill.</p>
                 </div>
             </div>
             
             <div class="demo-grid" style="direction: rtl;">
-                <div>
-                    <div class="demo-item-phone">
-                        <div class="demo-item-phone-content">
-                            <i class="fas fa-bell"></i>
-                            <div class="demo-item-phone-label">Get Alerts</div>
-                        </div>
+                <div class="phone-mockup">
+                    <div class="phone-content">
+                        <div class="phone-icon"><i class="fas fa-bell"></i></div>
+                        <div class="phone-label">Smart Alerts</div>
                     </div>
                 </div>
-                
-                <div class="demo-item-description" style="direction: ltr;">
+                <div class="demo-description" style="direction: ltr;">
                     <h4>4. Smart Notifications</h4>
                     <p>Receive alerts when your balance is running low so you never face unexpected power disconnections.</p>
                 </div>
@@ -335,15 +491,15 @@
     </section>
     
     <!-- CTA Section -->
-    <section class="cta-section" id="about">
+    <section class="cta" id="contact">
         <h2>Ready to Take Control?</h2>
         <p>Join thousands of Tanzanian households managing their electricity smarter with SmartLUKU</p>
-        <a href="register.html" class="btn btn-primary">Create Your Account Now</a>
+        <a href="register.html" class="btn btn-hero btn-hero-primary">Create Your Account Now</a>
     </section>
     
     <!-- Footer -->
     <footer>
-        <p>&copy; 2024 SmartLUKU. Empowering Tanzanian households. | <a href="#">Privacy</a> | <a href="#">Terms</a></p>
+        <p>&copy; 2024 SmartLUKU. Empowering Tanzanian households. | <a href="#">Privacy</a> | <a href="#">Terms</a> | <a href="#">Contact</a></p>
     </footer>
 </body>
 </html>
