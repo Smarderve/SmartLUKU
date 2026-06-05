@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartLUKU - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -16,6 +14,7 @@
             --accent: #fbbf24;
             --secondary: #10b981;
             --bg: #ffffff;
+            --bg-light: #f3f4f6;
             --card-bg: #f9fafb;
             --text: #111827;
             --text-light: #6b7280;
@@ -29,6 +28,7 @@
         /* CSS Variables - Dark Mode */
         html[data-theme="dark"] {
             --bg: #0f172a;
+            --bg-light: #243047;
             --card-bg: #1e293b;
             --text: #f1f5f9;
             --text-light: #cbd5e1;
@@ -242,12 +242,136 @@
             border: 1px solid rgba(16, 185, 129, 0.2);
         }
         
-        /* Map Container */
-        #networkMap {
-            height: 500px;
+        /* ===== Neuron Network Map ===== */
+        .map-layout {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 1.25rem;
+            align-items: stretch;
+        }
+        .map-canvas-card { padding: 1rem; }
+        .map-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .map-control-group { display: flex; align-items: center; gap: 0.5rem; }
+        .map-control-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .map-control-group select {
+            padding: 0.45rem 0.7rem;
             border-radius: 0.5rem;
-            margin-bottom: 1rem;
             border: 1px solid var(--border);
+            background: var(--input-bg);
+            color: var(--text);
+            font-size: 0.85rem;
+        }
+        .map-legend-inline { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .legend-pill { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; color: var(--text-light); }
+        .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+        .dot-operational { background: #10b981; }
+        .dot-maintenance { background: #f59e0b; }
+        .dot-down { background: #ef4444; }
+        .dot-user { background: #fbbf24; box-shadow: 0 0 0 2px rgba(251,191,36,0.35); }
+
+        #neuronMap {
+            position: relative;
+            height: 540px;
+            border-radius: 0.6rem;
+            border: 1px solid var(--border);
+            background:
+                radial-gradient(circle at 50% 45%, rgba(31,90,61,0.10), transparent 60%),
+                var(--card-bg);
+            overflow: hidden;
+        }
+        #neuronSvg { width: 100%; height: 100%; display: block; }
+        .map-hint {
+            position: absolute;
+            bottom: 0.6rem; left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--text-light);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 0.3rem 0.7rem;
+            border-radius: 1rem;
+            white-space: nowrap;
+        }
+        .svg-label { fill: var(--text); font-family: inherit; pointer-events: none; }
+
+        /* Animated synapse flow */
+        .net-line.line-active, .house-line.line-active {
+            stroke-dasharray: 7 11;
+            animation: synapseFlow 0.9s linear infinite;
+        }
+        .house-line { stroke-opacity: 0.65; }
+        @keyframes synapseFlow { to { stroke-dashoffset: -18; } }
+        .net-line.line-down, .house-line.line-down {
+            stroke-dasharray: 4 7;
+            animation: lineBlink 1.3s ease-in-out infinite;
+        }
+        @keyframes lineBlink { 0%,100% { stroke-opacity: 0.9; } 50% { stroke-opacity: 0.2; } }
+        .pulse-ring { transform-box: fill-box; transform-origin: center; animation: pulseRing 2s ease-out infinite; }
+        @keyframes pulseRing { 0% { transform: scale(0.7); opacity: 0.5; } 100% { transform: scale(1.6); opacity: 0; } }
+        .home-ring { transform-box: fill-box; transform-origin: center; animation: pulseRing 1.8s ease-out infinite; }
+
+        /* ===== Report panel ===== */
+        .report-panel { display: flex; flex-direction: column; }
+        .report-header {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            gap: 0.75rem; padding-bottom: 0.85rem; margin-bottom: 0.85rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .report-title { font-size: 1.05rem; font-weight: 700; }
+        .report-sub { font-size: 0.82rem; color: var(--text-light); margin-top: 0.2rem; }
+        .you-tag {
+            font-size: 0.65rem; font-weight: 700; vertical-align: middle;
+            background: #fbbf24; color: #1f2937; padding: 0.12rem 0.4rem; border-radius: 0.6rem; margin-left: 0.35rem;
+        }
+        .status-chip {
+            color: #fff; font-size: 0.75rem; font-weight: 700;
+            padding: 0.3rem 0.7rem; border-radius: 1rem; white-space: nowrap;
+        }
+        .report-stats {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 0.6rem; margin-bottom: 1rem;
+        }
+        .rstat {
+            display: flex; flex-direction: column; gap: 0.15rem;
+            background: var(--bg-light); border: 1px solid var(--border);
+            border-radius: 0.5rem; padding: 0.6rem 0.7rem;
+        }
+        .rstat-val { font-size: 1.15rem; font-weight: 700; }
+        .rstat-lbl { font-size: 0.72rem; color: var(--text-light); }
+        .downtime-bar-wrap { margin-bottom: 1rem; }
+        .downtime-bar-label { font-size: 0.8rem; color: var(--text-light); margin-bottom: 0.35rem; }
+        .downtime-bar { height: 8px; background: var(--border); border-radius: 1rem; overflow: hidden; }
+        .downtime-fill { height: 100%; border-radius: 1rem; }
+        .report-section-title { font-size: 0.9rem; margin: 0.5rem 0 0.6rem; display: flex; align-items: center; gap: 0.4rem; }
+        .incident-list { display: flex; flex-direction: column; gap: 0.6rem; max-height: 280px; overflow-y: auto; }
+        .incident {
+            border: 1px solid var(--border); border-left: 3px solid var(--border);
+            border-radius: 0.5rem; padding: 0.6rem 0.7rem; background: var(--bg-light);
+        }
+        .incident-open { border-left-color: #ef4444; background: rgba(239,68,68,0.06); }
+        .incident-top { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
+        .incident-date { font-size: 0.75rem; color: var(--text-light); }
+        .incident-status { margin-left: auto; font-size: 0.7rem; font-weight: 700; }
+        .incident-status.ok { color: #10b981; }
+        .incident-status.bad { color: #ef4444; }
+        .incident-cause { font-size: 0.85rem; font-weight: 600; }
+        .incident-meta { font-size: 0.75rem; color: var(--text-light); margin-top: 0.2rem; }
+        .sev { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; padding: 0.12rem 0.4rem; border-radius: 0.4rem; color: #fff; }
+        .sev-low { background: #10b981; }
+        .sev-medium { background: #f59e0b; }
+        .sev-high { background: #ef4444; }
+        .no-incidents { font-size: 0.85rem; color: var(--text-light); padding: 0.5rem 0; }
+
+        @media (max-width: 900px) {
+            .map-layout { grid-template-columns: 1fr; }
+            #neuronMap { height: 440px; }
         }
         
         /* Responsive */
@@ -287,7 +411,8 @@
             .content { padding: 1rem; }
             .grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.8rem; }
             .card { padding: 0.8rem; }
-            #networkMap { height: 300px; }
+            #neuronMap { height: 380px; }
+            .map-legend-inline { width: 100%; }
         }
         
         @media (max-width: 480px) {
@@ -825,30 +950,41 @@
                 <!-- Network Map Section -->
                 <section id="network-map" class="section">
                     <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-map"></i> Electricity Network Map
+                        <i class="fas fa-project-diagram"></i> Electricity Network Map
                     </h2>
-                    
-                    <div class="card">
-                        <div class="map-controls">
-                            <div class="map-control-group">
-                                <label for="mapViewSelect">View Level:</label>
-                                <select id="mapViewSelect" onchange="changeMapView()">
-                                    <option value="country">National View</option>
-                                    <option value="region">Region View</option>
-                                    <option value="district">District View</option>
-                                </select>
+
+                    <!-- Summary cards -->
+                    <div class="grid" id="networkSummary" style="margin-bottom: 1.5rem;"></div>
+
+                    <div class="map-layout">
+                        <!-- Neuron visualization -->
+                        <div class="card map-canvas-card">
+                            <div class="map-controls">
+                                <div class="map-control-group">
+                                    <label for="mapScopeSelect">Show:</label>
+                                    <select id="mapScopeSelect" onchange="renderNeuronMap()">
+                                        <option value="mine">My Network Line</option>
+                                        <option value="region">My Region</option>
+                                        <option value="all">National Grid</option>
+                                    </select>
+                                </div>
+                                <div class="map-legend-inline">
+                                    <span class="legend-pill"><span class="dot dot-operational"></span> Active</span>
+                                    <span class="legend-pill"><span class="dot dot-maintenance"></span> Maintenance</span>
+                                    <span class="legend-pill"><span class="dot dot-down"></span> Down</span>
+                                    <span class="legend-pill"><span class="dot dot-user"></span> Your line</span>
+                                </div>
                             </div>
-                            <div class="map-control-group" id="regionSelectGroup" style="display: none;">
-                                <label for="regionSelect">Region:</label>
-                                <select id="regionSelect" onchange="updateMapRegion()"></select>
+
+                            <div id="neuronMap">
+                                <svg id="neuronSvg" preserveAspectRatio="xMidYMid meet"></svg>
+                                <div class="map-hint"><i class="fas fa-hand-pointer"></i> Tap a line or house to view its status &amp; downtime report</div>
                             </div>
                         </div>
-                        
-                        <div id="networkMap"></div>
-                        
-                        <div class="network-legend">
-                            <h3 style="margin-bottom: 1rem;">Network Status Legend</h3>
-                            <div class="legend-grid" id="legendGrid"></div>
+
+                        <!-- Reports / details panel -->
+                        <div class="card report-panel" id="reportPanel">
+                            <div id="reportContent"></div>
                         </div>
                     </div>
                 </section>
@@ -858,140 +994,251 @@
     
     <script src="src/js/tanzania-data.js"></script>
     <script>
-        // Map variables
-        let networkMap = null;
-        let mapMarkers = [];
-        let currentMapView = 'country';
-        let selectedRegion = null;
-        
-        // Tanzania coordinates (center)
-        const TANZANIA_CENTER = [-6.3690, 34.8888];
-        const REGION_COORDS = {
-            'dar': [-6.8000, 39.2833],
-            'arusha': [-3.3869, 36.6830],
-            'dodoma': [-6.1667, 35.7333],
-            'mbeya': [-8.7500, 33.4667],
-            'morogoro': [-6.8167, 37.6667],
-            'iringa': [-7.7667, 35.6833],
-            'songea': [-10.6667, 35.6333],
-            'mwanza': [-2.5167, 32.8833],
-            'tabora': [-5.0333, 32.7833],
-            'bukoba': [-1.3333, 31.8333]
-        };
-        
-        function initNetworkMap() {
-            if (networkMap) return;
-            
-            networkMap = L.map('networkMap').setView(TANZANIA_CENTER, 6);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors',
-                maxZoom: 19
-            }).addTo(networkMap);
-            
-            // Generate legend
-            generateLegend();
-            
-            // Load initial networks
-            loadNetworks();
+        // ===== Neuron-style Electricity Network Map =====
+        const SVGNS = 'http://www.w3.org/2000/svg';
+        const STATUS_COLOR = { operational: '#10b981', maintenance: '#f59e0b', down: '#ef4444' };
+        const STATUS_LABEL = { operational: 'Active', maintenance: 'Maintenance', down: 'Down' };
+        let MAP_READY = false;
+        let USER_NET_ID = null;
+        let SELECTED_NET_ID = null;
+
+        function svgEl(tag, attrs) {
+            const el = document.createElementNS(SVGNS, tag);
+            for (const k in attrs) el.setAttribute(k, attrs[k]);
+            return el;
         }
-        
-        function generateLegend() {
-            const legendGrid = document.getElementById('legendGrid');
-            legendGrid.innerHTML = '';
-            
-            const networks = tanzaniaData.networks;
-            networks.forEach(network => {
-                const legendItem = document.createElement('div');
-                legendItem.className = 'legend-item';
-                
-                const color = document.createElement('div');
-                color.className = 'legend-color';
-                color.style.backgroundColor = network.color;
-                
-                const info = document.createElement('div');
-                info.className = 'legend-info';
-                
-                const status = tanzaniaData.getNetworkStatus(network.name);
-                info.innerHTML = `<strong>${network.name}</strong><br><span class="legend-status">${status}</span>`;
-                
-                legendItem.appendChild(color);
-                legendItem.appendChild(info);
-                legendGrid.appendChild(legendItem);
+
+        function getUserProfile() {
+            try {
+                return JSON.parse(localStorage.getItem('smartluku-profile') || 'null');
+            } catch (e) { return null; }
+        }
+
+        function housesForNetwork(net, max) {
+            const streets = (tanzaniaData.getStreets(net.region, net.district) || []);
+            return streets.slice(0, max).map((name, i) => ({ name: name, id: net.id + '-h' + i }));
+        }
+
+        function fmtDuration(min) {
+            const h = Math.floor(min / 60), m = min % 60;
+            return h ? (h + 'h ' + m + 'm') : (m + 'm');
+        }
+
+        function initNeuronMap() {
+            const profile = getUserProfile();
+            const userNet = tanzaniaData.getUserNetwork(profile);
+            USER_NET_ID = userNet.id;
+            if (!SELECTED_NET_ID) SELECTED_NET_ID = userNet.id;
+            renderNetworkSummary();
+            renderNeuronMap();
+            renderReport(SELECTED_NET_ID);
+            MAP_READY = true;
+        }
+
+        function renderNetworkSummary() {
+            const s = tanzaniaData.getNetworkSummary();
+            const el = document.getElementById('networkSummary');
+            if (!el) return;
+            const cards = [
+                { label: 'Total Lines', value: s.total, color: 'var(--primary)', icon: 'fa-project-diagram' },
+                { label: 'Active', value: s.operational, color: STATUS_COLOR.operational, icon: 'fa-circle-check' },
+                { label: 'Maintenance', value: s.maintenance, color: STATUS_COLOR.maintenance, icon: 'fa-screwdriver-wrench' },
+                { label: 'Down', value: s.down, color: STATUS_COLOR.down, icon: 'fa-triangle-exclamation' },
+                { label: 'Avg Uptime', value: s.avgUptime + '%', color: 'var(--secondary)', icon: 'fa-gauge-high' }
+            ];
+            el.innerHTML = cards.map(c => `
+                <div class="card">
+                    <div class="card-title"><i class="fas ${c.icon}" style="color:${c.color}"></i> ${c.label}</div>
+                    <div class="card-value" style="color:${c.color}">${c.value}</div>
+                </div>`).join('');
+        }
+
+        function renderNeuronMap() {
+            const svg = document.getElementById('neuronSvg');
+            if (!svg) return;
+            const scope = document.getElementById('mapScopeSelect').value;
+            const profile = getUserProfile();
+            const userNet = tanzaniaData.getUserNetwork(profile);
+            USER_NET_ID = userNet.id;
+
+            let networks;
+            if (scope === 'mine') networks = [userNet];
+            else if (scope === 'region') networks = tanzaniaData.networks.filter(n => n.region === userNet.region);
+            else networks = tanzaniaData.networks.slice();
+
+            const VW = 1200, VH = 820, cx = 600, cy = 410;
+            svg.setAttribute('viewBox', '0 0 ' + VW + ' ' + VH);
+            svg.innerHTML = '';
+
+            const lineLayer = svgEl('g', {});
+            const nodeLayer = svgEl('g', {});
+            svg.appendChild(lineLayer);
+            svg.appendChild(nodeLayer);
+
+            const n = networks.length;
+            const R1 = n === 1 ? 215 : n <= 3 ? 240 : 265;
+            const R2 = scope === 'mine' ? 168 : scope === 'region' ? 120 : 78;
+            const maxHouses = scope === 'mine' ? 9 : scope === 'region' ? 5 : 3;
+            const showHouseLabels = scope !== 'all';
+
+            networks.forEach((net, i) => {
+                const ang = (n === 1) ? 0 : (-Math.PI / 2 + i * (2 * Math.PI / n));
+                const nx = cx + Math.cos(ang) * R1;
+                const ny = cy + Math.sin(ang) * R1;
+                const color = STATUS_COLOR[net.status];
+                const isUser = net.id === USER_NET_ID;
+                const isSel = net.id === SELECTED_NET_ID;
+                const lineState = net.status === 'down' ? 'line-down' : 'line-active';
+
+                // Curved synapse from source -> network node
+                const mx = (cx + nx) / 2 + Math.cos(ang + Math.PI / 2) * 34;
+                const my = (cy + ny) / 2 + Math.sin(ang + Math.PI / 2) * 34;
+                const path = svgEl('path', {
+                    d: 'M ' + cx + ' ' + cy + ' Q ' + mx + ' ' + my + ' ' + nx + ' ' + ny,
+                    fill: 'none', stroke: color,
+                    'stroke-width': isUser ? 6 : 4, 'stroke-linecap': 'round',
+                    class: 'net-line ' + lineState + (isUser ? ' line-user' : '')
+                });
+                path.style.cursor = 'pointer';
+                path.addEventListener('click', () => selectNetwork(net.id));
+                lineLayer.appendChild(path);
+
+                // Houses (dendrites) spreading outward from the network node
+                const houses = housesForNetwork(net, maxHouses);
+                const hc = houses.length;
+                const span = Math.PI * (120 / 180);
+                houses.forEach((h, j) => {
+                    const a2 = (hc === 1) ? ang : (ang - span / 2 + j * (span / (hc - 1)));
+                    const hx = nx + Math.cos(a2) * R2;
+                    const hy = ny + Math.sin(a2) * R2;
+                    const isHome = isUser && profile && h.name === profile.street;
+
+                    const hline = svgEl('line', {
+                        x1: nx, y1: ny, x2: hx, y2: hy, stroke: color,
+                        'stroke-width': 2, class: 'house-line ' + lineState
+                    });
+                    lineLayer.appendChild(hline);
+
+                    const hg = svgEl('g', { class: 'house-node' });
+                    hg.style.cursor = 'pointer';
+                    hg.addEventListener('click', () => selectNetwork(net.id));
+                    const hr = isHome ? 11 : 7;
+                    if (isHome) {
+                        hg.appendChild(svgEl('circle', { cx: hx, cy: hy, r: hr + 6, fill: 'none', stroke: '#fbbf24', 'stroke-width': 2, class: 'home-ring' }));
+                    }
+                    hg.appendChild(svgEl('circle', {
+                        cx: hx, cy: hy, r: hr,
+                        fill: net.status === 'down' ? '#fee2e2' : '#ffffff',
+                        stroke: color, 'stroke-width': isHome ? 3 : 2
+                    }));
+                    const icon = svgEl('text', { x: hx, y: hy + 3.5, 'text-anchor': 'middle', 'font-family': '"Font Awesome 6 Free"', 'font-weight': '900', 'font-size': isHome ? '10' : '7', fill: color });
+                    icon.textContent = '\uf015';
+                    hg.appendChild(icon);
+                    if (showHouseLabels) {
+                        const lx = nx + Math.cos(a2) * (R2 + 22);
+                        const ly = ny + Math.sin(a2) * (R2 + 22);
+                        const lbl = svgEl('text', { x: lx, y: ly + 3, 'text-anchor': 'middle', 'font-size': '11', class: 'svg-label' });
+                        lbl.textContent = isHome ? (h.name + ' (You)') : h.name;
+                        hg.appendChild(lbl);
+                    }
+                    nodeLayer.appendChild(hg);
+                });
+
+                // Network node
+                const ng = svgEl('g', { class: 'network-node' });
+                ng.style.cursor = 'pointer';
+                ng.addEventListener('click', () => selectNetwork(net.id));
+                if (net.status === 'operational') {
+                    ng.appendChild(svgEl('circle', { cx: nx, cy: ny, r: 24, fill: color, opacity: 0.25, class: 'pulse-ring' }));
+                }
+                if (isSel) {
+                    ng.appendChild(svgEl('circle', { cx: nx, cy: ny, r: 32, fill: 'none', stroke: 'var(--primary)', 'stroke-width': 2.5, 'stroke-dasharray': '4 4' }));
+                }
+                ng.appendChild(svgEl('circle', {
+                    cx: nx, cy: ny, r: isUser ? 24 : 20,
+                    fill: 'var(--card-bg)', stroke: color, 'stroke-width': 4,
+                    style: isUser ? 'filter:drop-shadow(0 0 6px rgba(251,191,36,0.8))' : ''
+                }));
+                const nIcon = svgEl('text', { x: nx, y: ny + 6, 'text-anchor': 'middle', 'font-family': '"Font Awesome 6 Free"', 'font-weight': '900', 'font-size': '16', fill: color });
+                nIcon.textContent = '\uf0e7';
+                ng.appendChild(nIcon);
+                const nLbl = svgEl('text', { x: nx, y: ny + (Math.sin(ang) >= 0 ? 44 : -34), 'text-anchor': 'middle', 'font-size': '13', 'font-weight': '700', class: 'svg-label' });
+                nLbl.textContent = net.name;
+                ng.appendChild(nLbl);
+                nodeLayer.appendChild(ng);
             });
+
+            // Source / main grid node (drawn on top, center)
+            const sg = svgEl('g', {});
+            sg.appendChild(svgEl('circle', { cx: cx, cy: cy, r: 46, fill: 'var(--primary)', opacity: 0.18, class: 'pulse-ring' }));
+            sg.appendChild(svgEl('circle', { cx: cx, cy: cy, r: 34, fill: 'var(--primary)', stroke: '#ffffff', 'stroke-width': 3 }));
+            const sIcon = svgEl('text', { x: cx, y: cy + 8, 'text-anchor': 'middle', 'font-family': '"Font Awesome 6 Free"', 'font-weight': '900', 'font-size': '24', fill: '#ffffff' });
+            sIcon.textContent = '\uf0e7';
+            sg.appendChild(sIcon);
+            const sLbl = svgEl('text', { x: cx, y: cy + 62, 'text-anchor': 'middle', 'font-size': '14', 'font-weight': '700', class: 'svg-label' });
+            sLbl.textContent = 'TANESCO Grid';
+            sg.appendChild(sLbl);
+            nodeLayer.appendChild(sg);
         }
-        
-        function loadNetworks() {
-            mapMarkers.forEach(marker => networkMap.removeLayer(marker));
-            mapMarkers = [];
-            
-            const networks = tanzaniaData.networks;
-            
-            networks.forEach(network => {
-                const coord = REGION_COORDS[network.region.toLowerCase()] || TANZANIA_CENTER;
-                const status = tanzaniaData.getNetworkStatus(network.name);
-                
-                const color = status === 'operational' ? network.color : '#ef4444';
-                
-                const circle = L.circleMarker(coord, {
-                    radius: 12,
-                    fillColor: color,
-                    color: '#000',
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                }).addTo(networkMap);
-                
-                const popupContent = `
-                    <div style="padding: 0.5rem;">
-                        <strong>${network.name}</strong><br>
-                        Region: ${network.region}<br>
-                        District: ${network.district}<br>
-                        Status: <span style="color: ${color}; font-weight: bold;">${status.toUpperCase()}</span>
+
+        function selectNetwork(id) {
+            SELECTED_NET_ID = id;
+            renderNeuronMap();
+            renderReport(id);
+        }
+
+        function renderReport(id) {
+            const net = tanzaniaData.getNetworkReport(id);
+            const el = document.getElementById('reportContent');
+            if (!net || !el) return;
+            const color = STATUS_COLOR[net.status];
+            const isUser = net.id === USER_NET_ID;
+            const region = (tanzaniaData.regions[net.region] || {}).name || net.region;
+            const district = ((tanzaniaData.regions[net.region] || {}).districts || {})[net.district];
+            const districtName = district ? district.name : net.district;
+
+            const incidents = (net.incidents || []).map(inc => `
+                <div class="incident ${inc.resolved ? '' : 'incident-open'}">
+                    <div class="incident-top">
+                        <span class="sev sev-${inc.severity}">${inc.severity}</span>
+                        <span class="incident-date">${inc.date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                        <span class="incident-status ${inc.resolved ? 'ok' : 'bad'}">${inc.resolved ? 'Resolved' : 'Ongoing'}</span>
                     </div>
-                `;
-                
-                circle.bindPopup(popupContent);
-                mapMarkers.push(circle);
-            });
+                    <div class="incident-cause">${inc.cause}</div>
+                    <div class="incident-meta"><i class="fas fa-clock"></i> Downtime: ${fmtDuration(inc.durationMin)}</div>
+                </div>`).join('');
+
+            el.innerHTML = `
+                <div class="report-header">
+                    <div>
+                        <div class="report-title">${net.name} ${isUser ? '<span class="you-tag">Your line</span>' : ''}</div>
+                        <div class="report-sub">${region} &middot; ${districtName}</div>
+                    </div>
+                    <span class="status-chip" style="background:${color}">${STATUS_LABEL[net.status]}</span>
+                </div>
+
+                <div class="report-stats">
+                    <div class="rstat"><span class="rstat-val" style="color:${color}">${net.uptime}%</span><span class="rstat-lbl">Uptime (30d)</span></div>
+                    <div class="rstat"><span class="rstat-val">${net.customers.toLocaleString()}</span><span class="rstat-lbl">Customers</span></div>
+                    <div class="rstat"><span class="rstat-val">${net.voltage} V</span><span class="rstat-lbl">Voltage</span></div>
+                    <div class="rstat"><span class="rstat-val">${net.loadPct}%</span><span class="rstat-lbl">Load</span></div>
+                </div>
+
+                <div class="downtime-bar-wrap">
+                    <div class="downtime-bar-label">Total downtime (last 30 days): <strong>${fmtDuration(net.downtime30dMin)}</strong></div>
+                    <div class="downtime-bar"><div class="downtime-fill" style="width:${Math.min(100, (net.downtime30dMin / 43200) * 100 * 20).toFixed(1)}%;background:${color}"></div></div>
+                </div>
+
+                <h4 class="report-section-title"><i class="fas fa-clipboard-list"></i> Downtime Reports</h4>
+                <div class="incident-list">${incidents || '<div class="no-incidents">No incidents recorded.</div>'}</div>`;
         }
-        
-        function changeMapView() {
-            const viewSelect = document.getElementById('mapViewSelect');
-            const regionSelectGroup = document.getElementById('regionSelectGroup');
-            const regionSelect = document.getElementById('regionSelect');
-            
-            currentMapView = viewSelect.value;
-            
-            if (currentMapView === 'region' || currentMapView === 'district') {
-                regionSelectGroup.style.display = 'flex';
-                populateRegionSelect();
+
+        // Backward-compatible entry point used by section switching
+        function initNetworkMap() {
+            if (MAP_READY) {
+                renderNeuronMap();
             } else {
-                regionSelectGroup.style.display = 'none';
-                networkMap.setView(TANZANIA_CENTER, 6);
-            }
-        }
-        
-        function populateRegionSelect() {
-            const regionSelect = document.getElementById('regionSelect');
-            regionSelect.innerHTML = '<option value="">-- Select Region --</option>';
-            
-            const regions = Object.entries(tanzaniaData.regions);
-            regions.forEach(([code, data]) => {
-                const option = document.createElement('option');
-                option.value = code;
-                option.textContent = data.name;
-                regionSelect.appendChild(option);
-            });
-        }
-        
-        function updateMapRegion() {
-            const regionSelect = document.getElementById('regionSelect');
-            const regionCode = regionSelect.value;
-            
-            if (regionCode) {
-                const coord = REGION_COORDS[regionCode] || TANZANIA_CENTER;
-                const zoomLevel = currentMapView === 'region' ? 9 : 10;
-                networkMap.setView(coord, zoomLevel);
+                initNeuronMap();
             }
         }
         
@@ -1041,10 +1288,7 @@
                 
                 // Initialize map when network-map section is accessed
                 if (sectionId === 'network-map') {
-                    setTimeout(() => {
-                        networkMap && networkMap.invalidateSize();
-                        initNetworkMap();
-                    }, 100);
+                    setTimeout(initNetworkMap, 60);
                 }
             }
         }
@@ -1084,7 +1328,6 @@
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             initTheme();
-            initNetworkMap();
         });
     </script>
 </body>

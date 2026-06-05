@@ -181,11 +181,135 @@ const tanzaniaData = {
     { id: 'net-morogoro-02', name: 'Uluguru Valley Network', region: 'morogoro', district: 'morogoro-rural', color: '#F8B88B' },
   ],
 
-  // Function to get random status (up/down)
-  getNetworkStatus: function(networkId) {
-    // Simulated random status - 90% up, 10% down
-    const isUp = Math.random() > 0.1;
-    return isUp ? 'operational' : 'maintenance';
+  // ---- Deterministic status + downtime reporting layer ----
+  _statusReady: false,
+
+  // Simple deterministic string hash so statuses stay stable within a session
+  _hash: function (str) {
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  },
+
+  _incidentCauses: [
+    'Transformer overload',
+    'Scheduled maintenance',
+    'Storm / weather damage',
+    'Underground cable fault',
+    'Equipment upgrade',
+    'Vandalism on line',
+    'Overvoltage protection trip',
+    'Substation breaker fault'
+  ],
+
+  _buildIncidents: function (net) {
+    const causes = this._incidentCauses;
+    const base = this._hash(net.id);
+    const count = 3 + (base % 4); // 3 - 6 incidents
+    const incidents = [];
+    let totalDownMin = 0;
+
+    for (let i = 0; i < count; i++) {
+      const s = this._hash(net.id + ':' + i);
+      const daysAgo = (s % 75) + i * 4 + 1;
+      const date = new Date(Date.now() - daysAgo * 86400000 - (s % 86400) * 1000);
+      const durationMin = 15 + (s % 285); // 15 - 300 min
+      totalDownMin += durationMin;
+      incidents.push({
+        id: net.id + '-inc-' + i,
+        date: date,
+        durationMin: durationMin,
+        cause: causes[s % causes.length],
+        resolved: true,
+        severity: durationMin > 180 ? 'high' : durationMin > 60 ? 'medium' : 'low'
+      });
+    }
+
+    incidents.sort(function (a, b) { return b.date - a.date; });
+    // For impaired lines, the most recent incident is still ongoing
+    if (net.status !== 'operational' && incidents.length) {
+      incidents[0].resolved = false;
+    }
+    return { incidents: incidents, totalDownMin: totalDownMin };
+  },
+
+  _initStatuses: function () {
+    if (this._statusReady) return;
+    const self = this;
+    this.networks.forEach(function (net) {
+      const seed = self._hash(net.id);
+      const r = seed % 100;
+      // Mostly operational, with some maintenance and the occasional outage
+      net.status = r < 60 ? 'operational' : r < 78 ? 'maintenance' : 'down';
+
+      // Uptime: operational lines are healthier than impaired ones
+      const jitter = (seed % 60) / 10; // 0.0 - 5.9
+      net.uptime = net.status === 'operational'
+        ? +(99.9 - jitter * 0.15).toFixed(2)
+        : net.status === 'maintenance'
+          ? +(98.5 - jitter * 0.4).toFixed(2)
+          : +(92.0 - jitter * 0.9).toFixed(2);
+
+      net.customers = 850 + (seed % 7400);
+      net.voltage = net.status === 'down' ? 0 : 228 + (seed % 9); // ~230V nominal
+      net.loadPct = 35 + (seed % 60); // current load %
+
+      const report = self._buildIncidents(net);
+      net.incidents = report.incidents;
+      net.downtime30dMin = report.totalDownMin;
+
+      // Last incident reference for quick display
+      net.lastIncident = net.incidents.length ? net.incidents[0] : null;
+    });
+    this._statusReady = true;
+  },
+
+  // Returns the stored status string for a network (accepts id or name)
+  getNetworkStatus: function (networkRef) {
+    this._initStatuses();
+    const net = this.getNetworkReport(networkRef);
+    return net ? net.status : 'operational';
+  },
+
+  // Returns the full network object incl. status, uptime and incidents
+  getNetworkReport: function (networkRef) {
+    this._initStatuses();
+    return this.networks.find(function (n) {
+      return n.id === networkRef || n.name === networkRef;
+    }) || null;
+  },
+
+  // Aggregate stats across all networks (for summary cards)
+  getNetworkSummary: function () {
+    this._initStatuses();
+    const summary = { total: this.networks.length, operational: 0, maintenance: 0, down: 0, customers: 0, avgUptime: 0 };
+    let uptimeSum = 0;
+    this.networks.forEach(function (n) {
+      summary[n.status]++;
+      summary.customers += n.customers;
+      uptimeSum += n.uptime;
+    });
+    summary.avgUptime = +(uptimeSum / this.networks.length).toFixed(2);
+    return summary;
+  },
+
+  // Resolve the network line that belongs to the logged-in user's profile
+  getUserNetwork: function (profile) {
+    this._initStatuses();
+    if (profile && profile.region) {
+      const byDistrict = this.networks.find(function (n) {
+        return n.region === profile.region && n.district === profile.district;
+      });
+      if (byDistrict) return byDistrict;
+      const byRegion = this.networks.find(function (n) {
+        return n.region === profile.region;
+      });
+      if (byRegion) return byRegion;
+    }
+    return this.networks[0];
   },
 
   // Function to get regions list
