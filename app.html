@@ -374,6 +374,31 @@
             .map-layout { grid-template-columns: 1fr; }
             #neuronMap { height: 440px; }
         }
+        .innovation-badge {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            font-size: 0.7rem; font-weight: 600; padding: 0.25rem 0.6rem;
+            border-radius: 1rem; background: rgba(251,191,36,0.15); color: var(--accent);
+            border: 1px solid rgba(251,191,36,0.3);
+        }
+        .sms-toast {
+            position: fixed; top: 4.5rem; right: 1.5rem; z-index: 2500;
+            max-width: 340px; padding: 1rem 1.2rem; border-radius: 0.6rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+        .sms-toast.show { display: block; }
+        .sms-toast.success { background: #ecfdf5; border: 1px solid #10b981; color: #047857; }
+        .sms-toast.info { background: #eff6ff; border: 1px solid #3b82f6; color: #1e40af; }
+        .sms-toast.warning { background: #fffbeb; border: 1px solid #f59e0b; color: #92400e; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .map-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
+        .btn-report { background: #ef4444; color: white; }
+        .btn-report:hover { background: #dc2626; }
+        .btn-report.active-report { background: #b91c1c; animation: reportPulse 1s infinite; }
+        @keyframes reportPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.75; } }
+        .outage-stats { font-size: 0.85rem; color: var(--text-light); }
+        .outage-stats strong { color: #ef4444; }
         
         /* Responsive */
         @media (max-width: 768px) {
@@ -571,6 +596,9 @@
                 <div class="nav-item" onclick="switchSection('monitoring'); this.parentElement.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); this.classList.add('active'); document.getElementById('sidebar').classList.remove('open');">
                     <i class="fas fa-activity"></i> <span>Monitoring</span>
                 </div>
+                <div class="nav-item" onclick="window.location.href='simulation.html';">
+                    <i class="fas fa-cube"></i> <span>IoT Simulation</span>
+                </div>
                 <div class="nav-item" onclick="switchSection('history'); this.parentElement.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); this.classList.add('active'); document.getElementById('sidebar').classList.remove('open');">
                     <i class="fas fa-history"></i> <span>History</span>
                 </div>
@@ -615,29 +643,58 @@
                     
                     <div class="meter-box">
                         <h3>Current Balance</h3>
-                        <div class="meter-value">285 kWh</div>
-                        <div class="meter-status">Meter: TZ-2024-001234 | Status: <span style="color: #86efac;">Connected</span></div>
+                        <div class="meter-value" id="dashBalance">285 kWh</div>
+                        <div class="meter-status">Meter: <span id="dashMeterId">TZ-2024-001234</span> | Status: <span id="dashMeterStatus" style="color: #86efac;">Connected</span></div>
                     </div>
                     
+                    <div style="margin-bottom:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
+                        <a href="simulation.html" class="btn btn-primary" style="text-decoration:none;">
+                            <i class="fas fa-cube"></i> Open IoT Simulation
+                        </a>
+                        <span id="simSyncBadge" style="font-size:0.8rem;color:var(--text-light);display:none;">
+                            <i class="fas fa-link" style="color:var(--secondary)"></i> Live sync from simulation
+                        </span>
+                    </div>
+                    
+                    <div id="smsToast" class="sms-toast"></div>
+
+                    <div class="card" style="margin-bottom:1rem;border-left:3px solid var(--accent);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+                            <div>
+                                <div class="card-title"><i class="fas fa-sms"></i> SmartLUKU SMS Alert</div>
+                                <div style="font-size:0.85rem;color:var(--text-light);margin-top:0.25rem;">
+                                    Auto SMS via <strong style="color:var(--secondary)">SmartLUKU SMS</strong> when balance drops below <strong id="smsThreshold">20</strong> kWh
+                                </div>
+                            </div>
+                            <span class="innovation-badge"><i class="fas fa-mobile-alt"></i> Live Alert</span>
+                        </div>
+                        <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+                            <button class="btn btn-secondary" onclick="testSmsAlert()" style="font-size:0.8rem;">
+                                <i class="fas fa-paper-plane"></i> Test SMS Alert
+                            </button>
+                            <span id="smsApiStatus" style="font-size:0.75rem;color:var(--text-light);align-self:center;">Checking API...</span>
+                        </div>
+                    </div>
+
                     <div class="grid">
                         <div class="card">
                             <div class="card-title">Usage Today</div>
-                            <div class="card-value">4.5</div>
+                            <div class="card-value" id="dashUsageToday">4.5</div>
                             <div class="card-meta">kWh</div>
                         </div>
                         <div class="card">
-                            <div class="card-title">Average Daily</div>
-                            <div class="card-value">5.2</div>
-                            <div class="card-meta">kWh</div>
+                            <div class="card-title">Current Load</div>
+                            <div class="card-value" id="dashCurrentLoad">1.2</div>
+                            <div class="card-meta">kW (live)</div>
                         </div>
                         <div class="card">
-                            <div class="card-title">This Month</div>
-                            <div class="card-value">156</div>
-                            <div class="card-meta">kWh</div>
+                            <div class="card-title">Voltage</div>
+                            <div class="card-value" id="dashVoltage">230</div>
+                            <div class="card-meta">V</div>
                         </div>
                         <div class="card">
                             <div class="card-title">Est. Bill</div>
-                            <div class="card-value">45K</div>
+                            <div class="card-value" id="dashEstBill">45K</div>
                             <div class="card-meta">TZS</div>
                         </div>
                     </div>
@@ -648,7 +705,7 @@
                     
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle"></i>
-                        <span>Current balance: 285 kWh. Estimated bill: 45,000 TZS</span>
+                        <span id="paymentBalanceInfo">Current balance: 285 kWh. Estimated bill: 45,000 TZS</span>
                     </div>
                     
                     <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">Select Payment Method</h3>
@@ -736,29 +793,40 @@
                 <section id="monitoring" class="section">
                     <h2><i class="fas fa-activity"></i> Real-Time Monitoring</h2>
                     
+                    <div style="margin-bottom:1rem;">
+                        <a href="simulation.html" class="btn btn-primary" style="text-decoration:none;">
+                            <i class="fas fa-cube"></i> View 3D IoT Simulation
+                        </a>
+                    </div>
+                    
                     <div class="grid">
                         <div class="card">
                             <div class="card-title">Current Usage</div>
-                            <div class="card-value">1.2</div>
+                            <div class="card-value" id="monCurrentUsage">1.2</div>
                             <div class="card-meta">kW Right Now</div>
                         </div>
                         <div class="card">
                             <div class="card-title">Network Status</div>
-                            <div class="card-value" style="color: #10b981;">Online</div>
+                            <div class="card-value" id="monNetworkStatus" style="color: #10b981;">Online</div>
                             <div class="card-meta">Connected</div>
                         </div>
                         <div class="card">
                             <div class="card-title">Voltage</div>
-                            <div class="card-value">230V</div>
+                            <div class="card-value" id="monVoltage">230V</div>
                             <div class="card-meta">Normal Range</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">Current</div>
+                            <div class="card-value" id="monCurrent">5.2A</div>
+                            <div class="card-meta">Amperage</div>
                         </div>
                     </div>
                     
                     <h3>Active Alerts</h3>
-                    <div class="card">
+                    <div class="card" id="monAlertsContainer">
                         <div class="notification-item">
-                            <div class="notification-title"><i class="fas fa-exclamation-triangle"></i> Low Balance Warning</div>
-                            <div class="notification-message">Balance is below 100 kWh. Consider payment soon.</div>
+                            <div class="notification-title"><i class="fas fa-info-circle"></i> Awaiting simulation data</div>
+                            <div class="notification-message">Open the IoT Simulation to generate live sensor readings.</div>
                         </div>
                     </div>
                     
@@ -772,7 +840,7 @@
                                     <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="monApplianceTable">
                                 <tr>
                                     <td><i class="fas fa-fan"></i> Air Conditioner</td>
                                     <td>850W</td>
@@ -784,13 +852,16 @@
                                     <td><span class="status-badge" style="background: var(--success);">Normal</span></td>
                                 </tr>
                                 <tr>
-                                    <td><i class="fas fa-microchip"></i> Refrigerator</td>
+                                    <td><i class="fas fa-snowflake"></i> Refrigerator</td>
                                     <td>200W</td>
                                     <td><span class="status-badge" style="background: var(--success);">Normal</span></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+                    
+                    <h3 style="margin-top: 1.5rem;">IoT Sensor Readings</h3>
+                    <div class="grid" id="monSensorGrid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));"></div>
                 </section>
                 
                 <section id="history" class="section">
@@ -860,7 +931,21 @@
                     <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
                         <i class="fas fa-chart-bar"></i> Usage Analytics
                     </h2>
-                    
+
+                    <div class="card" style="margin-bottom: 1.5rem;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;">
+                            <h3 style="margin:0;">Consumption by Appliance</h3>
+                            <div id="consumptionPeriodToggle" style="display:inline-flex;border:1px solid var(--border);border-radius:0.5rem;overflow:hidden;">
+                                <button type="button" data-period="daily" onclick="renderConsumptionBreakdown('daily')" style="padding:0.45rem 0.95rem;border:none;background:transparent;color:var(--text);cursor:pointer;font-size:0.85rem;">Daily</button>
+                                <button type="button" data-period="weekly" onclick="renderConsumptionBreakdown('weekly')" style="padding:0.45rem 0.95rem;border:none;background:transparent;color:var(--text);cursor:pointer;font-size:0.85rem;">Weekly</button>
+                                <button type="button" data-period="monthly" onclick="renderConsumptionBreakdown('monthly')" style="padding:0.45rem 0.95rem;border:none;background:transparent;color:var(--text);cursor:pointer;font-size:0.85rem;">Monthly</button>
+                            </div>
+                        </div>
+                        <div id="consumptionSummary" style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.2rem;color:var(--text-light);font-size:0.85rem;"></div>
+                        <div id="consumptionBreakdown"></div>
+                        <p style="margin-top:1rem;font-size:0.72rem;color:var(--text-light);"><i class="fas fa-info-circle"></i> Estimated from each appliance's typical daily usage hours and the current LUKU tariff. Live on/off state from the IoT simulation.</p>
+                    </div>
+
                     <div class="card" style="margin-bottom: 1.5rem;">
                         <h3 style="margin-bottom: 1.5rem;">Monthly Consumption Trend</h3>
                         <div style="height: 250px; background: linear-gradient(180deg, rgba(31, 90, 61, 0.1) 0%, transparent 100%); border-radius: 0.5rem; padding: 1rem; display: flex; align-items: flex-end; gap: 0.8rem;">
@@ -904,9 +989,13 @@
                     <div class="card" style="margin-bottom: 1.5rem;">
                         <h3 style="margin-bottom: 1.5rem;">Notifications</h3>
                         <label style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.8rem; cursor: pointer;">
-                            <input type="checkbox" checked style="cursor: pointer;">
-                            <span>Low Balance Alert</span>
+                            <input type="checkbox" id="smsAlertsEnabled" checked style="cursor: pointer;">
+                            <span>Low Balance SMS (SmartLUKU SMS)</span>
                         </label>
+                        <div class="form-group" style="margin-bottom:0.8rem;">
+                            <label style="font-size:0.85rem;">Alert phone number</label>
+                            <input type="tel" id="smsPhoneInput" placeholder="+255 7XX XXX XXX" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:0.35rem;background:var(--input-bg);color:var(--text);">
+                        </div>
                         <label style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.8rem; cursor: pointer;">
                             <input type="checkbox" checked style="cursor: pointer;">
                             <span>Payment Reminder</span>
@@ -950,31 +1039,29 @@
                 
                 <!-- Network Map Section -->
                 <section id="network-map" class="section">
-                    <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-project-diagram"></i> Electricity Network Map
+                    <h2 style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-map"></i> Electricity Network Map
                     </h2>
-
-                    <!-- Summary cards -->
-                    <div class="grid" id="networkSummary" style="margin-bottom: 1.5rem;"></div>
-
-                    <div class="map-layout">
-                        <!-- Neuron visualization -->
-                        <div class="card map-canvas-card">
-                            <div class="map-controls">
-                                <div class="map-control-group">
-                                    <label for="mapScopeSelect">Show:</label>
-                                    <select id="mapScopeSelect" onchange="renderNeuronMap()">
-                                        <option value="mine">My Network Line</option>
-                                        <option value="region">My Region</option>
-                                        <option value="all">National Grid</option>
-                                    </select>
-                                </div>
-                                <div class="map-legend-inline">
-                                    <span class="legend-pill"><span class="dot dot-operational"></span> Active</span>
-                                    <span class="legend-pill"><span class="dot dot-maintenance"></span> Maintenance</span>
-                                    <span class="legend-pill"><span class="dot dot-down"></span> Down</span>
-                                    <span class="legend-pill"><span class="dot dot-user"></span> Your line</span>
-                                </div>
+                    <p style="margin-bottom:1rem;color:var(--text-light);font-size:0.9rem;">
+                        Community-powered outage map — report blackouts in your neighbourhood in real time.
+                        <span class="innovation-badge" style="margin-left:0.5rem;"><i class="fas fa-users"></i> Crowdsourced</span>
+                    </p>
+                    
+                    <div class="card">
+                        <div class="map-actions">
+                            <button class="btn btn-report" id="reportOutageBtn" onclick="startOutageReport()">
+                                <i class="fas fa-exclamation-circle"></i> Report Outage
+                            </button>
+                            <span class="outage-stats"><strong id="outageReportCount">0</strong> community reports nearby</span>
+                        </div>
+                        <div class="map-controls">
+                            <div class="map-control-group">
+                                <label for="mapViewSelect">View Level:</label>
+                                <select id="mapViewSelect" onchange="changeMapView()">
+                                    <option value="country">National View</option>
+                                    <option value="region">Region View</option>
+                                    <option value="district">District View</option>
+                                </select>
                             </div>
 
                             <div id="neuronMap">
@@ -982,10 +1069,16 @@
                                 <div class="map-hint"><i class="fas fa-hand-pointer"></i> Tap a line or house to view its status &amp; downtime report</div>
                             </div>
                         </div>
-
-                        <!-- Reports / details panel -->
-                        <div class="card report-panel" id="reportPanel">
-                            <div id="reportContent"></div>
+                        
+                        <div id="networkMap"></div>
+                        
+                        <div class="network-legend">
+                            <h3 style="margin-bottom: 1rem;">Legend</h3>
+                            <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem;font-size:0.85rem;">
+                                <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#10b981;margin-right:0.4rem;"></span> TANESCO Grid (operational)</span>
+                                <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#ef4444;margin-right:0.4rem;"></span> User-reported outage</span>
+                            </div>
+                            <div class="legend-grid" id="legendGrid"></div>
                         </div>
                     </div>
                 </section>
@@ -994,7 +1087,13 @@
     </div>
     
     <script src="src/js/tanzania-data.js"></script>
+    <script src="src/js/simulation-engine.js"></script>
+    <script src="src/js/config.js"></script>
+    <script src="src/js/modules/sms-alerts.js"></script>
+    <script src="src/js/modules/energy-advisor.js"></script>
+    <script src="src/js/modules/outage-map.js"></script>
     <script>
+<<<<<<< HEAD
         // ===== Electricity Network Map (real Tanzania map + status overlay) =====
         const STATUS_COLOR = { operational: '#10b981', maintenance: '#f59e0b', down: '#ef4444' };
         const STATUS_LABEL = { operational: 'Active', maintenance: 'Maintenance', down: 'Down' };
@@ -1036,6 +1135,51 @@
             const ang = (Math.PI * 2 * idx) / Math.max(1, total) + (tanzaniaData._hash(net.id) % 100) / 100;
             const r = 0.18 + ((tanzaniaData._hash(net.id + idx) % 100) / 100) * 0.12;
             return [center[0] + Math.sin(ang) * r, center[1] + Math.cos(ang) * r];
+=======
+        // Map variables
+        let networkMap = null;
+        let mapMarkers = [];
+        let currentMapView = 'country';
+        let selectedRegion = null;
+        
+        // Tanzania coordinates (center)
+        const TANZANIA_CENTER = [-6.3690, 34.8888];
+        const REGION_COORDS = {
+            'dar': [-6.8000, 39.2833],
+            'arusha': [-3.3869, 36.6830],
+            'dodoma': [-6.1667, 35.7333],
+            'mbeya': [-8.7500, 33.4667],
+            'morogoro': [-6.8167, 37.6667],
+            'iringa': [-7.7667, 35.6833],
+            'songea': [-10.6667, 35.6333],
+            'mwanza': [-2.5167, 32.8833],
+            'tabora': [-5.0333, 32.7833],
+            'bukoba': [-1.3333, 31.8333]
+        };
+        
+        function initNetworkMap() {
+            if (networkMap) return;
+            
+            networkMap = L.map('networkMap').setView(TANZANIA_CENTER, 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(networkMap);
+            
+            // Generate legend
+            generateLegend();
+            
+            // Load initial networks
+            loadNetworks();
+
+            // Community outage layer
+            OutageMap.init(networkMap);
+            OutageMap.seedDemoReports();
+        }
+
+        function startOutageReport() {
+            OutageMap.enableReportMode();
+>>>>>>> 663fe13b56ea3a688917a3e71849f48067996b8f
         }
 
         function getUserProfile() {
@@ -1328,6 +1472,11 @@
                 if (sectionId === 'network-map') {
                     setTimeout(initNetworkMap, 60);
                 }
+
+                // Refresh appliance consumption breakdown when analytics is opened
+                if (sectionId === 'analytics') {
+                    renderConsumptionBreakdown();
+                }
             }
         }
         
@@ -1336,8 +1485,19 @@
             element.classList.add('selected');
         }
         
+        function fmtSupply(days) {
+            if (!isFinite(days) || days <= 0) return 'N/A';
+            if (days >= 1) {
+                const d = Math.floor(days);
+                const h = Math.round((days - d) * 24);
+                return h > 0 ? `${d} day${d > 1 ? 's' : ''} ${h} hr` : `${d} day${d > 1 ? 's' : ''}`;
+            }
+            return `${Math.round(days * 24)} hours`;
+        }
+
         function processPayment() {
-            const amount = document.querySelector('input[type="number"]').value;
+            const amountInput = document.querySelector('#payment input[type="number"]');
+            const amount = parseFloat(amountInput?.value);
             if (!amount || amount < 5000) {
                 alert('Please enter a valid amount (minimum 5,000 TZS)');
                 return;
@@ -1347,9 +1507,83 @@
                 alert('Please select a payment method');
                 return;
             }
-            alert(`Payment of ${amount} TZS initiated successfully!`);
+
+            const tariff = (window.SmartLUKUConfig && SmartLUKUConfig.TARIFF_TZS_PER_KWH) || 292;
+            const units = amount / tariff;
+
+            let snap = null;
+            if (typeof SimulationEngine !== 'undefined') {
+                SimulationEngine.topUpUnits(units);
+                snap = SimulationEngine.getDashboardSnapshot();
+            }
+            const newBalance = snap ? snap.balanceKwh : (285 + units);
+            const fallbackDaily = (window.SmartLUKUConfig && SmartLUKUConfig.AVG_DAILY_KWH_FALLBACK) || 6;
+            const dailyKwh = (snap && snap.currentPowerKw > 0.05) ? snap.currentPowerKw * 24 : fallbackDaily;
+            const estDays = newBalance / dailyKwh;
+
+            const info = document.getElementById('paymentBalanceInfo');
+            if (info) {
+                info.textContent = `New balance: ${newBalance.toFixed(1)} kWh · Estimated supply: ~${fmtSupply(estDays)} at current usage`;
+            }
+
+            // Send confirmation SMS showing new balance + estimated time of service
+            if (typeof SMSAlerts !== 'undefined') {
+                SMSAlerts.sendTopUpConfirmation({
+                    amountTzs: amount,
+                    unitsKwh: units,
+                    newBalanceKwh: newBalance,
+                    estDays
+                });
+            } else if (typeof showSmsToast === 'function') {
+                showSmsToast({
+                    type: 'success',
+                    title: 'Payment Confirmed',
+                    message: `New balance ${newBalance.toFixed(1)} kWh · Estimated supply ~${fmtSupply(estDays)}.`
+                });
+            }
+
+            if (typeof syncFromSimulation === 'function') syncFromSimulation();
         }
         
+        let consumptionPeriod = 'daily';
+        function renderConsumptionBreakdown(period) {
+            consumptionPeriod = period || consumptionPeriod || 'daily';
+            if (typeof SimulationEngine === 'undefined') return;
+            const data = SimulationEngine.getConsumptionBreakdown(consumptionPeriod);
+
+            document.querySelectorAll('#consumptionPeriodToggle button').forEach(b => {
+                const on = b.dataset.period === consumptionPeriod;
+                b.style.background = on ? 'var(--primary)' : 'transparent';
+                b.style.color = on ? '#fff' : 'var(--text)';
+                b.style.fontWeight = on ? '600' : '400';
+            });
+
+            const periodLabel = { daily: 'per day', weekly: 'per week', monthly: 'per month' }[consumptionPeriod];
+            const summary = document.getElementById('consumptionSummary');
+            if (summary) {
+                summary.innerHTML =
+                    `<span><strong style="color:var(--text);font-size:1.05rem;">${data.totalKwh.toFixed(1)} kWh</strong> total ${periodLabel}</span>` +
+                    `<span><strong style="color:var(--text);font-size:1.05rem;">TZS ${Math.round(data.totalCost).toLocaleString()}</strong> est. cost</span>` +
+                    `<span>Tariff: ${data.tariff} TZS/kWh</span>`;
+            }
+
+            const container = document.getElementById('consumptionBreakdown');
+            if (!container) return;
+            const maxKwh = data.items.length ? data.items[0].kwh : 1;
+            container.innerHTML = data.items.map(i => {
+                const widthPct = maxKwh ? (i.kwh / maxKwh * 100) : 0;
+                return `<div style="margin-bottom:0.9rem;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;font-size:0.88rem;gap:0.5rem;">
+                        <span><i class="fas ${i.icon}" style="color:${i.colorHex};width:18px;"></i> ${i.name}${i.activeNow ? ' <span style="font-size:0.65rem;color:var(--success);">● on</span>' : ''}</span>
+                        <span style="color:var(--text-light);text-align:right;">${i.kwh.toFixed(1)} kWh · TZS ${Math.round(i.cost).toLocaleString()} · ${i.share.toFixed(0)}%</span>
+                    </div>
+                    <div style="height:10px;background:var(--input-bg);border-radius:6px;overflow:hidden;">
+                        <div style="height:100%;width:${widthPct}%;background:${i.colorHex};border-radius:6px;transition:width 0.3s;"></div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
         function toggleMobileMenu() {
             const sidebar = document.querySelector('.sidebar');
             sidebar.classList.toggle('open');
@@ -1363,9 +1597,167 @@
             }
         }
         
+        function showSmsToast(notification) {
+            const toast = document.getElementById('smsToast');
+            if (!toast || !notification) return;
+            toast.className = 'sms-toast show ' + (notification.type || 'info');
+            toast.innerHTML = `
+                <strong><i class="fas fa-sms"></i> ${notification.title}</strong>
+                <p style="margin:0.4rem 0 0;font-size:0.85rem;">${notification.message}</p>
+                ${notification.phone ? `<p style="margin:0.3rem 0 0;font-size:0.75rem;opacity:0.8;">→ ${notification.phone}</p>` : ''}
+            `;
+            setTimeout(() => toast.classList.remove('show'), 8000);
+        }
+
+        function testSmsAlert() {
+            const snap = typeof SimulationEngine !== 'undefined'
+                ? SimulationEngine.getDashboardSnapshot()
+                : { balanceKwh: 18 };
+            SMSAlerts.sendLowBalanceAlert(snap.balanceKwh || 18, true);
+        }
+
+        function getUsageContext(snap) {
+            const profile = JSON.parse(localStorage.getItem('smartluku-profile') || 'null');
+            return {
+                meterNumber: snap?.meterNumber || SMSAlerts.getMeterNumber(),
+                balanceKwh: snap?.balanceKwh,
+                usageTodayKwh: snap?.usageTodayKwh,
+                currentPowerKw: snap?.currentPowerKw,
+                appliances: snap?.appliances || [],
+                region: profile?.regionName || 'Dar es Salaam'
+            };
+        }
+
+        function syncFromSimulation() {
+            const raw = localStorage.getItem('smartluku_simulation');
+            if (!raw) return;
+            let snap;
+            try {
+                if (typeof SimulationEngine !== 'undefined') {
+                    snap = SimulationEngine.getDashboardSnapshot();
+                } else {
+                    const s = JSON.parse(raw);
+                    const totalW = (s.appliances || []).reduce((sum, a) => sum + (a.power || 0), 0);
+                    snap = {
+                        balanceKwh: s.balanceKwh,
+                        meterNumber: s.meterNumber,
+                        connected: s.gridConnected,
+                        usageTodayKwh: s.totalEnergyConsumedKwh,
+                        currentPowerKw: totalW / 1000,
+                        voltage: s.sensors?.voltage?.value || 230,
+                        appliances: s.appliances || [],
+                        alerts: s.alerts || [],
+                        sensors: s.sensors || {}
+                    };
+                }
+            } catch (e) { return; }
+
+            const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+            set('dashBalance', snap.balanceKwh.toFixed(1) + ' kWh');
+            set('dashMeterId', snap.meterNumber);
+            const statusEl = document.getElementById('dashMeterStatus');
+            if (statusEl) {
+                statusEl.textContent = snap.connected ? 'Connected' : 'Disconnected';
+                statusEl.style.color = snap.connected ? '#86efac' : '#ef4444';
+            }
+            set('dashUsageToday', snap.usageTodayKwh.toFixed(2));
+            set('dashCurrentLoad', snap.currentPowerKw.toFixed(2));
+            set('dashVoltage', Math.round(snap.voltage));
+            set('dashEstBill', Math.round(snap.balanceKwh * 100 / 1000) + 'K');
+
+            set('monCurrentUsage', snap.currentPowerKw.toFixed(2));
+            const netEl = document.getElementById('monNetworkStatus');
+            if (netEl) {
+                netEl.textContent = snap.connected ? 'Online' : 'Offline';
+                netEl.style.color = snap.connected ? '#10b981' : '#ef4444';
+            }
+            set('monVoltage', Math.round(snap.voltage) + 'V');
+            set('monCurrent', (snap.sensors.current?.value || 0).toFixed(1) + 'A');
+
+            const badge = document.getElementById('simSyncBadge');
+            if (badge) badge.style.display = 'inline';
+
+            const alertsEl = document.getElementById('monAlertsContainer');
+            if (alertsEl) {
+                if (snap.alerts.length === 0) {
+                    alertsEl.innerHTML = '<div class="notification-item"><div class="notification-title"><i class="fas fa-check-circle"></i> All systems normal</div><div class="notification-message">No active alerts from IoT sensors.</div></div>';
+                } else {
+                    alertsEl.innerHTML = snap.alerts.map(a =>
+                        `<div class="notification-item"><div class="notification-title"><i class="fas ${a.icon}"></i> ${a.type === 'danger' ? 'Critical' : 'Warning'}</div><div class="notification-message">${a.message}</div></div>`
+                    ).join('');
+                }
+            }
+
+            const tbody = document.getElementById('monApplianceTable');
+            if (tbody && snap.appliances.length) {
+                tbody.innerHTML = snap.appliances.map(a => {
+                    const status = !a.active ? 'Off' : a.power > 500 ? 'High' : 'Normal';
+                    const bg = !a.active ? 'var(--text-light)' : a.power > 500 ? 'var(--warning)' : 'var(--success)';
+                    return `<tr>
+                        <td><i class="fas ${a.icon}"></i> ${a.name}</td>
+                        <td>${a.active ? a.power + 'W' : 'Off'}</td>
+                        <td><span class="status-badge" style="background:${bg};">${status}</span></td>
+                    </tr>`;
+                }).join('');
+            }
+
+            const sensorGrid = document.getElementById('monSensorGrid');
+            if (sensorGrid && snap.sensors) {
+                const labels = { temperature: 'Temp', humidity: 'Humidity', power_factor: 'PF', frequency: 'Freq', motion: 'Motion', smoke: 'Smoke' };
+                sensorGrid.innerHTML = Object.entries(snap.sensors)
+                    .filter(([k]) => ['temperature', 'humidity', 'power_factor', 'frequency', 'motion', 'smoke'].includes(k))
+                    .map(([k, s]) => {
+                        const display = s.label || (s.value + (s.unit ? ' ' + s.unit : ''));
+                        return `<div class="card"><div class="card-title">${labels[k] || k}</div><div class="card-value" style="font-size:1.2rem;">${display}</div></div>`;
+                    }).join('');
+            }
+
+            // AI SMS monitor + Energy Advisor context
+            const smsEnabled = document.getElementById('smsAlertsEnabled')?.checked !== false;
+            if (smsEnabled) SMSAlerts.monitor(snap);
+            EnergyAdvisor.updateContext(getUsageContext(snap));
+        }
+
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             initTheme();
+            initNetworkMap();
+            EnergyAdvisor.init();
+
+            document.getElementById('smsThreshold').textContent = SmartLUKUConfig.SMS_THRESHOLD_KWH;
+
+            SMSAlerts.setNotifyCallback(showSmsToast);
+            SMSAlerts.checkApiHealth().then(async health => {
+                const el = document.getElementById('smsApiStatus');
+                if (!el) return;
+                if (!health.ok) {
+                    el.innerHTML = '⚠ API offline — <code style="font-size:0.7rem">cd server && npm start</code>';
+                    return;
+                }
+                const at = await SMSAlerts.getProviderStatus();
+                if (health.smsReady) {
+                    el.innerHTML = `✓ SmartLUKU SMS <strong>${health.smsEnvironment || 'live'}</strong> · ${at?.username || 'connected'}`;
+                    el.style.color = 'var(--success)';
+                } else {
+                    el.innerHTML = '📱 Demo mode — add <code style="font-size:0.7rem">SMS_API_KEY</code> to <code style="font-size:0.7rem">.env</code>';
+                }
+            });
+
+            const profile = JSON.parse(localStorage.getItem('smartluku-profile') || 'null');
+            const phoneInput = document.getElementById('smsPhoneInput');
+            if (phoneInput && profile?.phone) phoneInput.value = profile.phone;
+
+            syncFromSimulation();
+            renderConsumptionBreakdown('daily');
+            setInterval(syncFromSimulation, 3000);
+            window.addEventListener('storage', function(e) {
+                syncFromSimulation();
+                renderConsumptionBreakdown();
+                if (e.key === SmartLUKUConfig.OUTAGE_STORAGE_KEY && typeof OutageMap !== 'undefined') {
+                    OutageMap.loadReports();
+                }
+            });
         });
     </script>
 </body>
