@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: smartluku-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: smartluku
+      POSTGRES_PASSWORD: smartluku
+      POSTGRES_DB: smartluku
+    ports:
+      - "5432:5432"
+    volumes:
+      - smartluku_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartluku -d smartluku"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  smartluku_pgdata:
