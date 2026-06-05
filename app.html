@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartLUKU - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -281,16 +283,14 @@
             height: 540px;
             border-radius: 0.6rem;
             border: 1px solid var(--border);
-            background:
-                radial-gradient(circle at 50% 45%, rgba(31,90,61,0.10), transparent 60%),
-                var(--card-bg);
             overflow: hidden;
         }
-        #neuronSvg { width: 100%; height: 100%; display: block; }
+        #leafletMap { width: 100%; height: 100%; background: #aad3df; }
         .map-hint {
             position: absolute;
             bottom: 0.6rem; left: 50%;
             transform: translateX(-50%);
+            z-index: 500;
             font-size: 0.75rem;
             color: var(--text-light);
             background: var(--bg);
@@ -298,24 +298,25 @@
             padding: 0.3rem 0.7rem;
             border-radius: 1rem;
             white-space: nowrap;
+            pointer-events: none;
         }
-        .svg-label { fill: var(--text); font-family: inherit; pointer-events: none; }
 
-        /* Animated synapse flow */
-        .net-line.line-active, .house-line.line-active {
-            stroke-dasharray: 7 11;
-            animation: synapseFlow 0.9s linear infinite;
-        }
-        .house-line { stroke-opacity: 0.65; }
-        @keyframes synapseFlow { to { stroke-dashoffset: -18; } }
-        .net-line.line-down, .house-line.line-down {
-            stroke-dasharray: 4 7;
-            animation: lineBlink 1.3s ease-in-out infinite;
-        }
+        /* Animated synapse flow on Leaflet polylines */
+        .grid-line { stroke-dasharray: 8 12; animation: synapseFlow 0.9s linear infinite; }
+        .grid-line-down { stroke-dasharray: 5 7; animation: lineBlink 1.3s ease-in-out infinite; }
+        .house-line { stroke-dasharray: 5 8; animation: synapseFlow 1.1s linear infinite; }
+        .house-line-down { stroke-dasharray: 3 5; animation: lineBlink 1.3s ease-in-out infinite; }
+        @keyframes synapseFlow { to { stroke-dashoffset: -20; } }
         @keyframes lineBlink { 0%,100% { stroke-opacity: 0.9; } 50% { stroke-opacity: 0.2; } }
-        .pulse-ring { transform-box: fill-box; transform-origin: center; animation: pulseRing 2s ease-out infinite; }
-        @keyframes pulseRing { 0% { transform: scale(0.7); opacity: 0.5; } 100% { transform: scale(1.6); opacity: 0; } }
-        .home-ring { transform-box: fill-box; transform-origin: center; animation: pulseRing 1.8s ease-out infinite; }
+
+        /* Map marker labels / popups */
+        .leaflet-popup-content { font-size: 0.85rem; }
+        .net-marker-label {
+            background: var(--bg); color: var(--text);
+            border: 1px solid var(--border); border-radius: 0.4rem;
+            padding: 1px 6px; font-size: 11px; font-weight: 700;
+            white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
 
         /* ===== Report panel ===== */
         .report-panel { display: flex; flex-direction: column; }
@@ -977,7 +978,7 @@
                             </div>
 
                             <div id="neuronMap">
-                                <svg id="neuronSvg" preserveAspectRatio="xMidYMid meet"></svg>
+                                <div id="leafletMap"></div>
                                 <div class="map-hint"><i class="fas fa-hand-pointer"></i> Tap a line or house to view its status &amp; downtime report</div>
                             </div>
                         </div>
@@ -994,18 +995,47 @@
     
     <script src="src/js/tanzania-data.js"></script>
     <script>
-        // ===== Neuron-style Electricity Network Map =====
-        const SVGNS = 'http://www.w3.org/2000/svg';
+        // ===== Electricity Network Map (real Tanzania map + status overlay) =====
         const STATUS_COLOR = { operational: '#10b981', maintenance: '#f59e0b', down: '#ef4444' };
         const STATUS_LABEL = { operational: 'Active', maintenance: 'Maintenance', down: 'Down' };
         let MAP_READY = false;
         let USER_NET_ID = null;
         let SELECTED_NET_ID = null;
 
-        function svgEl(tag, attrs) {
-            const el = document.createElementNS(SVGNS, tag);
-            for (const k in attrs) el.setAttribute(k, attrs[k]);
-            return el;
+        // Leaflet map state
+        let leafletMap = null;
+        let mapOverlay = null; // layer group holding all network/house graphics
+        const TZ_CENTER = [-6.369, 35.0];
+        const NATIONAL_GRID = [-6.1722, 35.7395]; // Dodoma - national grid hub
+
+        // Approximate coordinates for each region [lat, lng]
+        const REGION_COORDS = {
+            dar: [-6.8000, 39.2833],
+            arusha: [-3.3869, 36.6830],
+            dodoma: [-6.1722, 35.7395],
+            mbeya: [-8.9094, 33.4608],
+            morogoro: [-6.8210, 37.6610],
+            'dar-coastal': [-6.4000, 38.9000],
+            lindi: [-9.9986, 39.7100],
+            tanga: [-5.0689, 39.0989],
+            iringa: [-7.7667, 35.6833],
+            singida: [-4.8167, 34.7500],
+            mwanza: [-2.5167, 32.9000]
+        };
+
+        // Deterministic small offset so networks in the same region don't overlap
+        function netCoord(net) {
+            const base = REGION_COORDS[net.region] || TZ_CENTER;
+            const h = tanzaniaData._hash(net.id);
+            const dLat = (((h % 1000) / 1000) - 0.5) * 0.9;
+            const dLng = ((((h >> 5) % 1000) / 1000) - 0.5) * 0.9;
+            return [base[0] + dLat, base[1] + dLng];
+        }
+
+        function houseCoord(net, idx, total, center) {
+            const ang = (Math.PI * 2 * idx) / Math.max(1, total) + (tanzaniaData._hash(net.id) % 100) / 100;
+            const r = 0.18 + ((tanzaniaData._hash(net.id + idx) % 100) / 100) * 0.12;
+            return [center[0] + Math.sin(ang) * r, center[1] + Math.cos(ang) * r];
         }
 
         function getUserProfile() {
@@ -1029,8 +1059,16 @@
             const userNet = tanzaniaData.getUserNetwork(profile);
             USER_NET_ID = userNet.id;
             if (!SELECTED_NET_ID) SELECTED_NET_ID = userNet.id;
+
+            if (!leafletMap) {
+                leafletMap = L.map('leafletMap', { zoomControl: true, attributionControl: true }).setView(TZ_CENTER, 6);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors', maxZoom: 18
+                }).addTo(leafletMap);
+                mapOverlay = L.layerGroup().addTo(leafletMap);
+            }
             renderNetworkSummary();
-            renderNeuronMap();
+            renderMap();
             renderReport(SELECTED_NET_ID);
             MAP_READY = true;
         }
