@@ -346,5 +346,60 @@ const tanzaniaData = {
       ...net,
       status: this.getNetworkStatus(net.id)
     }));
+  },
+
+  // Region hub coordinates for Leaflet grid map
+  regionCoords: {
+    dar: [-6.8000, 39.2833],
+    arusha: [-3.3869, 36.6830],
+    dodoma: [-6.1667, 35.7333],
+    mbeya: [-8.7500, 33.4667],
+    morogoro: [-6.8167, 37.6667],
+    iringa: [-7.7667, 35.6833],
+    songea: [-10.6667, 35.6333],
+    mwanza: [-2.5167, 32.8833],
+    tabora: [-5.0333, 32.7833],
+    bukoba: [-1.3333, 31.8333]
+  },
+
+  _districtOffset: function (region, district) {
+    const seed = this._hash(region + ':' + district);
+    const angle = (seed % 360) * (Math.PI / 180);
+    const dist = 0.04 + (seed % 30) / 1000;
+    return { dlat: Math.sin(angle) * dist, dlng: Math.cos(angle) * dist };
+  },
+
+  /** Geo geometry for a distribution line: hub → substation → street branches */
+  getNetworkGeometry: function (net) {
+    this._initStatuses();
+    const hub = this.regionCoords[net.region] || [-6.8000, 39.2833];
+    const off = this._districtOffset(net.region, net.district);
+    const subLat = hub[0] + off.dlat;
+    const subLng = hub[1] + off.dlng;
+    const streets = (this.getStreets(net.region, net.district) || []).slice(0, 6);
+    const branches = streets.map((street, i) => {
+      const a = (-Math.PI / 2) + i * ((Math.PI * 1.1) / Math.max(streets.length - 1, 1));
+      const r = 0.012 + (i % 3) * 0.004;
+      return {
+        street,
+        lat: subLat + Math.sin(a) * r,
+        lng: subLng + Math.cos(a) * r
+      };
+    });
+    return {
+      hub: { lat: hub[0], lng: hub[1] },
+      substation: { lat: subLat, lng: subLng },
+      branches,
+      trunk: [[hub[0], hub[1]], [subLat, subLng]],
+      branchLines: branches.map(b => [[subLat, subLng], [b.lat, b.lng]])
+    };
+  },
+
+  getNetworksForScope: function (scope, profile) {
+    this._initStatuses();
+    const userNet = this.getUserNetwork(profile);
+    if (scope === 'mine') return [userNet];
+    if (scope === 'region') return this.networks.filter(n => n.region === userNet.region);
+    return this.networks.slice();
   }
 };

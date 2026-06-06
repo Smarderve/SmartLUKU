@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartLUKU - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -83,6 +85,80 @@
         .theme-btn { background: none; border: none; cursor: pointer; font-size: 1.1rem; color: var(--text); padding: 0.4rem; transition: transform 0.3s; }
         .theme-btn:hover { transform: rotate(20deg); }
         .user-avatar { width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; }
+
+        /* Header notification inbox */
+        .notif-wrap { position: relative; }
+        .notif-bell {
+            background: none; border: none; cursor: pointer; font-size: 1.15rem;
+            color: var(--text); padding: 0.4rem; position: relative; line-height: 1;
+        }
+        .notif-bell:hover { color: var(--primary); }
+        .notif-bell.ring { animation: bellRing 0.5s ease; }
+        @keyframes bellRing { 0%,100% { transform: rotate(0); } 25% { transform: rotate(14deg); } 75% { transform: rotate(-14deg); } }
+        .notif-badge {
+            position: absolute; top: 0; right: 0; min-width: 16px; height: 16px;
+            background: var(--error); color: #fff; font-size: 0.62rem; font-weight: 700;
+            border-radius: 999px; display: flex; align-items: center; justify-content: center;
+            padding: 0 4px; border: 2px solid var(--card-bg);
+        }
+        .notif-dropdown {
+            display: none; position: absolute; top: calc(100% + 10px); right: 0;
+            width: min(380px, calc(100vw - 2rem)); background: var(--card-bg);
+            border: 1px solid var(--border); border-radius: 0.65rem;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.18); z-index: 3000;
+            flex-direction: column; overflow: hidden;
+        }
+        .notif-dropdown.open { display: flex; }
+        .notif-dropdown-head {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.85rem 1rem; border-bottom: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        .notif-close {
+            background: none; border: none; cursor: pointer; color: var(--text-light);
+            font-size: 0.95rem; padding: 0.2rem;
+        }
+        .notif-sms-bar {
+            padding: 0.85rem 1rem; border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(31,90,61,0.06), rgba(16,185,129,0.06));
+        }
+        .notif-sms-title { font-size: 0.78rem; font-weight: 600; color: var(--text); margin-bottom: 0.25rem; }
+        .notif-sms-desc { font-size: 0.75rem; color: var(--text-light); line-height: 1.4; margin-bottom: 0.6rem; }
+        .notif-sms-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+        .notif-sms-actions .btn { font-size: 0.75rem; padding: 0.35rem 0.7rem; }
+        .notif-api-status { font-size: 0.72rem; color: var(--text-light); }
+        .notif-inbox {
+            max-height: 300px; overflow-y: auto; padding: 0.5rem;
+        }
+        .notif-inbox-item {
+            padding: 0.75rem; border-radius: 0.45rem; margin-bottom: 0.4rem;
+            background: var(--bg-light); border-left: 3px solid var(--warning);
+            cursor: pointer; transition: background 0.15s;
+        }
+        .notif-inbox-item:last-child { margin-bottom: 0; }
+        .notif-inbox-item:hover { background: var(--input-bg); }
+        .notif-inbox-item.unread { border-left-color: var(--secondary); background: rgba(16,185,129,0.08); }
+        .notif-inbox-item.success { border-left-color: var(--success); }
+        .notif-inbox-item.info { border-left-color: #3b82f6; }
+        .notif-inbox-item.warning { border-left-color: var(--warning); }
+        .notif-inbox-item.danger { border-left-color: var(--error); }
+        .notif-inbox-title {
+            font-size: 0.82rem; font-weight: 600; margin-bottom: 0.25rem;
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .notif-inbox-msg { font-size: 0.76rem; color: var(--text-light); line-height: 1.4; }
+        .notif-inbox-meta { font-size: 0.68rem; color: var(--text-light); margin-top: 0.3rem; opacity: 0.85; }
+        .notif-empty {
+            text-align: center; padding: 1.5rem 1rem; font-size: 0.8rem; color: var(--text-light);
+        }
+        .notif-dropdown-foot {
+            padding: 0.55rem 1rem; border-top: 1px solid var(--border);
+            display: flex; justify-content: flex-end;
+        }
+        .notif-mark-read {
+            background: none; border: none; cursor: pointer; font-size: 0.75rem;
+            color: var(--primary); font-weight: 600;
+        }
         
         /* Cards & Grid */
         .grid { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 1.5rem; }
@@ -106,9 +182,41 @@
             padding: 1.4rem;
             margin-bottom: 1.5rem;
         }
-        .meter-box h3 { font-size: 0.8rem; opacity: 0.9; margin-bottom: 0.4rem; font-weight: 500; }
-        .meter-value { font-size: 2.4rem; font-weight: 700; margin-bottom: 0.8rem; }
+        .meter-top-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.5rem; }
+        .meter-box h3 { font-size: 0.8rem; opacity: 0.9; margin: 0; font-weight: 500; }
+        .live-clock {
+            font-family: Consolas, 'Courier New', monospace;
+            font-size: 0.95rem; font-weight: 600;
+            background: rgba(0,0,0,0.2); padding: 0.25rem 0.6rem;
+            border-radius: 0.35rem; letter-spacing: 0.05em;
+        }
+        .live-clock .live-dot {
+            display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+            background: #86efac; margin-right: 0.35rem; animation: livePulse 1.5s infinite;
+        }
+        @keyframes livePulse { 0%,100% { opacity:1; } 50% { opacity:0.35; } }
+        .meter-value { font-size: 2.4rem; font-weight: 700; margin-bottom: 0.35rem; transition: color 0.3s; }
+        .meter-value.dropping { color: #fca5a5; animation: meterDrop 0.5s ease; }
+        @keyframes meterDrop { 0% { transform: scale(1.03); } 100% { transform: scale(1); } }
+        .meter-unit { font-size: 1.1rem; opacity: 0.85; font-weight: 500; }
+        .meter-drain {
+            font-size: 0.82rem; opacity: 0.9; margin-bottom: 0.65rem;
+            display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;
+        }
+        .meter-drain .drain-val { color: #fca5a5; font-weight: 700; font-family: monospace; }
+        .meter-bar-wrap {
+            height: 10px; background: rgba(0,0,0,0.25); border-radius: 1rem;
+            overflow: hidden; margin-bottom: 0.75rem;
+        }
+        .meter-bar-fill {
+            height: 100%; background: linear-gradient(90deg, #fbbf24, #86efac);
+            border-radius: 1rem; transition: width 0.8s ease; min-width: 2%;
+        }
+        .meter-bar-fill.low { background: linear-gradient(90deg, #ef4444, #fbbf24); }
+        .meter-bar-fill.critical { background: #ef4444; animation: barBlink 1s infinite; }
+        @keyframes barBlink { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
         .meter-status { font-size: 0.8rem; opacity: 0.85; }
+        .meter-last-tick { font-size: 0.72rem; opacity: 0.7; margin-top: 0.35rem; }
         
         /* Buttons */
         .btn {
@@ -163,6 +271,76 @@
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(31, 90, 61, 0.1);
+        }
+
+        /* IoT device registry (Settings) */
+        .iot-section-head {
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem;
+        }
+        .iot-device-count { font-size: 0.8rem; color: var(--text-light); }
+        .iot-device-list { display: flex; flex-direction: column; gap: 0.55rem; }
+        .iot-device-row {
+            display: grid; grid-template-columns: auto 1fr auto auto;
+            gap: 0.75rem; align-items: center; padding: 0.85rem 1rem;
+            background: var(--bg-light); border: 1px solid var(--border);
+            border-radius: 0.5rem;
+        }
+        .iot-device-icon {
+            width: 40px; height: 40px; border-radius: 0.45rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+        }
+        .iot-device-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.15rem; }
+        .iot-device-meta, .iot-device-serial { font-size: 0.75rem; color: var(--text-light); }
+        .iot-tag {
+            font-size: 0.62rem; font-weight: 600; padding: 0.1rem 0.4rem;
+            border-radius: 0.25rem; vertical-align: middle; margin-left: 0.25rem;
+        }
+        .iot-tag.builtin { background: rgba(16,185,129,0.15); color: var(--secondary); }
+        .iot-tag.custom { background: rgba(251,191,36,0.15); color: var(--accent); }
+        .iot-badge {
+            font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.5rem;
+            border-radius: 1rem; white-space: nowrap;
+        }
+        .iot-badge.online { background: rgba(16,185,129,0.15); color: var(--success); }
+        .iot-badge.idle { background: rgba(107,114,128,0.15); color: var(--text-light); }
+        .iot-badge.offline { background: rgba(239,68,68,0.12); color: var(--error); }
+        .iot-badge.sensor { background: rgba(59,130,246,0.12); color: #3b82f6; }
+        .iot-device-actions { display: flex; align-items: center; gap: 0.5rem; }
+        .iot-toggle { position: relative; display: inline-block; width: 38px; height: 22px; }
+        .iot-toggle input { opacity: 0; width: 0; height: 0; }
+        .iot-toggle-slider {
+            position: absolute; cursor: pointer; inset: 0;
+            background: var(--border); border-radius: 22px; transition: 0.2s;
+        }
+        .iot-toggle-slider:before {
+            content: ''; position: absolute; height: 16px; width: 16px;
+            left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: 0.2s;
+        }
+        .iot-toggle input:checked + .iot-toggle-slider { background: var(--secondary); }
+        .iot-toggle input:checked + .iot-toggle-slider:before { transform: translateX(16px); }
+        .iot-remove-btn {
+            background: none; border: none; color: var(--error); cursor: pointer;
+            padding: 0.3rem; font-size: 0.85rem; opacity: 0.7;
+        }
+        .iot-remove-btn:hover { opacity: 1; }
+        .iot-register-panel {
+            margin-top: 1rem; padding: 1rem; border: 1px dashed var(--border);
+            border-radius: 0.5rem; background: var(--input-bg);
+        }
+        .iot-form-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+        .iot-register-msg { font-size: 0.82rem; margin-top: 0.75rem; min-height: 1.2rem; }
+        .iot-register-msg.success { color: var(--success); }
+        .iot-register-msg.error { color: var(--error); }
+        .iot-empty { text-align: center; padding: 1.5rem; color: var(--text-light); font-size: 0.85rem; }
+        @media (max-width: 640px) {
+            .iot-device-row { grid-template-columns: auto 1fr; }
+            .iot-device-status, .iot-device-actions { grid-column: 2; }
         }
         
         /* Table Styles */
@@ -287,6 +465,13 @@
             overflow: hidden;
         }
         #neuronSvg { width: 100%; height: 100%; display: block; }
+        #networkMap { height: 480px; border-radius: 0.6rem; border: 1px solid var(--border); overflow: hidden; margin-top: 0.6rem; }
+        .outage-location-hint { font-size: 0.82rem; color: var(--text-light); margin: 0.35rem 0 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+        .outage-location-hint.matched { color: var(--primary); }
+        .user-home-marker { background: none !important; border: none !important; }
+        .net-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+        .network-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1rem; align-items: start; }
+        @media (max-width: 900px) { .network-grid { grid-template-columns: 1fr; } }
         .map-hint {
             position: absolute;
             bottom: 0.6rem; left: 50%;
@@ -318,7 +503,8 @@
         .home-ring { transform-box: fill-box; transform-origin: center; animation: pulseRing 1.8s ease-out infinite; }
 
         /* ===== Report panel ===== */
-        .report-panel { display: flex; flex-direction: column; }
+        .report-panel { display: flex; flex-direction: column; background: var(--card-bg); border: 1px solid var(--border); border-radius: 0.6rem; padding: 1rem; min-height: 300px; max-height: 540px; overflow-y: auto; }
+        .report-panel:empty::before { content: 'Select a line or house on the map to see its status report.'; color: var(--text-light); font-size: 0.85rem; }
         .report-header {
             display: flex; align-items: flex-start; justify-content: space-between;
             gap: 0.75rem; padding-bottom: 0.85rem; margin-bottom: 0.85rem;
@@ -379,18 +565,6 @@
             border-radius: 1rem; background: rgba(251,191,36,0.15); color: var(--accent);
             border: 1px solid rgba(251,191,36,0.3);
         }
-        .sms-toast {
-            position: fixed; top: 4.5rem; right: 1.5rem; z-index: 2500;
-            max-width: 340px; padding: 1rem 1.2rem; border-radius: 0.6rem;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-            animation: slideIn 0.3s ease;
-            display: none;
-        }
-        .sms-toast.show { display: block; }
-        .sms-toast.success { background: #ecfdf5; border: 1px solid #10b981; color: #047857; }
-        .sms-toast.info { background: #eff6ff; border: 1px solid #3b82f6; color: #1e40af; }
-        .sms-toast.warning { background: #fffbeb; border: 1px solid #f59e0b; color: #92400e; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .map-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
         .btn-report { background: #ef4444; color: white; }
         .btn-report:hover { background: #dc2626; }
@@ -447,6 +621,7 @@
             .meter-value { font-size: 1.8rem; }
             .header-controls { gap: 0.8rem; }
             .user-avatar { width: 30px; height: 30px; font-size: 0.8rem; }
+            .notif-dropdown { right: -0.5rem; width: calc(100vw - 1.5rem); }
         }
         
         /* Scrollbar styling */
@@ -624,6 +799,33 @@
                     <div class="logo"><i class="fas fa-lightning-bolt"></i> SmartLUKU</div>
                 </div>
                 <div class="header-controls">
+                    <div class="notif-wrap" id="notifWrap">
+                        <button type="button" class="notif-bell" id="notifBellBtn" onclick="toggleNotifPanel()" title="Notifications" aria-expanded="false" aria-controls="notifDropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="notif-badge" id="notifBadge" style="display:none">0</span>
+                        </button>
+                        <div class="notif-dropdown" id="notifDropdown" role="dialog" aria-label="Notification inbox">
+                            <div class="notif-dropdown-head">
+                                <div>
+                                    <strong><i class="fas fa-bell"></i> Notifications</strong>
+                                    <span class="innovation-badge" style="margin-left:0.4rem;font-size:0.62rem;"><i class="fas fa-mobile-alt"></i> Live Alert</span>
+                                </div>
+                                <button type="button" class="notif-close" onclick="toggleNotifPanel(false)" aria-label="Close"><i class="fas fa-times"></i></button>
+                            </div>
+                            <div class="notif-sms-bar">
+                                <div class="notif-sms-title"><i class="fas fa-sms"></i> SmartLUKU SMS Alert</div>
+                                <p class="notif-sms-desc">Auto SMS via <strong style="color:var(--secondary)">SmartLUKU SMS</strong> when balance drops below <strong id="smsThreshold">20</strong> kWh</p>
+                                <div class="notif-sms-actions">
+                                    <button type="button" class="btn btn-secondary" onclick="testSmsAlert()"><i class="fas fa-paper-plane"></i> Test SMS Alert</button>
+                                    <span id="smsApiStatus" class="notif-api-status">Checking API...</span>
+                                </div>
+                            </div>
+                            <div class="notif-inbox" id="notifInbox"></div>
+                            <div class="notif-dropdown-foot">
+                                <button type="button" class="notif-mark-read" onclick="markAllNotificationsRead()">Mark all read</button>
+                            </div>
+                        </div>
+                    </div>
                     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">
                         <i class="fas fa-moon"></i>
                     </button>
@@ -641,9 +843,26 @@
                     </h2>
                     
                     <div class="meter-box">
-                        <h3>Current Balance</h3>
-                        <div class="meter-value" id="dashBalance">285 kWh</div>
-                        <div class="meter-status">Meter: <span id="dashMeterId">TZ-2024-001234</span> | Status: <span id="dashMeterStatus" style="color: #86efac;">Connected</span></div>
+                        <div class="meter-top-row">
+                            <h3><i class="fas fa-bolt"></i> Live Prepaid Meter</h3>
+                            <div class="live-clock" id="dashLiveClock"><span class="live-dot"></span>--:--:--</div>
+                        </div>
+                        <div class="meter-value" id="dashBalance">285.0 <span class="meter-unit">kWh</span></div>
+                        <div class="meter-drain">
+                            <i class="fas fa-arrow-trend-down"></i>
+                            Draining: <span class="drain-val" id="dashDrainTick">-0.0000</span> kWh/tick
+                            · <span id="dashDrainHour">0.00</span> kWh/hr
+                            · Used today: <span id="dashUsedToday">0.00</span> kWh
+                        </div>
+                        <div class="meter-bar-wrap">
+                            <div class="meter-bar-fill" id="dashMeterFill" style="width:100%"></div>
+                        </div>
+                        <div class="meter-status">
+                            Meter: <span id="dashMeterId">TZ-2024-001234</span>
+                            | Status: <span id="dashMeterStatus" style="color:#86efac;">Connected</span>
+                            | Est. supply: <span id="dashTimeLeft">--</span>
+                        </div>
+                        <div class="meter-last-tick" id="dashLastUpdate">Last meter reading: waiting for live data…</div>
                     </div>
                     
                     <div style="margin-bottom:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
@@ -655,26 +874,6 @@
                         </span>
                     </div>
                     
-                    <div id="smsToast" class="sms-toast"></div>
-
-                    <div class="card" style="margin-bottom:1rem;border-left:3px solid var(--accent);">
-                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
-                            <div>
-                                <div class="card-title"><i class="fas fa-sms"></i> SmartLUKU SMS Alert</div>
-                                <div style="font-size:0.85rem;color:var(--text-light);margin-top:0.25rem;">
-                                    Auto SMS via <strong style="color:var(--secondary)">SmartLUKU SMS</strong> when balance drops below <strong id="smsThreshold">20</strong> kWh
-                                </div>
-                            </div>
-                            <span class="innovation-badge"><i class="fas fa-mobile-alt"></i> Live Alert</span>
-                        </div>
-                        <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-                            <button class="btn btn-secondary" onclick="testSmsAlert()" style="font-size:0.8rem;">
-                                <i class="fas fa-paper-plane"></i> Test SMS Alert
-                            </button>
-                            <span id="smsApiStatus" style="font-size:0.75rem;color:var(--text-light);align-self:center;">Checking API...</span>
-                        </div>
-                    </div>
-
                     <div class="grid">
                         <div class="card">
                             <div class="card-title">Usage Today</div>
@@ -1006,6 +1205,81 @@
                     </div>
                     
                     <div class="card" style="margin-bottom: 1.5rem;">
+                        <div class="iot-section-head">
+                            <div>
+                                <h3 style="margin-bottom: 0.25rem;"><i class="fas fa-microchip"></i> IoT Devices</h3>
+                                <p class="iot-device-count" id="iotDeviceCount">Loading devices…</p>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="iotRegisterToggleBtn" onclick="IoTDevices.toggleRegisterForm()" style="font-size:0.85rem;">
+                                <i class="fas fa-plus"></i> Register Device
+                            </button>
+                        </div>
+                        <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:1rem;">
+                            Manage smart plugs, sensors, and switches linked to your LUKU meter. Registered appliances sync with the IoT simulation and live dashboard.
+                        </p>
+                        <div id="iotDeviceList" class="iot-device-list"></div>
+                        <div id="iotRegisterPanel" class="iot-register-panel" hidden>
+                            <h4 style="margin-bottom:0.75rem;font-size:0.95rem;"><i class="fas fa-plus-circle"></i> Register New IoT Device</h4>
+                            <form id="iotRegisterForm" onsubmit="IoTDevices.handleRegister(event)">
+                                <div class="iot-form-grid">
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label for="iotDeviceName">Device Name *</label>
+                                        <input type="text" id="iotDeviceName" placeholder="e.g. Bedroom Fan" required maxlength="40">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label for="iotDeviceType">Device Type *</label>
+                                        <select id="iotDeviceType" onchange="IoTDevices.onTypeChange()" required>
+                                            <option value="smart_plug">Smart Plug</option>
+                                            <option value="switch">Smart Switch</option>
+                                            <option value="sensor">Sensor Node</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label for="iotDeviceModel">Model / Hardware</label>
+                                        <select id="iotDeviceModel">
+                                            <option value="ESP32 Smart Node">ESP32 Smart Node</option>
+                                            <option value="Shelly Plug S">Shelly Plug S</option>
+                                            <option value="Sonoff Basic">Sonoff Basic</option>
+                                            <option value="Tuya Smart Plug">Tuya Smart Plug</option>
+                                            <option value="DHT22 Sensor">DHT22 Sensor</option>
+                                            <option value="PIR Motion Sensor">PIR Motion Sensor</option>
+                                            <option value="Custom">Custom</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label for="iotDeviceRoom">Room / Location</label>
+                                        <input type="text" id="iotDeviceRoom" placeholder="e.g. Bedroom" maxlength="30">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0;" id="iotPowerGroup">
+                                        <label for="iotDevicePower">Power Rating (W)</label>
+                                        <input type="number" id="iotDevicePower" min="1" max="5000" value="100" placeholder="100">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:0;">
+                                        <label for="iotDeviceIcon">Icon</label>
+                                        <select id="iotDeviceIcon">
+                                            <option value="fa-plug">Smart Plug</option>
+                                            <option value="fa-fan">Fan / AC</option>
+                                            <option value="fa-lightbulb">Lights</option>
+                                            <option value="fa-tv">TV</option>
+                                            <option value="fa-snowflake">Fridge</option>
+                                            <option value="fa-shower">Heater</option>
+                                            <option value="fa-blender">Kitchen</option>
+                                            <option value="fa-microchip">Sensor</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div style="margin-top:0.85rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+                                    <button type="submit" class="btn btn-primary" style="font-size:0.85rem;">
+                                        <i class="fas fa-check"></i> Register Device
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" style="font-size:0.85rem;" onclick="IoTDevices.toggleRegisterForm(false)">Cancel</button>
+                                </div>
+                                <div id="iotRegisterMsg" class="iot-register-msg"></div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 1.5rem;">
                         <h3 style="margin-bottom: 1.5rem;">Security</h3>
                         <button class="btn btn-secondary" onclick="alert('Change password form - coming soon')">
                             <i class="fas fa-lock"></i> Change Password
@@ -1042,7 +1316,7 @@
                         <i class="fas fa-map"></i> Electricity Network Map
                     </h2>
                     <p style="margin-bottom:1rem;color:var(--text-light);font-size:0.9rem;">
-                        Community-powered outage map — report blackouts in your neighbourhood in real time.
+                        Live TANESCO grid channels on OpenStreetMap — tap any line to view status. Red dashed lines are active outages.
                         <span class="innovation-badge" style="margin-left:0.5rem;"><i class="fas fa-users"></i> Crowdsourced</span>
                     </p>
                     
@@ -1051,31 +1325,38 @@
                             <button class="btn btn-report" id="reportOutageBtn" onclick="startOutageReport()">
                                 <i class="fas fa-exclamation-circle"></i> Report Outage
                             </button>
-                            <span class="outage-stats"><strong id="outageReportCount">0</strong> community reports nearby</span>
+                            <span class="outage-stats"><strong id="outageReportCount">0</strong> nearby · <strong id="outageTotalCount">0</strong> total outages on map</span>
                         </div>
                         <div class="map-controls">
                             <div class="map-control-group">
-                                <label for="mapViewSelect">View Level:</label>
-                                <select id="mapViewSelect" onchange="changeMapView()">
-                                    <option value="country">National View</option>
-                                    <option value="region">Region View</option>
-                                    <option value="district">District View</option>
+                                <label for="mapScopeSelect">View:</label>
+                                <select id="mapScopeSelect" onchange="changeMapView()">
+                                    <option value="mine">My Line</option>
+                                    <option value="region" selected>My Region</option>
+                                    <option value="all">All Networks</option>
                                 </select>
                             </div>
 
-                            <div id="neuronMap">
-                                <svg id="neuronSvg" preserveAspectRatio="xMidYMid meet"></svg>
-                                <div class="map-hint"><i class="fas fa-hand-pointer"></i> Tap a line or house to view its status &amp; downtime report</div>
-                            </div>
                         </div>
-                        
+
+                        <div id="networkSummary" class="net-summary-grid"></div>
+
+                        <p class="map-hint" style="position:static;transform:none;background:var(--bg);color:var(--text-light);margin-bottom:0.5rem;padding:0.4rem 0;">
+                            <i class="fas fa-hand-pointer"></i> Tap a <strong>green/orange/red line</strong> for grid status, or a <strong>red dot</strong> for community outage reports
+                        </p>
+                        <p id="outageUserLocation" class="outage-location-hint"><i class="fas fa-spinner fa-spin"></i> Locating your account on OpenStreetMap…</p>
                         <div id="networkMap"></div>
+
+                        <div id="reportContent" class="report-panel" style="margin-top:1rem;max-height:none;"></div>
                         
                         <div class="network-legend">
                             <h3 style="margin-bottom: 1rem;">Legend</h3>
                             <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem;font-size:0.85rem;">
-                                <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#10b981;margin-right:0.4rem;"></span> TANESCO Grid (operational)</span>
-                                <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#ef4444;margin-right:0.4rem;"></span> User-reported outage</span>
+                                <span><span style="display:inline-block;width:18px;height:3px;background:#10b981;margin-right:0.4rem;vertical-align:middle;"></span> Grid line (operational)</span>
+                                <span><span style="display:inline-block;width:18px;height:3px;background:#f59e0b;margin-right:0.4rem;vertical-align:middle;border-bottom:2px dashed #f59e0b;"></span> Maintenance</span>
+                                <span><span style="display:inline-block;width:18px;height:3px;background:#ef4444;margin-right:0.4rem;vertical-align:middle;border-bottom:2px dashed #ef4444;"></span> Outage line</span>
+                                <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#ef4444;margin-right:0.4rem;"></span> Community outage report</span>
+                                <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#1f5a3d;border:2px solid #fbbf24;margin-right:0.4rem;"></span> Your home (OSM)</span>
                             </div>
                             <div class="legend-grid" id="legendGrid"></div>
                         </div>
@@ -1090,8 +1371,15 @@
     <script src="src/js/config.js"></script>
     <script src="src/js/modules/sms-alerts.js"></script>
     <script src="src/js/modules/energy-advisor.js"></script>
+    <script src="src/js/modules/grid-map.js"></script>
     <script src="src/js/modules/outage-map.js"></script>
+    <script src="src/js/modules/iot-devices.js"></script>
     <script>
+        // Require login — redirect to original login page if no session
+        if (!localStorage.getItem('smartluku-user')) {
+            window.location.replace('login.html');
+        }
+
         // Map variables
         let networkMap = null;
         let mapMarkers = [];
@@ -1112,8 +1400,22 @@
             'tabora': [-5.0333, 32.7833],
             'bukoba': [-1.3333, 31.8333]
         };
-        
-        function initNetworkMap() {
+
+        // ── Neuron-map shared constants & helpers (were missing → caused load error) ──
+        const STATUS_COLOR = { operational: '#10b981', maintenance: '#f59e0b', down: '#ef4444' };
+        const STATUS_LABEL = { operational: 'Operational', maintenance: 'Maintenance', down: 'Outage' };
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+        // Neuron-map state (were referenced before declaration → ReferenceError, blank map)
+        let MAP_READY = false;
+        let USER_NET_ID = null;
+        let SELECTED_NET_ID = null;
+        function svgEl(tag, attrs) {
+            const el = document.createElementNS(SVG_NS, tag);
+            for (const k in attrs) el.setAttribute(k, attrs[k]);
+            return el;
+        }
+
+        function initNetworkMapLegacy() {
             if (networkMap) return;
             
             networkMap = L.map('networkMap').setView(TANZANIA_CENTER, 6);
@@ -1134,7 +1436,8 @@
         }
 
         function startOutageReport() {
-            OutageMap.enableReportMode();
+            try { initOutageLeafletMap(); } catch (e) {}
+            if (typeof OutageMap !== 'undefined') OutageMap.enableReportMode();
         }
 
         function getUserProfile() {
@@ -1164,16 +1467,18 @@
             MAP_READY = true;
         }
 
-        function renderNetworkSummary() {
-            const s = tanzaniaData.getNetworkSummary();
+        function renderNetworkSummary(scope) {
             const el = document.getElementById('networkSummary');
             if (!el) return;
+            const sc = scope || document.getElementById('mapScopeSelect')?.value || 'region';
+            const counts = typeof GridMap !== 'undefined' ? GridMap.countByStatus(sc) : null;
+            const s = counts || tanzaniaData.getNetworkSummary();
             const cards = [
-                { label: 'Total Lines', value: s.total, color: 'var(--primary)', icon: 'fa-project-diagram' },
+                { label: 'Lines on Map', value: s.total, color: 'var(--primary)', icon: 'fa-project-diagram' },
                 { label: 'Active', value: s.operational, color: STATUS_COLOR.operational, icon: 'fa-circle-check' },
                 { label: 'Maintenance', value: s.maintenance, color: STATUS_COLOR.maintenance, icon: 'fa-screwdriver-wrench' },
-                { label: 'Down', value: s.down, color: STATUS_COLOR.down, icon: 'fa-triangle-exclamation' },
-                { label: 'Avg Uptime', value: s.avgUptime + '%', color: 'var(--secondary)', icon: 'fa-gauge-high' }
+                { label: 'Outage Lines', value: s.down, color: STATUS_COLOR.down, icon: 'fa-triangle-exclamation' },
+                { label: 'Scope', value: sc === 'mine' ? 'My Line' : sc === 'region' ? 'My Region' : 'National', color: 'var(--secondary)', icon: 'fa-map' }
             ];
             el.innerHTML = cards.map(c => `
                 <div class="card">
@@ -1185,7 +1490,10 @@
         function renderNeuronMap() {
             const svg = document.getElementById('neuronSvg');
             if (!svg) return;
-            const scope = document.getElementById('mapScopeSelect').value;
+            const scopeEl = document.getElementById('mapScopeSelect') || document.getElementById('mapViewSelect');
+            let scope = scopeEl ? scopeEl.value : 'all';
+            if (scope === 'country') scope = 'all';
+            else if (scope === 'district') scope = 'mine';
             const profile = getUserProfile();
             const userNet = tanzaniaData.getUserNetwork(profile);
             USER_NET_ID = userNet.id;
@@ -1312,7 +1620,8 @@
 
         function selectNetwork(id) {
             SELECTED_NET_ID = id;
-            renderNeuronMap();
+            if (typeof GridMap !== 'undefined') GridMap.highlight(id);
+            else renderNeuronMap();
             renderReport(id);
         }
 
@@ -1362,13 +1671,52 @@
                 <div class="incident-list">${incidents || '<div class="no-incidents">No incidents recorded.</div>'}</div>`;
         }
 
-        // Backward-compatible entry point used by section switching
-        function initNetworkMap() {
-            if (MAP_READY) {
-                renderNeuronMap();
-            } else {
-                initNeuronMap();
+        // Unified Leaflet map: TANESCO grid lines + community outages + user home
+        let outageLeafletMap = null;
+        function initOutageLeafletMap() {
+            if (outageLeafletMap || typeof L === 'undefined') return;
+            const el = document.getElementById('networkMap');
+            if (!el) return;
+            outageLeafletMap = L.map('networkMap').setView(TANZANIA_CENTER, 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(outageLeafletMap);
+            if (typeof GridMap !== 'undefined') {
+                GridMap.init(outageLeafletMap, function (id) { selectNetwork(id); });
             }
+            if (typeof OutageMap !== 'undefined') {
+                OutageMap.init(outageLeafletMap);
+            }
+        }
+
+        function initNetworkMap() {
+            try {
+                initOutageLeafletMap();
+                if (!outageLeafletMap) return;
+
+                const profile = getUserProfile();
+                const userNet = tanzaniaData.getUserNetwork(profile);
+                USER_NET_ID = userNet.id;
+                if (!SELECTED_NET_ID) SELECTED_NET_ID = userNet.id;
+
+                const scope = document.getElementById('mapScopeSelect')?.value || 'region';
+                renderNetworkSummary(scope);
+                if (typeof GridMap !== 'undefined') GridMap.render(scope);
+                renderReport(SELECTED_NET_ID);
+                MAP_READY = true;
+
+                setTimeout(function () { outageLeafletMap.invalidateSize(); }, 200);
+            } catch (e) { console.error('Network map init failed:', e); }
+        }
+
+        function changeMapView() {
+            try {
+                const scope = document.getElementById('mapScopeSelect')?.value || 'region';
+                renderNetworkSummary(scope);
+                if (typeof GridMap !== 'undefined') GridMap.render(scope);
+                if (SELECTED_NET_ID) renderReport(SELECTED_NET_ID);
+            } catch (e) { console.error(e); }
         }
         
         // Original theme and section functions
@@ -1423,6 +1771,10 @@
                 // Refresh appliance consumption breakdown when analytics is opened
                 if (sectionId === 'analytics') {
                     renderConsumptionBreakdown();
+                }
+
+                if (sectionId === 'settings' && typeof IoTDevices !== 'undefined') {
+                    IoTDevices.renderList();
                 }
             }
         }
@@ -1481,11 +1833,12 @@
                     newBalanceKwh: newBalance,
                     estDays
                 });
-            } else if (typeof showSmsToast === 'function') {
-                showSmsToast({
+            } else if (typeof pushNotification === 'function') {
+                pushNotification({
                     type: 'success',
                     title: 'Payment Confirmed',
-                    message: `New balance ${newBalance.toFixed(1)} kWh · Estimated supply ~${fmtSupply(estDays)}.`
+                    message: `New balance ${newBalance.toFixed(1)} kWh · Estimated supply ~${fmtSupply(estDays)}.`,
+                    source: 'payment'
                 });
             }
 
@@ -1538,22 +1891,141 @@
         
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('smartluku-theme');
                 localStorage.removeItem('smartluku-user');
+                localStorage.removeItem('smartluku-profile');
                 window.location.href = 'login.html';
             }
         }
         
-        function showSmsToast(notification) {
-            const toast = document.getElementById('smsToast');
-            if (!toast || !notification) return;
-            toast.className = 'sms-toast show ' + (notification.type || 'info');
-            toast.innerHTML = `
-                <strong><i class="fas fa-sms"></i> ${notification.title}</strong>
-                <p style="margin:0.4rem 0 0;font-size:0.85rem;">${notification.message}</p>
-                ${notification.phone ? `<p style="margin:0.3rem 0 0;font-size:0.75rem;opacity:0.8;">→ ${notification.phone}</p>` : ''}
-            `;
-            setTimeout(() => toast.classList.remove('show'), 8000);
+        let notificationInbox = [];
+        const NOTIF_ICONS = {
+            success: 'fa-check-circle',
+            info: 'fa-info-circle',
+            warning: 'fa-exclamation-triangle',
+            danger: 'fa-bolt'
+        };
+
+        function loadNotificationInbox() {
+            const key = SmartLUKUConfig?.NOTIFICATION_INBOX_KEY || 'smartluku_notification_inbox';
+            try {
+                const saved = JSON.parse(localStorage.getItem(key) || '[]');
+                notificationInbox = Array.isArray(saved) ? saved : [];
+            } catch {
+                notificationInbox = [];
+            }
+            if (!notificationInbox.length) {
+                try {
+                    const smsLog = JSON.parse(localStorage.getItem(SmartLUKUConfig.SMS_LOG_KEY) || '[]');
+                    notificationInbox = smsLog.map(entry => ({
+                        id: entry.messageId || entry.timestamp,
+                        timestamp: entry.timestamp,
+                        type: entry.demo ? 'info' : 'success',
+                        title: entry.demo ? 'SmartLUKU SMS (Demo)' : 'SMS Sent via SmartLUKU SMS',
+                        message: entry.preview || `Low balance alert at ${entry.balanceKwh} kWh`,
+                        phone: entry.phone,
+                        read: true,
+                        source: 'sms'
+                    }));
+                } catch { /* ignore */ }
+            }
+        }
+
+        function persistNotifications() {
+            const key = SmartLUKUConfig?.NOTIFICATION_INBOX_KEY || 'smartluku_notification_inbox';
+            localStorage.setItem(key, JSON.stringify(notificationInbox.slice(0, 50)));
+        }
+
+        function fmtNotifTime(iso) {
+            if (!iso) return '';
+            const d = new Date(iso);
+            const diff = Date.now() - d.getTime();
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+            return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+        }
+
+        function updateNotifBadge() {
+            const badge = document.getElementById('notifBadge');
+            if (!badge) return;
+            const unread = notificationInbox.filter(n => !n.read).length;
+            if (unread > 0) {
+                badge.textContent = unread > 9 ? '9+' : String(unread);
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function renderNotifInbox() {
+            const container = document.getElementById('notifInbox');
+            if (!container) return;
+            if (!notificationInbox.length) {
+                container.innerHTML = '<div class="notif-empty"><i class="fas fa-inbox" style="display:block;font-size:1.4rem;margin-bottom:0.5rem;opacity:0.4;"></i>No notifications yet — test an SMS alert or top up to see messages here.</div>';
+                return;
+            }
+            container.innerHTML = notificationInbox.map(n => {
+                const icon = NOTIF_ICONS[n.type] || 'fa-bell';
+                const cls = [n.type || 'info', n.read ? '' : 'unread'].filter(Boolean).join(' ');
+                return `<div class="notif-inbox-item ${cls}" data-id="${n.id}" onclick="markNotificationRead('${n.id}')">
+                    <div class="notif-inbox-title"><i class="fas ${icon}"></i> ${n.title}</div>
+                    <div class="notif-inbox-msg">${n.message}</div>
+                    <div class="notif-inbox-meta">${fmtNotifTime(n.timestamp)}${n.phone ? ' · → ' + n.phone : ''}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function pushNotification(notification) {
+            if (!notification) return;
+            const item = {
+                id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+                timestamp: new Date().toISOString(),
+                type: notification.type || 'info',
+                title: notification.title || 'Notification',
+                message: notification.message || '',
+                phone: notification.phone || null,
+                read: false,
+                source: notification.source || 'sms'
+            };
+            notificationInbox.unshift(item);
+            if (notificationInbox.length > 50) notificationInbox.length = 50;
+            persistNotifications();
+            renderNotifInbox();
+            updateNotifBadge();
+            const bell = document.getElementById('notifBellBtn');
+            if (bell) {
+                bell.classList.add('ring');
+                setTimeout(() => bell.classList.remove('ring'), 600);
+            }
+        }
+
+        function toggleNotifPanel(forceOpen) {
+            const panel = document.getElementById('notifDropdown');
+            const btn = document.getElementById('notifBellBtn');
+            if (!panel) return;
+            const open = forceOpen === true ? true : forceOpen === false ? false : !panel.classList.contains('open');
+            panel.classList.toggle('open', open);
+            btn?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        function markNotificationRead(id) {
+            const item = notificationInbox.find(n => n.id === id);
+            if (item && !item.read) {
+                item.read = true;
+                persistNotifications();
+                renderNotifInbox();
+                updateNotifBadge();
+            }
+        }
+
+        function markAllNotificationsRead() {
+            let changed = false;
+            notificationInbox.forEach(n => { if (!n.read) { n.read = true; changed = true; } });
+            if (changed) {
+                persistNotifications();
+                renderNotifInbox();
+                updateNotifBadge();
+            }
         }
 
         function testSmsAlert() {
@@ -1575,9 +2047,33 @@
             };
         }
 
+        let prevBalanceKwh = null;
+        let meterPeakBalance = parseFloat(sessionStorage.getItem('meterPeakBalance') || '0');
+
+        function fmtTimeLeft(hours) {
+            if (hours == null || !isFinite(hours) || hours <= 0) return 'Disconnected / no load';
+            if (hours >= 24) {
+                const d = Math.floor(hours / 24);
+                const h = Math.round(hours % 24);
+                return `~${d}d ${h}h at current load`;
+            }
+            if (hours >= 1) return `~${hours.toFixed(1)} hr at current load`;
+            return `~${Math.round(hours * 60)} min at current load`;
+        }
+
+        function updateLiveClock() {
+            const el = document.getElementById('dashLiveClock');
+            if (!el) return;
+            const now = new Date();
+            const tz = 'Africa/Dar_es_Salaam';
+            const time = now.toLocaleTimeString('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+            const date = now.toLocaleDateString('en-GB', { timeZone: tz, weekday: 'short', day: 'numeric', month: 'short' });
+            el.innerHTML = `<span class="live-dot"></span>${time} <span style="opacity:0.75;font-size:0.75rem">${date}</span>`;
+        }
+
         function syncFromSimulation() {
             const raw = localStorage.getItem('smartluku_simulation');
-            if (!raw) return;
+            if (!raw && typeof SimulationEngine === 'undefined') return;
             let snap;
             try {
                 if (typeof SimulationEngine !== 'undefined') {
@@ -1585,23 +2081,63 @@
                 } else {
                     const s = JSON.parse(raw);
                     const totalW = (s.appliances || []).reduce((sum, a) => sum + (a.power || 0), 0);
+                    const kw = totalW / 1000;
                     snap = {
                         balanceKwh: s.balanceKwh,
                         meterNumber: s.meterNumber,
                         connected: s.gridConnected,
                         usageTodayKwh: s.totalEnergyConsumedKwh,
-                        currentPowerKw: totalW / 1000,
+                        currentPowerKw: kw,
+                        drainRateKwhPerHr: kw,
+                        kwhPerTick: (totalW / 1000) * (2000 / 3600000),
+                        estHoursLeft: kw > 0.01 ? s.balanceKwh / kw : null,
                         voltage: s.sensors?.voltage?.value || 230,
                         appliances: s.appliances || [],
                         alerts: s.alerts || [],
-                        sensors: s.sensors || {}
+                        sensors: s.sensors || {},
+                        lastUpdated: s.lastUpdated
                     };
                 }
             } catch (e) { return; }
 
             const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
 
-            set('dashBalance', snap.balanceKwh.toFixed(1) + ' kWh');
+            if (snap.balanceKwh > meterPeakBalance) {
+                meterPeakBalance = snap.balanceKwh;
+                sessionStorage.setItem('meterPeakBalance', String(meterPeakBalance));
+            }
+            const peak = meterPeakBalance || snap.balanceKwh || 285;
+            const fillPct = Math.min(100, Math.max(2, (snap.balanceKwh / peak) * 100));
+
+            const balEl = document.getElementById('dashBalance');
+            if (balEl) {
+                balEl.innerHTML = snap.balanceKwh.toFixed(4) + ' <span class="meter-unit">kWh</span>';
+                if (prevBalanceKwh !== null && snap.balanceKwh < prevBalanceKwh - 0.00001) {
+                    balEl.classList.add('dropping');
+                    setTimeout(() => balEl.classList.remove('dropping'), 500);
+                }
+            }
+            prevBalanceKwh = snap.balanceKwh;
+
+            const fillEl = document.getElementById('dashMeterFill');
+            if (fillEl) {
+                fillEl.style.width = fillPct.toFixed(1) + '%';
+                fillEl.classList.toggle('low', snap.balanceKwh < 100);
+                fillEl.classList.toggle('critical', snap.balanceKwh < 20);
+            }
+
+            set('dashDrainTick', '-' + (snap.kwhPerTick || 0).toFixed(4));
+            set('dashDrainHour', (snap.drainRateKwhPerHr || 0).toFixed(2));
+            set('dashUsedToday', (snap.usageTodayKwh || 0).toFixed(4));
+            set('dashTimeLeft', fmtTimeLeft(snap.estHoursLeft));
+
+            const lastEl = document.getElementById('dashLastUpdate');
+            if (lastEl && snap.lastUpdated) {
+                const t = new Date(snap.lastUpdated);
+                lastEl.textContent = 'Last meter reading: ' + t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
+                    + (snap.simulationRunning === false ? ' (paused)' : ' (live tick every 2s)');
+            }
+
             set('dashMeterId', snap.meterNumber);
             const statusEl = document.getElementById('dashMeterStatus');
             if (statusEl) {
@@ -1611,7 +2147,12 @@
             set('dashUsageToday', snap.usageTodayKwh.toFixed(2));
             set('dashCurrentLoad', snap.currentPowerKw.toFixed(2));
             set('dashVoltage', Math.round(snap.voltage));
-            set('dashEstBill', Math.round(snap.balanceKwh * 100 / 1000) + 'K');
+            const tariff = SmartLUKUConfig?.TARIFF_TZS_PER_KWH || 292;
+            set('dashEstBill', Math.round(snap.balanceKwh * tariff).toLocaleString());
+            const payInfo = document.getElementById('paymentBalanceInfo');
+            if (payInfo) {
+                payInfo.textContent = `Current balance: ${snap.balanceKwh.toFixed(1)} kWh · Draining ${(snap.drainRateKwhPerHr || 0).toFixed(2)} kWh/hr · Est. bill value: TZS ${Math.round(snap.balanceKwh * tariff).toLocaleString()}`;
+            }
 
             set('monCurrentUsage', snap.currentPowerKw.toFixed(2));
             const netEl = document.getElementById('monNetworkStatus');
@@ -1669,38 +2210,68 @@
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             initTheme();
-            initNetworkMap();
-            EnergyAdvisor.init();
 
-            document.getElementById('smsThreshold').textContent = SmartLUKUConfig.SMS_THRESHOLD_KWH;
+            // ── AI Energy Advisor (must init independently of the map) ──
+            try {
+                EnergyAdvisor.init();
+            } catch (e) { console.error('EnergyAdvisor init failed:', e); }
 
-            SMSAlerts.setNotifyCallback(showSmsToast);
-            SMSAlerts.checkApiHealth().then(async health => {
-                const el = document.getElementById('smsApiStatus');
-                if (!el) return;
-                if (!health.ok) {
-                    el.innerHTML = '⚠ API offline — <code style="font-size:0.7rem">cd server && npm start</code>';
-                    return;
+            try {
+                if (typeof IoTDevices !== 'undefined') IoTDevices.init();
+            } catch (e) { console.error('IoT devices init failed:', e); }
+
+            // ── Low-balance SMS alerts ──
+            try {
+                const thr = document.getElementById('smsThreshold');
+                if (thr) thr.textContent = SmartLUKUConfig.SMS_THRESHOLD_KWH;
+
+                loadNotificationInbox();
+                renderNotifInbox();
+                updateNotifBadge();
+                SMSAlerts.setNotifyCallback(pushNotification);
+                SMSAlerts.checkApiHealth().then(async health => {
+                    const el = document.getElementById('smsApiStatus');
+                    if (!el) return;
+                    if (!health.ok) {
+                        el.innerHTML = '⚠ API offline — <code style="font-size:0.7rem">cd server && npm start</code>';
+                        return;
+                    }
+                    const at = await SMSAlerts.getProviderStatus();
+                    if (health.smsReady) {
+                        el.innerHTML = `✓ SmartLUKU SMS <strong>${health.smsEnvironment || 'live'}</strong> · ${at?.username || 'connected'}`;
+                        el.style.color = 'var(--success)';
+                    } else {
+                        el.innerHTML = '📱 Demo mode — add <code style="font-size:0.7rem">SMS_API_KEY</code> to <code style="font-size:0.7rem">.env</code>';
+                    }
+                }).catch(err => console.error('SMS health check failed:', err));
+
+                const profile = JSON.parse(localStorage.getItem('smartluku-profile') || 'null');
+                const phoneInput = document.getElementById('smsPhoneInput');
+                if (phoneInput && profile?.phone) phoneInput.value = profile.phone;
+                document.addEventListener('click', function (e) {
+                    const wrap = document.getElementById('notifWrap');
+                    if (wrap && !wrap.contains(e.target)) toggleNotifPanel(false);
+                });
+            } catch (e) { console.error('SMS alerts init failed:', e); }
+
+            // ── Network / outage map (isolated — a map error must not break AI/SMS) ──
+            try { initNetworkMap(); } catch (e) { console.error('Network map init failed:', e); }
+
+            // ── Live meter: start simulation engine + real-time clock on dashboard ──
+            try {
+                updateLiveClock();
+                setInterval(updateLiveClock, 1000);
+                if (typeof SimulationEngine !== 'undefined') {
+                    SimulationEngine.start();
+                    SimulationEngine.onUpdate(function () { syncFromSimulation(); });
                 }
-                const at = await SMSAlerts.getProviderStatus();
-                if (health.smsReady) {
-                    el.innerHTML = `✓ SmartLUKU SMS <strong>${health.smsEnvironment || 'live'}</strong> · ${at?.username || 'connected'}`;
-                    el.style.color = 'var(--success)';
-                } else {
-                    el.innerHTML = '📱 Demo mode — add <code style="font-size:0.7rem">SMS_API_KEY</code> to <code style="font-size:0.7rem">.env</code>';
-                }
-            });
-
-            const profile = JSON.parse(localStorage.getItem('smartluku-profile') || 'null');
-            const phoneInput = document.getElementById('smsPhoneInput');
-            if (phoneInput && profile?.phone) phoneInput.value = profile.phone;
-
-            syncFromSimulation();
-            renderConsumptionBreakdown('daily');
-            setInterval(syncFromSimulation, 3000);
-            window.addEventListener('storage', function(e) {
                 syncFromSimulation();
-                renderConsumptionBreakdown();
+            } catch (e) { console.error(e); }
+            try { renderConsumptionBreakdown('daily'); } catch (e) { console.error(e); }
+            setInterval(function () { try { syncFromSimulation(); } catch (e) {} }, 1000);
+            window.addEventListener('storage', function(e) {
+                try { syncFromSimulation(); } catch (err) {}
+                try { renderConsumptionBreakdown(); } catch (err) {}
                 if (e.key === SmartLUKUConfig.OUTAGE_STORAGE_KEY && typeof OutageMap !== 'undefined') {
                     OutageMap.loadReports();
                 }

@@ -416,6 +416,12 @@
         @keyframes flowDash {
             to { stroke-dashoffset: -20; }
         }
+        body.sim-paused .flow-path-live,
+        body.sim-paused .flow-path-branch,
+        body.sim-paused .power-path-step.live .step-arrow,
+        body.sim-paused .pulse {
+            animation-play-state: paused;
+        }
         .flow-label {
             font-size: 9px;
             fill: var(--text-light);
@@ -1201,12 +1207,15 @@
         let simPaused = false;
         document.getElementById('toggleSimBtn').addEventListener('click', function () {
             simPaused = !simPaused;
+            document.body.classList.toggle('sim-paused', simPaused);
             if (simPaused) {
                 SimulationEngine.stop();
                 this.innerHTML = '<i class="fas fa-play"></i> Resume';
+                this.classList.add('paused-active');
             } else {
                 SimulationEngine.start();
                 this.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                this.classList.remove('paused-active');
             }
         });
 
@@ -1284,9 +1293,9 @@
             meterLed.material.color.setHex(state.gridConnected ? 0x10b981 : 0xef4444);
         }
 
-        function updateFlowParticles(flow, active, intensity) {
+        function updateFlowParticles(flow, active, intensity, freeze) {
             flow.mat.opacity = active ? Math.min(0.95, 0.4 + intensity) : 0;
-            if (!active) return;
+            if (!active || freeze) return;
             flowPhase += 0.016;
             const pos = flow.geo.attributes.position.array;
             const tmp = new THREE.Vector3();
@@ -1306,7 +1315,7 @@
             wire.mat.emissiveIntensity = live ? 0.35 : 0.05;
         }
 
-        function updatePowerFlow(state) {
+        function updatePowerFlow(state, paused) {
             const totalW = state.appliances.reduce((s, a) => s + a.power, 0);
             const hasBalance = state.balanceKwh > 0;
             const gridLive = state.gridConnected && hasBalance;
@@ -1315,20 +1324,20 @@
 
             setWireLive(trunkWire, gridLive, wireLiveColor);
             setWireLive(hubWire, gridLive, 0x3b82f6);
-            updateFlowParticles(trunkFlow, anyLoad, intensity);
-            updateFlowParticles(hubFlow, gridLive, 0.5);
+            updateFlowParticles(trunkFlow, anyLoad, intensity, paused);
+            updateFlowParticles(hubFlow, gridLive, 0.5, paused);
 
             gridLight.intensity = gridLive ? 0.6 + intensity * 0.4 : 0;
             gridLight.color.setHex(anyLoad ? 0xfbbf24 : 0x10b981);
 
-            meterPulsePhase += 0.05;
+            if (!paused) meterPulsePhase += 0.05;
             meterPulse.material.opacity = anyLoad ? 0.3 + Math.sin(meterPulsePhase) * 0.2 : 0;
             meterPulse.scale.setScalar(anyLoad ? 1 + Math.sin(meterPulsePhase * 2) * 0.08 : 1);
 
             state.appliances.forEach(a => {
                 const live = a.active && gridLive;
                 setWireLive(branchWires[a.id], live, wireBranchColor);
-                updateFlowParticles(branchFlows[a.id], live, a.power / 1500);
+                updateFlowParticles(branchFlows[a.id], live, a.power / 1500, paused);
                 const group = applianceMeshes[a.id];
                 if (group?.userData.body) {
                     group.userData.body.material.emissive = group.userData.body.material.emissive || new THREE.Color();
@@ -1345,7 +1354,7 @@
             controls.update();
             const state = SimulationEngine.getState();
             updateApplianceVisuals(state);
-            updatePowerFlow(state);
+            updatePowerFlow(state, simPaused);
             const sel = CircuitSchematic.getSelectedId();
             if (sel) highlight3DNode(sel);
             renderer.render(scene, camera);
