@@ -4,21 +4,21 @@ A professional, user-friendly web platform for Tanzanian households to pay for e
 
 ## 📋 Project Overview
 
-**Live Demo Goal**: A fully functional static frontend prototype using HTML, CSS (Tailwind), and Vanilla JavaScript.
+**Frontend**: The primary UI is a modern **React + Vite + TypeScript + Tailwind + shadcn/ui** app in [`frontend/`](frontend) (Swahili-first, tokenless). The original Vanilla-JS pages (`app.html`, `login.html`, `register.html`, etc.) are the legacy prototype, kept during migration. See [`frontend/README.md`](frontend/README.md) to run the new app.
 
 ### Problem Statement
-- Manual token purchasing and entry is time-consuming and error-prone
+- Buying power means receiving a 20-digit token and manually keying it into the meter — slow, error-prone, and often impossible (meters are mounted high/outdoors, out of reach for the elderly, disabled, or children)
 - No real-time monitoring of remaining units
 - Sudden power disconnections due to lack of alerts
 - Limited digital access for many users
 
 ### Proposed Solution
-A hybrid web platform that supports:
+A platform that removes tokens entirely — you pay and electricity keeps flowing:
 - ✅ Seamless payments via mobile money, banks, cards
-- ✅ Automatic meter crediting (simulated)
+- ✅ Tokenless top-ups — paying credits the meter directly and instantly (no codes to copy, no numbers to key in)
+- ✅ Automatic reconnection the moment a payment lands on a zero balance
 - ✅ Real-time balance and consumption tracking
-- ✅ Low balance alerts
-- ✅ Manual token entry for non-smart meters
+- ✅ Low balance alerts (in-app and SMS) so power never cuts off by surprise
 - ✅ Usage analytics and budgeting tools
 
 ## 🎯 Core Objectives
@@ -36,12 +36,23 @@ A hybrid web platform that supports:
 
 ## 🛠️ Technical Stack
 
-- **HTML5**: Semantic markup
-- **CSS3**: Tailwind CSS (CDN) + Custom styles
-- **JavaScript**: Vanilla JS (ES6+)
-- **Icons**: Font Awesome 6.4.0
-- **Responsive**: Mobile-first design
-- **Storage**: LocalStorage for client-side data
+**Frontend (primary — [`frontend/`](frontend))**
+
+- **React + Vite + TypeScript**
+- **Tailwind CSS + shadcn/ui** (Radix), `lucide-react` icons
+- **Zustand** (auth, simulation, UI, settings) + **TanStack Query** (server data)
+- **Recharts** (charts) · **react-leaflet** (grid map)
+- **i18next** — Swahili-first bilingual (EN toggle)
+- Mobile-first, dark mode, `localStorage` for client-side state
+
+**Backend ([`server/`](server))**
+
+- **Node.js / Express** REST API (`:3001`), **PostgreSQL**
+- Africa's Talking SMS gateway, Claude AI advisor
+
+**Legacy prototype (root `*.html` + `src/js/`)**
+
+- Vanilla JS (ES6+), Tailwind (CDN), Font Awesome — kept during migration
 
 ## 📁 Project Structure
 
@@ -104,7 +115,7 @@ SmartLUKU/
 - [ ] Transaction history
 - [ ] Usage analytics & charts
 - [ ] Low balance alerts
-- [ ] Manual token entry system
+- [ ] Tokenless auto-crediting (pay → meter credited → power flows)
 - [ ] Settings & profile management
 - [ ] Notification preferences
 
@@ -120,10 +131,10 @@ SmartLUKU/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-- No dependencies required - all libraries via CDN
+- Node.js 18+ and npm
+- (Optional) PostgreSQL for backend persistence
 
-### Running Locally
+### Running Locally (React frontend + backend)
 
 1. **Clone the repository**
    ```bash
@@ -131,25 +142,29 @@ SmartLUKU/
    cd SmartLUKU
    ```
 
-2. **Start a local server** (required for localStorage to work properly)
+2. **Start the backend API** (`:3001`)
    ```bash
-   # Python 3
-   python -m http.server 8000
-   
-   # Python 2
-   python -m SimpleHTTPServer 8000
-   
-   # Or use any HTTP server (Node, Ruby, PHP, etc.)
+   cd server
+   npm install
+   npm start
    ```
 
-3. **Open in browser**
-   ```
-   http://localhost:8000
+3. **Start the frontend** (`:5173`, proxies `/api` to the backend)
+   ```bash
+   cd ../frontend
+   npm install
+   npm run dev
    ```
 
-4. **Demo Login**
-   - Email: `demo@smartluku.tz`
-   - Password: `Demo@123`
+4. **Open** http://localhost:5173 and sign in with any meter number, or click
+   **"Try with a demo account"**. See [`frontend/README.md`](frontend/README.md) for build/preview.
+
+### Legacy prototype (optional)
+
+The original Vanilla-JS pages can still be served statically from the repo root:
+```bash
+python -m http.server 8000   # then open http://localhost:8000/app.html
+```
 
 ## 🔐 Authentication System
 

@@ -1,6 +1,32 @@
 # SmartLUKU - Project Structure
 
-## Directory Organization
+> **Primary frontend:** the React app in [`frontend/`](frontend) (React + Vite + TS +
+> Tailwind + shadcn/ui, Swahili-first, tokenless). The root `*.html` pages and `src/js/`
+> below are the **legacy Vanilla-JS prototype**, kept during migration.
+
+## Frontend (React) — `frontend/`
+
+```
+frontend/
+├── index.html                       # Vite entry
+├── vite.config.ts                   # dev/preview proxy /api -> :3001, vendor chunks
+├── tailwind.config.ts               # design tokens (TANESCO emerald, tokenless)
+├── components.json                  # shadcn config
+└── src/
+    ├── main.tsx  App.tsx            # bootstrap + routes (lazy-loaded screens)
+    ├── components/ui/               # shadcn primitives
+    ├── components/layout/           # AppShell, Sidebar, TopBar, NotificationsMenu
+    ├── components/common/           # StatCard
+    ├── features/                    # one folder per screen
+    │   ├── auth/  dashboard/  payment/  monitoring/
+    │   ├── history/  analytics/  network/  settings/  advisor/
+    ├── lib/                         # api, config, tanzania-data, series, hooks, utils
+    ├── store/                       # zustand: auth, simulation, ui, settings, transactions
+    ├── i18n/                        # sw.json (default), en.json
+    └── styles/globals.css           # CSS variable design tokens
+```
+
+## Legacy prototype (root)
 
 ```
 SmartLUKU/
