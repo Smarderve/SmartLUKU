@@ -11,5 +11,7 @@ const SmartLUKUConfig = {
     TARIFF_TZS_PER_KWH: 292,
     AVG_DAILY_KWH_FALLBACK: 6,
     OUTAGE_STORAGE_KEY: 'smartluku_outage_reports',
-    SMS_LOG_KEY: 'smartluku_sms_log'
+    SMS_LOG_KEY: 'smartluku_sms_log',
+    NOTIFICATION_INBOX_KEY: 'smartluku_notification_inbox',
+    IOT_REGISTRY_KEY: 'smartluku_iot_registry'
 };

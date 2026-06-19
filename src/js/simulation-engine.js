@@ -158,6 +158,7 @@ const SimulationEngine = (function () {
 
     function start() {
         loadState();
+        state.simulationRunning = true;
         if (tickInterval) clearInterval(tickInterval);
         updateSensors();
         persist();
@@ -195,6 +196,49 @@ const SimulationEngine = (function () {
         persist();
     }
 
+    const CUSTOM_COLORS = [0x6b7280, 0xec4899, 0x14b8a6, 0xf97316, 0x6366f1, 0xa855f7];
+
+    function nextCustomPosition() {
+        const n = state.appliances.filter(a => a.custom).length;
+        return { x: -2 + (n % 3) * 2.5, y: 1 + Math.floor(n / 3) * 0.8, z: (n % 2) ? 1.5 : -1.2 };
+    }
+
+    function addAppliance(opts) {
+        loadState();
+        const id = opts.id || ('custom_' + Date.now().toString(36).slice(-8));
+        if (state.appliances.some(a => a.id === id)) return null;
+        const appliance = {
+            id,
+            name: opts.name,
+            icon: opts.icon || 'fa-plug',
+            active: !!opts.active,
+            power: 0,
+            basePower: Number(opts.basePower) || 100,
+            usageHoursPerDay: Number(opts.usageHoursPerDay) || 4,
+            position: opts.position || nextCustomPosition(),
+            color: opts.color || CUSTOM_COLORS[state.appliances.length % CUSTOM_COLORS.length],
+            room: opts.room || 'Other',
+            model: opts.model || 'ESP32 Smart Node',
+            serial: opts.serial || ('SLK-' + id.replace(/[^a-z0-9]/gi, '').slice(-8).toUpperCase()),
+            custom: true,
+            deviceType: opts.deviceType || 'smart_plug'
+        };
+        state.appliances.push(appliance);
+        updateSensors();
+        persist();
+        return appliance;
+    }
+
+    function removeAppliance(id) {
+        loadState();
+        const app = state.appliances.find(a => a.id === id);
+        if (!app?.custom) return false;
+        state.appliances = state.appliances.filter(a => a.id !== id);
+        updateSensors();
+        persist();
+        return true;
+    }
+
     function getState() {
         if (!state) loadState();
         return state;
@@ -227,6 +271,24 @@ const SimulationEngine = (function () {
             };
         });
 
+        s.appliances.filter(a => a.custom).forEach(live => {
+            const hours = live.usageHoursPerDay || 4;
+            const dailyKwh = (live.basePower / 1000) * hours;
+            const kwh = dailyKwh * days;
+            items.push({
+                id: live.id,
+                name: live.name,
+                icon: live.icon || 'fa-plug',
+                color: live.color || 0x6b7280,
+                colorHex: '#' + (live.color || 0x6b7280).toString(16).padStart(6, '0'),
+                basePower: live.basePower,
+                hoursPerDay: hours,
+                activeNow: live.active,
+                kwh,
+                cost: kwh * tariff
+            });
+        });
+
         const totalKwh = items.reduce((sum, i) => sum + i.kwh, 0);
         items.forEach(i => { i.share = totalKwh ? (i.kwh / totalKwh) * 100 : 0; });
         items.sort((a, b) => b.kwh - a.kwh);
@@ -244,12 +306,20 @@ const SimulationEngine = (function () {
     function getDashboardSnapshot() {
         const s = getState();
         const totalW = calcTotalPower();
+        const currentPowerKw = totalW / 1000;
+        const kwhPerTick = (totalW / 1000) * (TICK_MS / 3600000);
+        const drainRateKwhPerHr = currentPowerKw;
+        const estHoursLeft = currentPowerKw > 0.01 ? s.balanceKwh / currentPowerKw : null;
         return {
             balanceKwh: s.balanceKwh,
             meterNumber: s.meterNumber,
             connected: s.gridConnected && s.meterOnline,
+            simulationRunning: !!s.simulationRunning,
             usageTodayKwh: s.totalEnergyConsumedKwh,
-            currentPowerKw: totalW / 1000,
+            currentPowerKw,
+            drainRateKwhPerHr,
+            kwhPerTick,
+            estHoursLeft,
             voltage: s.sensors.voltage?.value || 230,
             appliances: s.appliances,
             alerts: s.alerts,
@@ -269,7 +339,7 @@ const SimulationEngine = (function () {
     return {
         start, stop, tick, loadState, getState, getDashboardSnapshot,
         getConsumptionBreakdown,
-        toggleAppliance, setAppliance, topUpUnits, onUpdate,
+        toggleAppliance, setAppliance, topUpUnits, addAppliance, removeAppliance, onUpdate,
         getApplianceDefs, getSensorDefs, STORAGE_KEY
     };
 })();
