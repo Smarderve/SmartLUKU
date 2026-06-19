@@ -68,5 +68,4 @@ balance -> confirmation (units credited, new balance, auto-reconnect). There is 
 ## Notes / follow-ups
 
 - Backend has no real auth yet; auth is client-side (meter-keyed) for now.
-- The IoT 3D lab (`../simulation.html`) is kept as a separate legacy page; porting it to
-  `@react-three/fiber` is a later phase.
+- An IoT 3D lab is planned (to be built with `@react-three/fiber`) in a later phase.

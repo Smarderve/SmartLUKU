@@ -96,7 +96,7 @@ app.post('/api/sms/low-balance', async (req, res) => {
     }
 
     const normalized = SmartLukuSMS.normalizePhone(phone);
-    const link = topUpUrl || `${APP_URL}/app.html`;
+    const link = topUpUrl || `${APP_URL}/payment`;
     const preview = SmartLukuSMS.buildLowBalanceMessage({
         meterNumber: meterNumber || 'Unknown',
         balanceKwh,
